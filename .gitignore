@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# builds
+build/
+.next/
+_next/
+examples/out/
+
+# tests
+coverage/
+
+# logs
+logs
+*.log
+
+# typescript
+*.tsbuildinfo
+
+# misc
+.DS_Store
+.npm
+.env
+.eslintcache
