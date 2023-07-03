@@ -1,0 +1,6 @@
+coverage/
+dist/
+types/
+build/
+static/
+examples/
