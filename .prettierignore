@@ -1,0 +1,8 @@
+build/
+static/
+coverage/
+dist/
+types/
+examples/out/
+.next/
+_next/
