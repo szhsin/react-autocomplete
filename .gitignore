@@ -16,9 +16,11 @@ logs
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
 
 # misc
 .DS_Store
 .npm
 .env
 .eslintcache
+.vercel
