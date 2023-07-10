@@ -15,7 +15,7 @@
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.8",
     "next": "13.4.8",
-    "react-headless-select": "file:..",
+    "@szhsin/react-autocomplete": "file:..",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "typescript": "file:../node_modules/typescript"
