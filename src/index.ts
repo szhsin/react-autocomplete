@@ -1,1 +1,1 @@
-export const foo = 'bar';
+export { useAutocomplete } from './hooks/useAutocomplete';
