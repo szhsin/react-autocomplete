@@ -1,6 +1,4 @@
-'use strict';
-
-var react = require('react');
+import { useState } from 'react';
 
 const useAutocomplete = ({
   input,
@@ -9,7 +7,7 @@ const useAutocomplete = ({
   onOpenChange = () => {},
   items = []
 }) => {
-  const [focusIndex, setfocusIndex] = react.useState(-1);
+  const [focusIndex, setfocusIndex] = useState(-1);
   const inputProps = {
     value: input,
     onChange: e => onInputChange(e.target.value),
@@ -40,4 +38,4 @@ const useAutocomplete = ({
   };
 };
 
-exports.useAutocomplete = useAutocomplete;
+export { useAutocomplete };

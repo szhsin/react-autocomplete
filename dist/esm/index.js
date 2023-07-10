@@ -1,3 +1,1 @@
-const foo = 'bar';
-
-export { foo };
+export { useAutocomplete } from './hooks/useAutocomplete.js';
