@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "20.4.0",
-    "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.6",
-    "eslint": "8.44.0",
-    "eslint-config-next": "13.4.8",
-    "next": "13.4.8",
+    "@types/node": "^20.8.10",
+    "@types/react": "^18.2.34",
+    "@types/react-dom": "^18.2.14",
+    "eslint": "file:../node_modules/eslint",
+    "eslint-config-next": "^14.0.1",
+    "next": "^14.0.1",
     "@szhsin/react-autocomplete": "file:..",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
