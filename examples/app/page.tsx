@@ -69,9 +69,9 @@ export default function Home() {
   });
   return (
     <div>
-      <div>{input}</div>
-      <button onClick={() => setInput('hey')}>Reset</button>
+      <div>Input value: {input}</div>
       <input type="text" {...inputProps} />
+      <button onClick={() => setInput('')}>Clear</button>
       <ul style={{ position: 'absolute', display: isOpen ? 'block' : 'none' }}>
         {items.map((item, index) => (
           <li key={item} style={{ background: focusIndex === index ? '#ccc' : 'none' }}>
