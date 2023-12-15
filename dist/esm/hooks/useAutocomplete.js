@@ -3,6 +3,7 @@ import { useState } from 'react';
 const useAutocomplete = ({
   input,
   onInputChange,
+  onValueChange,
   isOpen,
   onOpenChange = () => {},
   items = []
@@ -13,9 +14,13 @@ const useAutocomplete = ({
     setfocusIndex(itemIndex);
     onInputChange(items[itemIndex]);
   };
+  const updateValue = value => {
+    onInputChange(value);
+    onValueChange == null || onValueChange(value);
+  };
   const inputProps = {
     value: input,
-    onChange: e => onInputChange(e.target.value),
+    onChange: e => updateValue(e.target.value),
     onClick: () => onOpenChange(!isOpen),
     onBlur: () => onOpenChange(false),
     onKeyDown: ({
@@ -42,7 +47,7 @@ const useAutocomplete = ({
         case 'Enter':
           if (isOpen) {
             onOpenChange(false);
-            onInputChange(items[focusIndex]);
+            updateValue(items[focusIndex]);
           }
           break;
         case 'Escape':

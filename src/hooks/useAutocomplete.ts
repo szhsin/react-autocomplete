@@ -4,6 +4,7 @@ import { useState } from 'react';
 const useAutocomplete = ({
   input,
   onInputChange,
+  onValueChange,
   isOpen,
   onOpenChange = () => {
     /* default */
@@ -12,6 +13,7 @@ const useAutocomplete = ({
 }: {
   input?: string;
   onInputChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   items?: string[];
@@ -22,11 +24,15 @@ const useAutocomplete = ({
     setfocusIndex(itemIndex);
     onInputChange(items[itemIndex]);
   };
+  const updateValue = (value: string) => {
+    onInputChange(value);
+    onValueChange?.(value);
+  };
 
   const inputProps: InputHTMLAttributes<HTMLInputElement> = {
     value: input,
 
-    onChange: (e) => onInputChange(e.target.value),
+    onChange: (e) => updateValue(e.target.value),
 
     onClick: () => onOpenChange(!isOpen),
 
@@ -54,7 +60,7 @@ const useAutocomplete = ({
         case 'Enter':
           if (isOpen) {
             onOpenChange(false);
-            onInputChange(items[focusIndex]);
+            updateValue(items[focusIndex]);
           }
           break;
         case 'Escape':
