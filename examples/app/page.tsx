@@ -57,21 +57,25 @@ const US_STATES = [
 ];
 
 export default function Home() {
-  const [items] = useState(US_STATES);
   const [input, setInput] = useState('');
+  const [value, setValue] = useState('');
   const [isOpen, setOpen] = useState(false);
+  const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+
   const { inputProps, focusIndex } = useAutocomplete({
     input,
     onInputChange: setInput,
+    onValueChange: setValue,
     isOpen,
     onOpenChange: setOpen,
     items
   });
+
   return (
     <div>
-      <div>{input}</div>
-      <button onClick={() => setInput('hey')}>Reset</button>
+      <div>Input value: {input}</div>
       <input type="text" {...inputProps} />
+      <button onClick={() => setInput('')}>Clear</button>
       <ul style={{ position: 'absolute', display: isOpen ? 'block' : 'none' }}>
         {items.map((item, index) => (
           <li key={item} style={{ background: focusIndex === index ? '#ccc' : 'none' }}>

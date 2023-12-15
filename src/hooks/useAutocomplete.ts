@@ -4,6 +4,7 @@ import { useState } from 'react';
 const useAutocomplete = ({
   input,
   onInputChange,
+  onValueChange,
   isOpen,
   onOpenChange = () => {
     /* default */
@@ -12,29 +13,58 @@ const useAutocomplete = ({
 }: {
   input?: string;
   onInputChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   items?: string[];
 }) => {
   const [focusIndex, setfocusIndex] = useState(-1);
+  const itemLength = items.length;
+  const updateInput = (itemIndex: number) => {
+    setfocusIndex(itemIndex);
+    onInputChange(items[itemIndex]);
+  };
+  const updateValue = (value: string) => {
+    onInputChange(value);
+    onValueChange?.(value);
+  };
+
   const inputProps: InputHTMLAttributes<HTMLInputElement> = {
     value: input,
-    onChange: (e) => onInputChange(e.target.value),
+
+    onChange: (e) => updateValue(e.target.value),
+
     onClick: () => onOpenChange(!isOpen),
+
     onBlur: () => onOpenChange(false),
+
     onKeyDown: ({ key }) => {
+      let nextIndex = focusIndex;
       switch (key) {
         case 'ArrowDown':
-          onOpenChange(true);
-          setfocusIndex((i) => i + 1);
+          if (isOpen) {
+            if (++nextIndex >= itemLength) nextIndex = 0;
+            updateInput(nextIndex);
+          } else {
+            onOpenChange(true);
+          }
           break;
         case 'ArrowUp':
-          onOpenChange(true);
-          setfocusIndex((i) => i - 1);
+          if (isOpen) {
+            if (--nextIndex < 0) nextIndex = itemLength - 1;
+            updateInput(nextIndex);
+          } else {
+            onOpenChange(true);
+          }
           break;
         case 'Enter':
+          if (isOpen) {
+            onOpenChange(false);
+            updateValue(items[focusIndex]);
+          }
+          break;
+        case 'Escape':
           onOpenChange(false);
-          onInputChange(items[focusIndex]);
           break;
       }
     }
