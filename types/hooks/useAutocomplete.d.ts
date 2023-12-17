@@ -1,13 +1,13 @@
 import type { InputHTMLAttributes } from 'react';
-declare const useAutocomplete: ({ input, onInputChange, onValueChange, isOpen, onOpenChange, items }: {
-    input?: string | undefined;
-    onInputChange: (value: string) => void;
+declare const useAutocomplete: ({ onValueChange, items }: {
     onValueChange?: ((value: string) => void) | undefined;
-    isOpen?: boolean | undefined;
-    onOpenChange?: ((open: boolean) => void) | undefined;
     items?: string[] | undefined;
 }) => {
-    inputProps: InputHTMLAttributes<HTMLInputElement>;
-    focusIndex: number;
+    readonly inputProps: InputHTMLAttributes<HTMLInputElement>;
+    readonly state: {
+        readonly inputValue: readonly [string, import("react").Dispatch<import("react").SetStateAction<string>>];
+        readonly focusIndex: readonly [number, import("react").Dispatch<import("react").SetStateAction<number>>];
+        readonly isOpen: readonly [boolean, import("react").Dispatch<import("react").SetStateAction<boolean>>];
+    };
 };
 export { useAutocomplete };

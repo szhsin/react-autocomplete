@@ -2,41 +2,34 @@ import type { InputHTMLAttributes } from 'react';
 import { useState } from 'react';
 
 const useAutocomplete = ({
-  input,
-  onInputChange,
   onValueChange,
-  isOpen,
-  onOpenChange = () => {
-    /* default */
-  },
   items = []
 }: {
-  input?: string;
-  onInputChange: (value: string) => void;
   onValueChange?: (value: string) => void;
-  isOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
   items?: string[];
 }) => {
+  const [inputValue, setInputValue] = useState('');
   const [focusIndex, setfocusIndex] = useState(-1);
+  const [isOpen, setOpen] = useState(false);
+
   const itemLength = items.length;
   const updateInput = (itemIndex: number) => {
     setfocusIndex(itemIndex);
-    onInputChange(items[itemIndex]);
+    setInputValue(items[itemIndex]);
   };
   const updateValue = (value: string) => {
-    onInputChange(value);
+    setInputValue(value);
     onValueChange?.(value);
   };
 
   const inputProps: InputHTMLAttributes<HTMLInputElement> = {
-    value: input,
+    value: inputValue,
 
     onChange: (e) => updateValue(e.target.value),
 
-    onClick: () => onOpenChange(!isOpen),
+    onClick: () => setOpen(!isOpen),
 
-    onBlur: () => onOpenChange(false),
+    onBlur: () => setOpen(false),
 
     onKeyDown: ({ key }) => {
       let nextIndex = focusIndex;
@@ -46,7 +39,7 @@ const useAutocomplete = ({
             if (++nextIndex >= itemLength) nextIndex = 0;
             updateInput(nextIndex);
           } else {
-            onOpenChange(true);
+            setOpen(true);
           }
           break;
         case 'ArrowUp':
@@ -54,22 +47,29 @@ const useAutocomplete = ({
             if (--nextIndex < 0) nextIndex = itemLength - 1;
             updateInput(nextIndex);
           } else {
-            onOpenChange(true);
+            setOpen(true);
           }
           break;
         case 'Enter':
           if (isOpen) {
-            onOpenChange(false);
+            setOpen(false);
             updateValue(items[focusIndex]);
           }
           break;
         case 'Escape':
-          onOpenChange(false);
+          setOpen(false);
           break;
       }
     }
   };
-  return { inputProps, focusIndex };
+  return {
+    inputProps,
+    state: {
+      inputValue: [inputValue, setInputValue],
+      focusIndex: [focusIndex, setfocusIndex],
+      isOpen: [isOpen, setOpen]
+    }
+  } as const;
 };
 
 export { useAutocomplete };
