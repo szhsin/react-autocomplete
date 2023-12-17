@@ -57,25 +57,36 @@ const US_STATES = [
 ];
 
 export default function Home() {
-  const [input, setInput] = useState('');
-  const [value, setValue] = useState('');
-  const [isOpen, setOpen] = useState(false);
-  const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+  const [items, setItems] = useState(US_STATES);
 
-  const { inputProps, focusIndex } = useAutocomplete({
-    input,
-    onInputChange: setInput,
-    onValueChange: setValue,
-    isOpen,
-    onOpenChange: setOpen,
+  const {
+    inputProps,
+    state: {
+      inputValue: [inputValue, setInputValue],
+      isOpen: [isOpen],
+      focusIndex: [focusIndex]
+    }
+  } = useAutocomplete({
+    onValueChange: (value) => {
+      console.log('value', value);
+      setItems(US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase())));
+    },
+
     items
   });
 
   return (
     <div>
-      <div>Input value: {input}</div>
+      <div>Input value: {inputValue}</div>
       <input type="text" {...inputProps} />
-      <button onClick={() => setInput('')}>Clear</button>
+      <button
+        onClick={() => {
+          setInputValue('');
+          setItems(US_STATES);
+        }}
+      >
+        Clear
+      </button>
       <ul style={{ position: 'absolute', display: isOpen ? 'block' : 'none' }}>
         {items.map((item, index) => (
           <li key={item} style={{ background: focusIndex === index ? '#ccc' : 'none' }}>

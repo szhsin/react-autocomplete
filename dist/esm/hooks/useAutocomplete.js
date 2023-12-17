@@ -1,28 +1,26 @@
 import { useState } from 'react';
 
 const useAutocomplete = ({
-  input,
-  onInputChange,
   onValueChange,
-  isOpen,
-  onOpenChange = () => {},
   items = []
 }) => {
+  const [inputValue, setInputValue] = useState('');
   const [focusIndex, setfocusIndex] = useState(-1);
+  const [isOpen, setOpen] = useState(false);
   const itemLength = items.length;
   const updateInput = itemIndex => {
     setfocusIndex(itemIndex);
-    onInputChange(items[itemIndex]);
+    setInputValue(items[itemIndex]);
   };
   const updateValue = value => {
-    onInputChange(value);
+    setInputValue(value);
     onValueChange == null || onValueChange(value);
   };
   const inputProps = {
-    value: input,
+    value: inputValue,
     onChange: e => updateValue(e.target.value),
-    onClick: () => onOpenChange(!isOpen),
-    onBlur: () => onOpenChange(false),
+    onClick: () => setOpen(!isOpen),
+    onBlur: () => setOpen(false),
     onKeyDown: ({
       key
     }) => {
@@ -33,7 +31,7 @@ const useAutocomplete = ({
             if (++nextIndex >= itemLength) nextIndex = 0;
             updateInput(nextIndex);
           } else {
-            onOpenChange(true);
+            setOpen(true);
           }
           break;
         case 'ArrowUp':
@@ -41,24 +39,28 @@ const useAutocomplete = ({
             if (--nextIndex < 0) nextIndex = itemLength - 1;
             updateInput(nextIndex);
           } else {
-            onOpenChange(true);
+            setOpen(true);
           }
           break;
         case 'Enter':
           if (isOpen) {
-            onOpenChange(false);
+            setOpen(false);
             updateValue(items[focusIndex]);
           }
           break;
         case 'Escape':
-          onOpenChange(false);
+          setOpen(false);
           break;
       }
     }
   };
   return {
     inputProps,
-    focusIndex
+    state: {
+      inputValue: [inputValue, setInputValue],
+      focusIndex: [focusIndex, setfocusIndex],
+      isOpen: [isOpen, setOpen]
+    }
   };
 };
 
