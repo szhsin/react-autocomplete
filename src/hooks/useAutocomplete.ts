@@ -17,7 +17,8 @@ const useAutocomplete = ({
     setfocusIndex(itemIndex);
     setInputValue(items[itemIndex]);
   };
-  const updateValue = (value: string) => {
+  const updateValue = (value?: string) => {
+    if (value == null) return;
     setInputValue(value);
     onValueChange?.(value);
   };
@@ -25,7 +26,11 @@ const useAutocomplete = ({
   const inputProps: InputHTMLAttributes<HTMLInputElement> = {
     value: inputValue,
 
-    onChange: (e) => updateValue(e.target.value),
+    onChange: (e) => {
+      updateValue(e.target.value);
+      setOpen(true);
+      setfocusIndex(-1);
+    },
 
     onClick: () => setOpen(!isOpen),
 

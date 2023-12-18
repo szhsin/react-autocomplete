@@ -87,7 +87,7 @@ export default function Home() {
       >
         Clear
       </button>
-      <ul style={{ position: 'absolute', display: isOpen ? 'block' : 'none' }}>
+      <ul style={{ position: 'absolute', border: '1px solid', display: isOpen ? 'block' : 'none' }}>
         {items.map((item, index) => (
           <li key={item} style={{ background: focusIndex === index ? '#ccc' : 'none' }}>
             {item}
