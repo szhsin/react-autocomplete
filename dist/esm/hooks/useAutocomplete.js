@@ -13,12 +13,17 @@ const useAutocomplete = ({
     setInputValue(items[itemIndex]);
   };
   const updateValue = value => {
+    if (value == null) return;
     setInputValue(value);
     onValueChange == null || onValueChange(value);
   };
   const inputProps = {
     value: inputValue,
-    onChange: e => updateValue(e.target.value),
+    onChange: e => {
+      updateValue(e.target.value);
+      setOpen(true);
+      setfocusIndex(-1);
+    },
     onClick: () => setOpen(!isOpen),
     onBlur: () => setOpen(false),
     onKeyDown: ({
