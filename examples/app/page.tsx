@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAutocomplete } from '@szhsin/react-autocomplete';
+import styles from './page.module.css';
 
 const US_STATES = [
   'Alabama',
@@ -60,7 +61,7 @@ export default function Home() {
   const [items, setItems] = useState(US_STATES);
 
   const {
-    inputProps,
+    getProps,
     state: {
       inputValue: [inputValue, setInputValue],
       isOpen: [isOpen],
@@ -78,7 +79,7 @@ export default function Home() {
   return (
     <div>
       <div>Input value: {inputValue}</div>
-      <input type="text" {...inputProps} />
+      <input {...getProps('input')} />
       <button
         onClick={() => {
           setInputValue('');
@@ -89,7 +90,12 @@ export default function Home() {
       </button>
       <ul style={{ position: 'absolute', border: '1px solid', display: isOpen ? 'block' : 'none' }}>
         {items.map((item, index) => (
-          <li key={item} style={{ background: focusIndex === index ? '#ccc' : 'none' }}>
+          <li
+            className={styles.option}
+            key={item}
+            style={{ background: focusIndex === index ? '#ccc' : 'none' }}
+            {...getProps('option', { index })}
+          >
             {item}
           </li>
         ))}

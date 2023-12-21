@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const useAutocomplete = ({
   onValueChange,
   items = []
 }) => {
+  const inputRef = useRef();
   const [inputValue, setInputValue] = useState('');
   const [focusIndex, setfocusIndex] = useState(-1);
   const [isOpen, setOpen] = useState(false);
+  const [instance] = useState({});
   const itemLength = items.length;
   const updateInput = itemIndex => {
     setfocusIndex(itemIndex);
@@ -17,15 +19,16 @@ const useAutocomplete = ({
     setInputValue(value);
     onValueChange == null || onValueChange(value);
   };
-  const inputProps = {
+  const getInputProps = () => ({
     value: inputValue,
+    ref: inputRef,
     onChange: e => {
       updateValue(e.target.value);
       setOpen(true);
       setfocusIndex(-1);
     },
     onClick: () => setOpen(!isOpen),
-    onBlur: () => setOpen(false),
+    onBlur: () => !instance.a && setOpen(false),
     onKeyDown: ({
       key
     }) => {
@@ -58,9 +61,30 @@ const useAutocomplete = ({
           break;
       }
     }
+  });
+  const getOptionProps = ({
+    index = -1
+  } = {}) => ({
+    onMouseDown: () => instance.a = 1,
+    onClick: () => {
+      var _inputRef$current;
+      console.log('onclick', index);
+      setOpen(false);
+      updateValue(items[index]);
+      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+      instance.a = 0;
+    }
+  });
+  const getProps = (elementType, option) => {
+    switch (elementType) {
+      case 'input':
+        return getInputProps();
+      default:
+        return getOptionProps(option);
+    }
   };
   return {
-    inputProps,
+    getProps,
     state: {
       inputValue: [inputValue, setInputValue],
       focusIndex: [focusIndex, setfocusIndex],
