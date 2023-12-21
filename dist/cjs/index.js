@@ -70,7 +70,6 @@ const useAutocomplete = ({
     onMouseDown: () => instance.a = 1,
     onClick: () => {
       var _inputRef$current;
-      console.log('onclick', index);
       setOpen(false);
       updateValue(items[index]);
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();

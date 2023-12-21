@@ -58,7 +58,8 @@ const US_STATES = [
 ];
 
 export default function Home() {
-  const [items, setItems] = useState(US_STATES);
+  const [value, setValue] = useState('');
+  const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
 
   const {
     getProps,
@@ -68,22 +69,19 @@ export default function Home() {
       focusIndex: [focusIndex]
     }
   } = useAutocomplete({
-    onValueChange: (value) => {
-      console.log('value', value);
-      setItems(US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase())));
-    },
-
+    onValueChange: setValue,
     items
   });
 
   return (
     <div>
       <div>Input value: {inputValue}</div>
+      <div>Current value: {value}</div>
       <input {...getProps('input')} />
       <button
         onClick={() => {
           setInputValue('');
-          setItems(US_STATES);
+          setValue('');
         }}
       >
         Clear
