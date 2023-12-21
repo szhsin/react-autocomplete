@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAutocomplete } from '@szhsin/react-autocomplete';
+import styles from './page.module.css';
 
 const US_STATES = [
   'Alabama',
@@ -57,39 +58,42 @@ const US_STATES = [
 ];
 
 export default function Home() {
-  const [items, setItems] = useState(US_STATES);
+  const [value, setValue] = useState('');
+  const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
 
   const {
-    inputProps,
+    getProps,
     state: {
       inputValue: [inputValue, setInputValue],
       isOpen: [isOpen],
       focusIndex: [focusIndex]
     }
   } = useAutocomplete({
-    onValueChange: (value) => {
-      console.log('value', value);
-      setItems(US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase())));
-    },
-
+    onValueChange: setValue,
     items
   });
 
   return (
     <div>
       <div>Input value: {inputValue}</div>
-      <input type="text" {...inputProps} />
+      <div>Current value: {value}</div>
+      <input {...getProps('input')} />
       <button
         onClick={() => {
           setInputValue('');
-          setItems(US_STATES);
+          setValue('');
         }}
       >
         Clear
       </button>
       <ul style={{ position: 'absolute', border: '1px solid', display: isOpen ? 'block' : 'none' }}>
         {items.map((item, index) => (
-          <li key={item} style={{ background: focusIndex === index ? '#ccc' : 'none' }}>
+          <li
+            className={styles.option}
+            key={item}
+            style={{ background: focusIndex === index ? '#ccc' : 'none' }}
+            {...getProps('option', { index })}
+          >
             {item}
           </li>
         ))}
