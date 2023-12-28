@@ -4,28 +4,36 @@ var react = require('react');
 
 const useAutocomplete = ({
   onChange,
+  onSetInputValue,
   items = []
 }) => {
   const inputRef = react.useRef();
-  const [inputValue, setInputValue] = react.useState('');
+  const [inputValue, setInputValueBase] = react.useState('');
   const [focusIndex, setfocusIndex] = react.useState(-1);
   const [isOpen, setOpen] = react.useState(false);
   const [instance] = react.useState({});
   const itemLength = items.length;
-  const updateInput = itemIndex => {
+  const setInputValue = onSetInputValue || setInputValueBase;
+  const updateInputByNav = itemIndex => {
     setfocusIndex(itemIndex);
-    setInputValue(items[itemIndex]);
+    setInputValue(items[itemIndex], {
+      type: 'nav'
+    });
   };
-  const updateValue = value => {
+  const updateValue = (value, type) => {
     if (value == null) return;
-    setInputValue(value);
-    onChange == null || onChange(value);
+    setInputValue(value, {
+      type
+    });
+    onChange == null || onChange(value, {
+      type
+    });
   };
   const getInputProps = () => ({
     value: inputValue,
     ref: inputRef,
     onChange: e => {
-      updateValue(e.target.value);
+      updateValue(e.target.value, 'type');
       setOpen(true);
       setfocusIndex(-1);
     },
@@ -39,7 +47,7 @@ const useAutocomplete = ({
         case 'ArrowDown':
           if (isOpen) {
             if (++nextIndex >= itemLength) nextIndex = 0;
-            updateInput(nextIndex);
+            updateInputByNav(nextIndex);
           } else {
             setOpen(true);
           }
@@ -47,7 +55,7 @@ const useAutocomplete = ({
         case 'ArrowUp':
           if (isOpen) {
             if (--nextIndex < 0) nextIndex = itemLength - 1;
-            updateInput(nextIndex);
+            updateInputByNav(nextIndex);
           } else {
             setOpen(true);
           }
@@ -55,7 +63,7 @@ const useAutocomplete = ({
         case 'Enter':
           if (isOpen) {
             setOpen(false);
-            updateValue(items[focusIndex]);
+            updateValue(items[focusIndex], 'submit');
           }
           break;
         case 'Escape':
@@ -71,7 +79,7 @@ const useAutocomplete = ({
     onClick: () => {
       var _inputRef$current;
       setOpen(false);
-      updateValue(items[index]);
+      updateValue(items[index], 'submit');
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
       instance.a = 0;
     }

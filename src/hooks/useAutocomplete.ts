@@ -8,15 +8,17 @@ interface GetProps {
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
 
-const useAutocomplete = ({
-  onChange,
-  items = []
-}: {
-  onChange?: (value: string) => void;
+type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav';
+
+interface AutocompleteProps {
+  onChange?: (value: string, meta: { type: ValueEventType }) => void;
+  onSetInputValue?: (value: string, meta: { type: ValueEventType }) => void;
   items?: string[];
-}) => {
+}
+
+const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValueBase] = useState('');
   const [focusIndex, setfocusIndex] = useState(-1);
   const [isOpen, setOpen] = useState(false);
   const [instance] = useState<{
@@ -27,16 +29,19 @@ const useAutocomplete = ({
   }>({});
 
   const itemLength = items.length;
+  const setInputValue = (onSetInputValue || setInputValueBase) as NonNullable<
+    AutocompleteProps['onSetInputValue']
+  >;
 
-  const updateInput = (itemIndex: number) => {
+  const updateInputByNav = (itemIndex: number) => {
     setfocusIndex(itemIndex);
-    setInputValue(items[itemIndex]);
+    setInputValue(items[itemIndex], { type: 'nav' });
   };
 
-  const updateValue = (value?: string) => {
+  const updateValue = (value: string | undefined, type: ValueEventType) => {
     if (value == null) return;
-    setInputValue(value);
-    onChange?.(value);
+    setInputValue(value, { type });
+    onChange?.(value, { type });
   };
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
@@ -45,7 +50,7 @@ const useAutocomplete = ({
     ref: inputRef,
 
     onChange: (e) => {
-      updateValue(e.target.value);
+      updateValue(e.target.value, 'type');
       setOpen(true);
       setfocusIndex(-1);
     },
@@ -60,7 +65,7 @@ const useAutocomplete = ({
         case 'ArrowDown':
           if (isOpen) {
             if (++nextIndex >= itemLength) nextIndex = 0;
-            updateInput(nextIndex);
+            updateInputByNav(nextIndex);
           } else {
             setOpen(true);
           }
@@ -68,7 +73,7 @@ const useAutocomplete = ({
         case 'ArrowUp':
           if (isOpen) {
             if (--nextIndex < 0) nextIndex = itemLength - 1;
-            updateInput(nextIndex);
+            updateInputByNav(nextIndex);
           } else {
             setOpen(true);
           }
@@ -76,7 +81,7 @@ const useAutocomplete = ({
         case 'Enter':
           if (isOpen) {
             setOpen(false);
-            updateValue(items[focusIndex]);
+            updateValue(items[focusIndex], 'submit');
           }
           break;
         case 'Escape':
@@ -90,7 +95,7 @@ const useAutocomplete = ({
     onMouseDown: () => (instance.a = 1),
     onClick: () => {
       setOpen(false);
-      updateValue(items[index]);
+      updateValue(items[index], 'submit');
       inputRef.current?.focus();
       instance.a = 0;
     }
