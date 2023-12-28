@@ -9,10 +9,10 @@ interface GetProps {
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
 
 const useAutocomplete = ({
-  onValueChange,
+  onChange,
   items = []
 }: {
-  onValueChange?: (value: string) => void;
+  onChange?: (value: string) => void;
   items?: string[];
 }) => {
   const inputRef = useRef<HTMLInputElement>();
@@ -36,7 +36,7 @@ const useAutocomplete = ({
   const updateValue = (value?: string) => {
     if (value == null) return;
     setInputValue(value);
-    onValueChange?.(value);
+    onChange?.(value);
   };
 
   const getInputProps: GetPropsFunc<'input'> = () => ({

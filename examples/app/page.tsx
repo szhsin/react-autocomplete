@@ -69,7 +69,7 @@ export default function Home() {
       focusIndex: [focusIndex]
     }
   } = useAutocomplete({
-    onValueChange: setValue,
+    onChange: setValue,
     items
   });
 

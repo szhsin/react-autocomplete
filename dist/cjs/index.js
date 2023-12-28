@@ -3,7 +3,7 @@
 var react = require('react');
 
 const useAutocomplete = ({
-  onValueChange,
+  onChange,
   items = []
 }) => {
   const inputRef = react.useRef();
@@ -19,7 +19,7 @@ const useAutocomplete = ({
   const updateValue = value => {
     if (value == null) return;
     setInputValue(value);
-    onValueChange == null || onValueChange(value);
+    onChange == null || onChange(value);
   };
   const getInputProps = () => ({
     value: inputValue,

@@ -5,8 +5,8 @@ interface GetProps {
         index?: number;
     }, HTMLAttributes<HTMLElement>];
 }
-declare const useAutocomplete: ({ onValueChange, items }: {
-    onValueChange?: ((value: string) => void) | undefined;
+declare const useAutocomplete: ({ onChange, items }: {
+    onChange?: ((value: string) => void) | undefined;
     items?: string[] | undefined;
 }) => {
     getProps: <T extends keyof GetProps>(elementType: T, option?: GetProps[T][0] | undefined) => GetProps[T][1];
