@@ -6,21 +6,22 @@ interface GetProps {
     }, HTMLAttributes<HTMLElement>];
 }
 type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav';
-interface AutocompleteProps {
+export type AutocompleteState = ReturnType<typeof useAutocomplete>['state'];
+export interface AutocompleteProps {
     onChange?: (value: string, meta: {
         type: ValueEventType;
+        state: AutocompleteState;
     }) => void;
     onSetInputValue?: (value: string, meta: {
         type: ValueEventType;
-    }) => void;
+        state: AutocompleteState;
+    }, base: AutocompleteState['inputValue'][1]) => void;
     items?: string[];
 }
 declare const useAutocomplete: ({ onChange, onSetInputValue, items }: AutocompleteProps) => {
     getProps: <T extends keyof GetProps>(elementType: T, option?: GetProps[T][0] | undefined) => GetProps[T][1];
     state: {
-        readonly inputValue: readonly [string, (value: string, meta: {
-            type: ValueEventType;
-        }) => void];
+        readonly inputValue: readonly [string, import("react").Dispatch<import("react").SetStateAction<string>>];
         readonly focusIndex: readonly [number, import("react").Dispatch<import("react").SetStateAction<number>>];
         readonly isOpen: readonly [boolean, import("react").Dispatch<import("react").SetStateAction<boolean>>];
     };

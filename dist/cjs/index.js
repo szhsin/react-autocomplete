@@ -12,21 +12,29 @@ const useAutocomplete = ({
   const [focusIndex, setfocusIndex] = react.useState(-1);
   const [isOpen, setOpen] = react.useState(false);
   const [instance] = react.useState({});
+  const state = {
+    inputValue: [inputValue, setInputValueBase],
+    focusIndex: [focusIndex, setfocusIndex],
+    isOpen: [isOpen, setOpen]
+  };
   const itemLength = items.length;
   const setInputValue = onSetInputValue || setInputValueBase;
   const updateInputByNav = itemIndex => {
     setfocusIndex(itemIndex);
     setInputValue(items[itemIndex], {
-      type: 'nav'
-    });
+      type: 'nav',
+      state
+    }, setInputValueBase);
   };
   const updateValue = (value, type) => {
     if (value == null) return;
     setInputValue(value, {
-      type
-    });
+      type,
+      state
+    }, setInputValueBase);
     onChange == null || onChange(value, {
-      type
+      type,
+      state
     });
   };
   const getInputProps = () => ({
@@ -94,11 +102,7 @@ const useAutocomplete = ({
   };
   return {
     getProps,
-    state: {
-      inputValue: [inputValue, setInputValue],
-      focusIndex: [focusIndex, setfocusIndex],
-      isOpen: [isOpen, setOpen]
-    }
+    state
   };
 };
 

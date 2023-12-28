@@ -7,12 +7,16 @@ interface GetProps {
 }
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
-
 type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav';
+export type AutocompleteState = ReturnType<typeof useAutocomplete>['state'];
 
-interface AutocompleteProps {
-  onChange?: (value: string, meta: { type: ValueEventType }) => void;
-  onSetInputValue?: (value: string, meta: { type: ValueEventType }) => void;
+export interface AutocompleteProps {
+  onChange?: (value: string, meta: { type: ValueEventType; state: AutocompleteState }) => void;
+  onSetInputValue?: (
+    value: string,
+    meta: { type: ValueEventType; state: AutocompleteState },
+    base: AutocompleteState['inputValue'][1]
+  ) => void;
   items?: string[];
 }
 
@@ -28,6 +32,12 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
     a?: number;
   }>({});
 
+  const state = {
+    inputValue: [inputValue, setInputValueBase],
+    focusIndex: [focusIndex, setfocusIndex],
+    isOpen: [isOpen, setOpen]
+  } as const;
+
   const itemLength = items.length;
   const setInputValue = (onSetInputValue || setInputValueBase) as NonNullable<
     AutocompleteProps['onSetInputValue']
@@ -35,13 +45,13 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
 
   const updateInputByNav = (itemIndex: number) => {
     setfocusIndex(itemIndex);
-    setInputValue(items[itemIndex], { type: 'nav' });
+    setInputValue(items[itemIndex], { type: 'nav', state }, setInputValueBase);
   };
 
   const updateValue = (value: string | undefined, type: ValueEventType) => {
     if (value == null) return;
-    setInputValue(value, { type });
-    onChange?.(value, { type });
+    setInputValue(value, { type, state }, setInputValueBase);
+    onChange?.(value, { type, state });
   };
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
@@ -115,11 +125,7 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
 
   return {
     getProps,
-    state: {
-      inputValue: [inputValue, setInputValue],
-      focusIndex: [focusIndex, setfocusIndex],
-      isOpen: [isOpen, setOpen]
-    } as const
+    state
   };
 };
 
