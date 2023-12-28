@@ -77,6 +77,7 @@ export default function Home() {
     <div>
       <div>Input value: {inputValue}</div>
       <div>Current value: {value}</div>
+      <div>Index: {focusIndex}</div>
       <input {...getProps('input')} />
       <button
         onClick={() => {

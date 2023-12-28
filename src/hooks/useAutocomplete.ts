@@ -43,7 +43,7 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
     AutocompleteProps['onSetInputValue']
   >;
 
-  const updateInputByNav = (itemIndex: number) => {
+  const traverseItems = (itemIndex: number) => {
     setfocusIndex(itemIndex);
     setInputValue(items[itemIndex], { type: 'nav', state }, setInputValueBase);
   };
@@ -52,6 +52,14 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
     if (value == null) return;
     setInputValue(value, { type, state }, setInputValueBase);
     onChange?.(value, { type, state });
+  };
+
+  const updateAndCloseList = (value: string | undefined, type: ValueEventType) => {
+    if (isOpen) {
+      updateValue(value, type);
+      setOpen(false);
+      setfocusIndex(-1);
+    }
   };
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
@@ -67,7 +75,11 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
 
     onClick: () => setOpen(!isOpen),
 
-    onBlur: () => !instance.a && setOpen(false),
+    onBlur: () => {
+      if (!instance.a) {
+        updateAndCloseList(items[focusIndex], 'blur');
+      }
+    },
 
     onKeyDown: ({ key }) => {
       let nextIndex = focusIndex;
@@ -75,7 +87,7 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
         case 'ArrowDown':
           if (isOpen) {
             if (++nextIndex >= itemLength) nextIndex = 0;
-            updateInputByNav(nextIndex);
+            traverseItems(nextIndex);
           } else {
             setOpen(true);
           }
@@ -83,19 +95,16 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
         case 'ArrowUp':
           if (isOpen) {
             if (--nextIndex < 0) nextIndex = itemLength - 1;
-            updateInputByNav(nextIndex);
+            traverseItems(nextIndex);
           } else {
             setOpen(true);
           }
           break;
         case 'Enter':
-          if (isOpen) {
-            setOpen(false);
-            updateValue(items[focusIndex], 'submit');
-          }
+          updateAndCloseList(items[focusIndex], 'submit');
           break;
         case 'Escape':
-          setOpen(false);
+          updateAndCloseList(items[focusIndex], 'esc');
           break;
       }
     }
@@ -104,8 +113,7 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
   const getOptionProps: GetPropsFunc<'option'> = ({ index = -1 } = {}) => ({
     onMouseDown: () => (instance.a = 1),
     onClick: () => {
-      setOpen(false);
-      updateValue(items[index], 'submit');
+      updateAndCloseList(items[index], 'submit');
       inputRef.current?.focus();
       instance.a = 0;
     }

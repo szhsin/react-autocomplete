@@ -17,7 +17,7 @@ const useAutocomplete = ({
   };
   const itemLength = items.length;
   const setInputValue = onSetInputValue || setInputValueBase;
-  const updateInputByNav = itemIndex => {
+  const traverseItems = itemIndex => {
     setfocusIndex(itemIndex);
     setInputValue(items[itemIndex], {
       type: 'nav',
@@ -35,6 +35,13 @@ const useAutocomplete = ({
       state
     });
   };
+  const updateAndCloseList = (value, type) => {
+    if (isOpen) {
+      updateValue(value, type);
+      setOpen(false);
+      setfocusIndex(-1);
+    }
+  };
   const getInputProps = () => ({
     value: inputValue,
     ref: inputRef,
@@ -44,7 +51,11 @@ const useAutocomplete = ({
       setfocusIndex(-1);
     },
     onClick: () => setOpen(!isOpen),
-    onBlur: () => !instance.a && setOpen(false),
+    onBlur: () => {
+      if (!instance.a) {
+        updateAndCloseList(items[focusIndex], 'blur');
+      }
+    },
     onKeyDown: ({
       key
     }) => {
@@ -53,7 +64,7 @@ const useAutocomplete = ({
         case 'ArrowDown':
           if (isOpen) {
             if (++nextIndex >= itemLength) nextIndex = 0;
-            updateInputByNav(nextIndex);
+            traverseItems(nextIndex);
           } else {
             setOpen(true);
           }
@@ -61,19 +72,16 @@ const useAutocomplete = ({
         case 'ArrowUp':
           if (isOpen) {
             if (--nextIndex < 0) nextIndex = itemLength - 1;
-            updateInputByNav(nextIndex);
+            traverseItems(nextIndex);
           } else {
             setOpen(true);
           }
           break;
         case 'Enter':
-          if (isOpen) {
-            setOpen(false);
-            updateValue(items[focusIndex], 'submit');
-          }
+          updateAndCloseList(items[focusIndex], 'submit');
           break;
         case 'Escape':
-          setOpen(false);
+          updateAndCloseList(items[focusIndex], 'esc');
           break;
       }
     }
@@ -84,8 +92,7 @@ const useAutocomplete = ({
     onMouseDown: () => instance.a = 1,
     onClick: () => {
       var _inputRef$current;
-      setOpen(false);
-      updateValue(items[index], 'submit');
+      updateAndCloseList(items[index], 'submit');
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
       instance.a = 0;
     }
