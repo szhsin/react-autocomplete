@@ -5,20 +5,25 @@ var react = require('react');
 const useAutocomplete = ({
   onChange,
   onSetInputValue,
+  onSetOpen,
   items = []
 }) => {
   const inputRef = react.useRef();
   const [inputValue, setInputValueBase] = react.useState('');
+  const [isOpen, setOpenBase] = react.useState(false);
   const [focusIndex, setfocusIndex] = react.useState(-1);
-  const [isOpen, setOpen] = react.useState(false);
   const [instance] = react.useState({});
   const state = {
     inputValue: [inputValue, setInputValueBase],
     focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpen]
+    isOpen: [isOpen, setOpenBase]
   };
   const itemLength = items.length;
   const setInputValue = onSetInputValue || setInputValueBase;
+  const setOpen = (value, type) => onSetOpen ? onSetOpen(value, {
+    type,
+    state
+  }, setOpenBase) : setOpenBase(value);
   const traverseItems = itemIndex => {
     setfocusIndex(itemIndex);
     setInputValue(items[itemIndex], {
@@ -27,20 +32,21 @@ const useAutocomplete = ({
     }, setInputValueBase);
   };
   const updateValue = (value, type) => {
-    if (value == null) return;
-    setInputValue(value, {
-      type,
-      state
-    }, setInputValueBase);
-    onChange == null || onChange(value, {
-      type,
-      state
-    });
+    if (value != null) {
+      setInputValue(value, {
+        type,
+        state
+      }, setInputValueBase);
+      onChange == null || onChange(value, {
+        type,
+        state
+      });
+    }
   };
   const updateAndCloseList = (value, type) => {
     if (isOpen) {
       updateValue(value, type);
-      setOpen(false);
+      setOpen(false, type);
       setfocusIndex(-1);
     }
   };
@@ -49,13 +55,13 @@ const useAutocomplete = ({
     ref: inputRef,
     onChange: e => {
       updateValue(e.target.value, 'type');
-      setOpen(true);
+      setOpen(true, 'type');
       setfocusIndex(-1);
     },
-    onClick: () => setOpen(!isOpen),
+    onClick: () => setOpen(true, 'focus'),
     onBlur: () => {
       if (!instance.a) {
-        updateAndCloseList(items[focusIndex], 'blur');
+        updateAndCloseList(inputValue, 'blur');
       }
     },
     onKeyDown: ({
@@ -68,7 +74,7 @@ const useAutocomplete = ({
             if (++nextIndex >= itemLength) nextIndex = 0;
             traverseItems(nextIndex);
           } else {
-            setOpen(true);
+            setOpen(true, 'nav');
           }
           break;
         case 'ArrowUp':
@@ -76,14 +82,14 @@ const useAutocomplete = ({
             if (--nextIndex < 0) nextIndex = itemLength - 1;
             traverseItems(nextIndex);
           } else {
-            setOpen(true);
+            setOpen(true, 'nav');
           }
           break;
         case 'Enter':
           updateAndCloseList(items[focusIndex], 'submit');
           break;
         case 'Escape':
-          updateAndCloseList(items[focusIndex], 'esc');
+          updateAndCloseList(inputValue, 'esc');
           break;
       }
     }

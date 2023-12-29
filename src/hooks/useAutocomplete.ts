@@ -7,7 +7,7 @@ interface GetProps {
 }
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
-type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav';
+type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav' | 'focus';
 export type AutocompleteState = ReturnType<typeof useAutocomplete>['state'];
 
 export interface AutocompleteProps {
@@ -17,14 +17,24 @@ export interface AutocompleteProps {
     meta: { type: ValueEventType; state: AutocompleteState },
     base: AutocompleteState['inputValue'][1]
   ) => void;
+  onSetOpen?: (
+    value: boolean,
+    meta: { type: ValueEventType; state: AutocompleteState },
+    base: AutocompleteState['isOpen'][1]
+  ) => void;
   items?: string[];
 }
 
-const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: AutocompleteProps) => {
+const useAutocomplete = ({
+  onChange,
+  onSetInputValue,
+  onSetOpen,
+  items = []
+}: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>();
   const [inputValue, setInputValueBase] = useState('');
+  const [isOpen, setOpenBase] = useState(false);
   const [focusIndex, setfocusIndex] = useState(-1);
-  const [isOpen, setOpen] = useState(false);
   const [instance] = useState<{
     /**
      * Whether to bypass onblur event on input
@@ -35,13 +45,15 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
   const state = {
     inputValue: [inputValue, setInputValueBase],
     focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpen]
+    isOpen: [isOpen, setOpenBase]
   } as const;
 
   const itemLength = items.length;
   const setInputValue = (onSetInputValue || setInputValueBase) as NonNullable<
     AutocompleteProps['onSetInputValue']
   >;
+  const setOpen = (value: boolean, type: ValueEventType) =>
+    onSetOpen ? onSetOpen(value, { type, state }, setOpenBase) : setOpenBase(value);
 
   const traverseItems = (itemIndex: number) => {
     setfocusIndex(itemIndex);
@@ -49,15 +61,16 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
   };
 
   const updateValue = (value: string | undefined, type: ValueEventType) => {
-    if (value == null) return;
-    setInputValue(value, { type, state }, setInputValueBase);
-    onChange?.(value, { type, state });
+    if (value != null) {
+      setInputValue(value, { type, state }, setInputValueBase);
+      onChange?.(value, { type, state });
+    }
   };
 
   const updateAndCloseList = (value: string | undefined, type: ValueEventType) => {
     if (isOpen) {
       updateValue(value, type);
-      setOpen(false);
+      setOpen(false, type);
       setfocusIndex(-1);
     }
   };
@@ -69,15 +82,15 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
 
     onChange: (e) => {
       updateValue(e.target.value, 'type');
-      setOpen(true);
+      setOpen(true, 'type');
       setfocusIndex(-1);
     },
 
-    onClick: () => setOpen(!isOpen),
+    onClick: () => setOpen(true, 'focus'),
 
     onBlur: () => {
       if (!instance.a) {
-        updateAndCloseList(items[focusIndex], 'blur');
+        updateAndCloseList(inputValue, 'blur');
       }
     },
 
@@ -89,7 +102,7 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
             if (++nextIndex >= itemLength) nextIndex = 0;
             traverseItems(nextIndex);
           } else {
-            setOpen(true);
+            setOpen(true, 'nav');
           }
           break;
         case 'ArrowUp':
@@ -97,14 +110,14 @@ const useAutocomplete = ({ onChange, onSetInputValue, items = [] }: Autocomplete
             if (--nextIndex < 0) nextIndex = itemLength - 1;
             traverseItems(nextIndex);
           } else {
-            setOpen(true);
+            setOpen(true, 'nav');
           }
           break;
         case 'Enter':
           updateAndCloseList(items[focusIndex], 'submit');
           break;
         case 'Escape':
-          updateAndCloseList(items[focusIndex], 'esc');
+          updateAndCloseList(inputValue, 'esc');
           break;
       }
     }
