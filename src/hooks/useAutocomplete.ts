@@ -7,18 +7,34 @@ interface GetProps {
 }
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
+type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav' | 'focus';
+export type AutocompleteState = ReturnType<typeof useAutocomplete>['state'];
+
+export interface AutocompleteProps {
+  onChange?: (value: string, meta: { type: ValueEventType; state: AutocompleteState }) => void;
+  onSetInputValue?: (
+    value: string,
+    meta: { type: ValueEventType; state: AutocompleteState },
+    base: AutocompleteState['inputValue'][1]
+  ) => void;
+  onSetOpen?: (
+    value: boolean,
+    meta: { type: ValueEventType; state: AutocompleteState },
+    base: AutocompleteState['isOpen'][1]
+  ) => void;
+  items?: string[];
+}
 
 const useAutocomplete = ({
-  onValueChange,
+  onChange,
+  onSetInputValue,
+  onSetOpen,
   items = []
-}: {
-  onValueChange?: (value: string) => void;
-  items?: string[];
-}) => {
+}: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValueBase] = useState('');
+  const [isOpen, setOpenBase] = useState(false);
   const [focusIndex, setfocusIndex] = useState(-1);
-  const [isOpen, setOpen] = useState(false);
   const [instance] = useState<{
     /**
      * Whether to bypass onblur event on input
@@ -26,17 +42,37 @@ const useAutocomplete = ({
     a?: number;
   }>({});
 
-  const itemLength = items.length;
+  const state = {
+    inputValue: [inputValue, setInputValueBase],
+    focusIndex: [focusIndex, setfocusIndex],
+    isOpen: [isOpen, setOpenBase]
+  } as const;
 
-  const updateInput = (itemIndex: number) => {
+  const itemLength = items.length;
+  const setInputValue = (onSetInputValue || setInputValueBase) as NonNullable<
+    AutocompleteProps['onSetInputValue']
+  >;
+  const setOpen = (value: boolean, type: ValueEventType) =>
+    onSetOpen ? onSetOpen(value, { type, state }, setOpenBase) : setOpenBase(value);
+
+  const traverseItems = (itemIndex: number) => {
     setfocusIndex(itemIndex);
-    setInputValue(items[itemIndex]);
+    setInputValue(items[itemIndex], { type: 'nav', state }, setInputValueBase);
   };
 
-  const updateValue = (value?: string) => {
-    if (value == null) return;
-    setInputValue(value);
-    onValueChange?.(value);
+  const updateValue = (value: string | undefined, type: ValueEventType) => {
+    if (value != null) {
+      setInputValue(value, { type, state }, setInputValueBase);
+      onChange?.(value, { type, state });
+    }
+  };
+
+  const updateAndCloseList = (value: string | undefined, type: ValueEventType) => {
+    if (isOpen) {
+      updateValue(value, type);
+      setOpen(false, type);
+      setfocusIndex(-1);
+    }
   };
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
@@ -45,14 +81,18 @@ const useAutocomplete = ({
     ref: inputRef,
 
     onChange: (e) => {
-      updateValue(e.target.value);
-      setOpen(true);
+      updateValue(e.target.value, 'type');
+      setOpen(true, 'type');
       setfocusIndex(-1);
     },
 
-    onClick: () => setOpen(!isOpen),
+    onClick: () => setOpen(true, 'focus'),
 
-    onBlur: () => !instance.a && setOpen(false),
+    onBlur: () => {
+      if (!instance.a) {
+        updateAndCloseList(inputValue, 'blur');
+      }
+    },
 
     onKeyDown: ({ key }) => {
       let nextIndex = focusIndex;
@@ -60,27 +100,24 @@ const useAutocomplete = ({
         case 'ArrowDown':
           if (isOpen) {
             if (++nextIndex >= itemLength) nextIndex = 0;
-            updateInput(nextIndex);
+            traverseItems(nextIndex);
           } else {
-            setOpen(true);
+            setOpen(true, 'nav');
           }
           break;
         case 'ArrowUp':
           if (isOpen) {
             if (--nextIndex < 0) nextIndex = itemLength - 1;
-            updateInput(nextIndex);
+            traverseItems(nextIndex);
           } else {
-            setOpen(true);
+            setOpen(true, 'nav');
           }
           break;
         case 'Enter':
-          if (isOpen) {
-            setOpen(false);
-            updateValue(items[focusIndex]);
-          }
+          updateAndCloseList(items[focusIndex], 'submit');
           break;
         case 'Escape':
-          setOpen(false);
+          updateAndCloseList(inputValue, 'esc');
           break;
       }
     }
@@ -89,8 +126,7 @@ const useAutocomplete = ({
   const getOptionProps: GetPropsFunc<'option'> = ({ index = -1 } = {}) => ({
     onMouseDown: () => (instance.a = 1),
     onClick: () => {
-      setOpen(false);
-      updateValue(items[index]);
+      updateAndCloseList(items[index], 'submit');
       inputRef.current?.focus();
       instance.a = 0;
     }
@@ -110,11 +146,7 @@ const useAutocomplete = ({
 
   return {
     getProps,
-    state: {
-      inputValue: [inputValue, setInputValue],
-      focusIndex: [focusIndex, setfocusIndex],
-      isOpen: [isOpen, setOpen]
-    } as const
+    state
   };
 };
 
