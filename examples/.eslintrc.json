@@ -1,3 +1,8 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "plugins": ["react-hooks-addons"],
+  "extends": ["next/core-web-vitals", "prettier"],
+  "rules": {
+    "react-hooks-addons/no-unused-deps": "warn"
+  }
 }

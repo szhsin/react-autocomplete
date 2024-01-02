@@ -49,9 +49,7 @@ const useAutocomplete = ({
   } as const;
 
   const itemLength = items.length;
-  const setInputValue = (onSetInputValue || setInputValueBase) as NonNullable<
-    AutocompleteProps['onSetInputValue']
-  >;
+  const setInputValue = onSetInputValue || setInputValueBase;
   const setOpen = (value: boolean, type: ValueEventType) =>
     onSetOpen ? onSetOpen(value, { type, state }, setOpenBase) : setOpenBase(value);
 

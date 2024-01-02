@@ -1,8 +1,6 @@
-'use client';
-
 import { useState } from 'react';
 import { useAutocomplete, AutocompleteProps } from '@szhsin/react-autocomplete';
-import styles from './page.module.css';
+import styles from '@/styles/Home.module.css';
 
 const US_STATES = [
   'Alabama',
@@ -113,10 +111,10 @@ export default function Home() {
       focusIndex: [focusIndex]
     }
   } = useAutocomplete({
-    // items,
-    // onChange: setValue,
+    items,
+    onChange: setValue
     // onSetInputValue: (value, { type }, base) => type !== 'nav' && base(value),
-    ...predefinedListProps({ value, onChange: setValue, items })
+    // ...predefinedListProps({ value, onChange: setValue, items })
     // ...undoOnCancelProps({ value, onChange: setValue, items })
   });
 
