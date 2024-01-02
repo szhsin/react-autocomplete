@@ -9,15 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "^20.8.10",
-    "@types/react": "^18.2.34",
-    "@types/react-dom": "^18.2.14",
-    "eslint": "file:../node_modules/eslint",
-    "eslint-config-next": "^14.0.1",
-    "next": "^14.0.1",
     "@szhsin/react-autocomplete": "file:..",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
-    "typescript": "file:../node_modules/typescript"
+    "next": "14.0.4"
+  },
+  "devDependencies": {
+    "typescript": "file:../node_modules/typescript",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "file:../node_modules/eslint",
+    "eslint-config-next": "14.0.4"
   }
 }
