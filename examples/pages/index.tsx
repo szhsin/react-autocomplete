@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAutocomplete, AutocompleteProps } from '@szhsin/react-autocomplete';
+import { useAutocomplete, autocomplete } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 
 const US_STATES = [
@@ -55,50 +55,6 @@ const US_STATES = [
   'Wyoming'
 ];
 
-const predefinedListProps: (props: {
-  value: string;
-  onChange: (value: string) => void;
-  items: string[];
-}) => AutocompleteProps = ({ onChange, items }) => ({
-  items,
-  onSetInputValue: (newValue, { type }, base) => {
-    if (type === 'blur' || type === 'esc') {
-      const matchValue = items.find((item) => item === newValue) || '';
-      base(matchValue);
-    } else {
-      base(newValue);
-    }
-  },
-  onChange: (newValue, { type }) => {
-    if (type === 'blur' || type === 'esc') {
-      const matchValue = items.find((item) => item === newValue) || '';
-      onChange(matchValue);
-    } else {
-      onChange(newValue);
-    }
-  }
-});
-
-const undoOnCancelProps: (props: {
-  value: string;
-  onChange: (value: string) => void;
-  items: string[];
-}) => AutocompleteProps = ({ items, value, onChange }) => ({
-  items,
-  onChange: (newValue, { type }) => {
-    if (type !== 'esc') {
-      onChange(newValue);
-    }
-  },
-  onSetInputValue: (inputValue, { type }, base) => {
-    if (type === 'esc') {
-      base(value);
-    } else {
-      base(inputValue);
-    }
-  }
-});
-
 export default function Home() {
   const [value, setValue] = useState('');
   const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
@@ -112,10 +68,8 @@ export default function Home() {
     }
   } = useAutocomplete({
     items,
-    onChange: setValue
-    // onSetInputValue: (value, { type }, base) => type !== 'nav' && base(value),
-    // ...predefinedListProps({ value, onChange: setValue, items })
-    // ...undoOnCancelProps({ value, onChange: setValue, items })
+    onChange: setValue,
+    feature: autocomplete()
   });
 
   return (
@@ -143,7 +97,7 @@ export default function Home() {
             className={styles.option}
             key={item}
             style={{ background: focusIndex === index ? '#ccc' : 'none' }}
-            {...getProps('option', { index })}
+            {...getProps('item', { index })}
           >
             {item}
           </li>

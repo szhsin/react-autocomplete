@@ -1,35 +1,18 @@
 import type { InputHTMLAttributes, HTMLAttributes } from 'react';
 import { useState, useRef } from 'react';
+import { AutocompleteProps, AutocompleteState } from '../common';
 
 interface GetProps {
   input: [never, InputHTMLAttributes<HTMLInputElement>];
-  option: [{ index?: number }, HTMLAttributes<HTMLElement>];
+  item: [{ index?: number }, HTMLAttributes<HTMLElement>];
 }
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
-type ValueEventType = 'type' | 'submit' | 'esc' | 'blur' | 'nav' | 'focus';
-export type AutocompleteState = ReturnType<typeof useAutocomplete>['state'];
-
-export interface AutocompleteProps {
-  onChange?: (value: string, meta: { type: ValueEventType; state: AutocompleteState }) => void;
-  onSetInputValue?: (
-    value: string,
-    meta: { type: ValueEventType; state: AutocompleteState },
-    base: AutocompleteState['inputValue'][1]
-  ) => void;
-  onSetOpen?: (
-    value: boolean,
-    meta: { type: ValueEventType; state: AutocompleteState },
-    base: AutocompleteState['isOpen'][1]
-  ) => void;
-  items?: string[];
-}
 
 const useAutocomplete = ({
-  onChange,
-  onSetInputValue,
-  onSetOpen,
-  items = []
+  feature: { onInputChange, onInputClick, onBlur, onKeyDown, onItemClick } = {},
+  items = [],
+  onChange = () => {}
 }: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>();
   const [inputValue, setInputValueBase] = useState('');
@@ -42,89 +25,32 @@ const useAutocomplete = ({
     a?: number;
   }>({});
 
-  const state = {
+  const state: AutocompleteState = {
     inputValue: [inputValue, setInputValueBase],
     focusIndex: [focusIndex, setfocusIndex],
     isOpen: [isOpen, setOpenBase]
-  } as const;
-
-  const itemLength = items.length;
-  const setInputValue = onSetInputValue || setInputValueBase;
-  const setOpen = (value: boolean, type: ValueEventType) =>
-    onSetOpen ? onSetOpen(value, { type, state }, setOpenBase) : setOpenBase(value);
-
-  const traverseItems = (itemIndex: number) => {
-    setfocusIndex(itemIndex);
-    setInputValue(items[itemIndex], { type: 'nav', state }, setInputValueBase);
   };
 
-  const updateValue = (value: string | undefined, type: ValueEventType) => {
-    if (value != null) {
-      setInputValue(value, { type, state }, setInputValueBase);
-      onChange?.(value, { type, state });
-    }
-  };
-
-  const updateAndCloseList = (value: string | undefined, type: ValueEventType) => {
-    if (isOpen) {
-      updateValue(value, type);
-      setOpen(false, type);
-      setfocusIndex(-1);
-    }
-  };
+  const featureEvent = { state, props: { items, onChange } };
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
     value: inputValue,
 
     ref: inputRef,
 
-    onChange: (e) => {
-      updateValue(e.target.value, 'type');
-      setOpen(true, 'type');
-      setfocusIndex(-1);
-    },
+    onChange: (e) => onInputChange?.({ value: e.target.value, ...featureEvent }),
 
-    onClick: () => setOpen(true, 'focus'),
+    onClick: () => onInputClick?.(featureEvent),
 
-    onBlur: () => {
-      if (!instance.a) {
-        updateAndCloseList(inputValue, 'blur');
-      }
-    },
+    onBlur: () => !instance.a && onBlur?.(featureEvent),
 
-    onKeyDown: ({ key }) => {
-      let nextIndex = focusIndex;
-      switch (key) {
-        case 'ArrowDown':
-          if (isOpen) {
-            if (++nextIndex >= itemLength) nextIndex = 0;
-            traverseItems(nextIndex);
-          } else {
-            setOpen(true, 'nav');
-          }
-          break;
-        case 'ArrowUp':
-          if (isOpen) {
-            if (--nextIndex < 0) nextIndex = itemLength - 1;
-            traverseItems(nextIndex);
-          } else {
-            setOpen(true, 'nav');
-          }
-          break;
-        case 'Enter':
-          updateAndCloseList(items[focusIndex], 'submit');
-          break;
-        case 'Escape':
-          updateAndCloseList(inputValue, 'esc');
-          break;
-      }
-    }
+    onKeyDown: ({ key }) => onKeyDown?.({ key, ...featureEvent })
   });
 
-  const getOptionProps: GetPropsFunc<'option'> = ({ index = -1 } = {}) => ({
+  const getItemProps: GetPropsFunc<'item'> = ({ index = -1 } = {}) => ({
     onMouseDown: () => (instance.a = 1),
     onClick: () => {
-      updateAndCloseList(items[index], 'submit');
+      onItemClick?.({ index, ...featureEvent });
       inputRef.current?.focus();
       instance.a = 0;
     }
@@ -138,7 +64,7 @@ const useAutocomplete = ({
       case 'input':
         return getInputProps();
       default:
-        return getOptionProps(option);
+        return getItemProps(option);
     }
   };
 
