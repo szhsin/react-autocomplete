@@ -1,2 +1,3 @@
 export { useAutocomplete } from './hooks/useAutocomplete';
-export type { AutocompleteProps, AutocompleteState } from './hooks/useAutocomplete';
+export { autocomplete } from './features/autocomplete';
+export type { AutocompleteProps, AutocompleteState } from './common';
