@@ -12,7 +12,7 @@ export interface FeatureEvent {
     state: AutocompleteState;
     props: FeatureProps;
 }
-type FeatureEventHandler<T = {}> = (event: T & FeatureEvent) => void;
+type FeatureEventHandler<T = object> = (event: T & FeatureEvent) => void;
 export interface Feature {
     onInputChange?: FeatureEventHandler<{
         value: string;
