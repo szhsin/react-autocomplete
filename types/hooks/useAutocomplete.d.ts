@@ -6,7 +6,7 @@ interface GetProps {
         index?: number;
     }, HTMLAttributes<HTMLElement>];
 }
-declare const useAutocomplete: ({ feature: { onInputChange, onInputClick, onBlur, onKeyDown, onItemClick }, items, onChange }: AutocompleteProps) => {
+declare const useAutocomplete: ({ feature, items, onChange }: AutocompleteProps) => {
     getProps: <T extends keyof GetProps>(elementType: T, option?: GetProps[T][0] | undefined) => GetProps[T][1];
     state: AutocompleteState;
 };

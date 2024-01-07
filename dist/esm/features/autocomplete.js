@@ -1,14 +1,15 @@
-const autocomplete = () => {
-  const updateAndCloseList = ({
-    props: {
-      onChange
-    },
-    state: {
-      inputValue: [, setInputValue],
-      focusIndex: [, setfocusIndex],
-      isOpen: [isOpen, setOpen]
-    }
-  }, value) => {
+const autocomplete = () => ({
+  props: {
+    items,
+    onChange
+  },
+  state: {
+    inputValue: [inputValue, setInputValue],
+    focusIndex: [focusIndex, setfocusIndex],
+    isOpen: [isOpen, setOpen]
+  }
+}) => {
+  const updateAndCloseList = value => {
     if (isOpen) {
       if (value != null) {
         setInputValue(value);
@@ -20,45 +21,21 @@ const autocomplete = () => {
   };
   return {
     onItemClick: ({
-      index,
-      ...event
-    }) => updateAndCloseList(event, event.props.items[index]),
+      index
+    }) => updateAndCloseList(items[index]),
     onInputChange: ({
-      value,
-      props: {
-        onChange
-      },
-      state: {
-        inputValue: [, setInputValue],
-        focusIndex: [, setfocusIndex],
-        isOpen: [, setOpen]
-      }
+      value
     }) => {
       setInputValue(value);
       setfocusIndex(-1);
       setOpen(true);
       onChange(value);
     },
-    onInputClick: ({
-      state: {
-        isOpen: [, setOpen]
-      }
-    }) => setOpen(true),
-    onBlur: event => updateAndCloseList(event, event.state.inputValue[0]),
+    onInputClick: () => setOpen(true),
+    onBlur: () => updateAndCloseList(inputValue),
     onKeyDown: ({
-      key,
-      ...event
+      key
     }) => {
-      const {
-        props: {
-          items
-        },
-        state: {
-          focusIndex: [focusIndex, setfocusIndex],
-          inputValue: [inputValue, setInputValue],
-          isOpen: [isOpen, setOpen]
-        }
-      } = event;
       const traverseItems = itemIndex => {
         setfocusIndex(itemIndex);
         setInputValue(items[itemIndex]);
@@ -83,10 +60,10 @@ const autocomplete = () => {
           }
           break;
         case 'Enter':
-          updateAndCloseList(event, items[focusIndex]);
+          updateAndCloseList(items[focusIndex]);
           break;
         case 'Escape':
-          updateAndCloseList(event, inputValue);
+          updateAndCloseList(inputValue);
           break;
       }
     }

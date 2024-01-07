@@ -1,13 +1,7 @@
 import { useRef, useState } from 'react';
 
 const useAutocomplete = ({
-  feature: {
-    onInputChange,
-    onInputClick,
-    onBlur,
-    onKeyDown,
-    onItemClick
-  } = {},
+  feature,
   items = [],
   onChange = () => {}
 }) => {
@@ -21,27 +15,31 @@ const useAutocomplete = ({
     focusIndex: [focusIndex, setfocusIndex],
     isOpen: [isOpen, setOpenBase]
   };
-  const featureEvent = {
+  const {
+    onInputChange,
+    onInputClick,
+    onBlur,
+    onKeyDown,
+    onItemClick
+  } = (feature == null ? void 0 : feature({
     state,
     props: {
       items,
       onChange
     }
-  };
+  })) || {};
   const getInputProps = () => ({
     value: inputValue,
     ref: inputRef,
     onChange: e => onInputChange == null ? void 0 : onInputChange({
-      value: e.target.value,
-      ...featureEvent
+      value: e.target.value
     }),
-    onClick: () => onInputClick == null ? void 0 : onInputClick(featureEvent),
-    onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur(featureEvent)),
+    onClick: () => onInputClick == null ? void 0 : onInputClick(),
+    onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur()),
     onKeyDown: ({
       key
     }) => onKeyDown == null ? void 0 : onKeyDown({
-      key,
-      ...featureEvent
+      key
     })
   });
   const getItemProps = ({
@@ -51,8 +49,7 @@ const useAutocomplete = ({
     onClick: () => {
       var _inputRef$current;
       onItemClick == null || onItemClick({
-        index,
-        ...featureEvent
+        index
       });
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
       instance.a = 0;

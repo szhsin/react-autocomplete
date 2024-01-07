@@ -9,11 +9,7 @@ interface GetProps {
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
 
-const useAutocomplete = ({
-  feature: { onInputChange, onInputClick, onBlur, onKeyDown, onItemClick } = {},
-  items = [],
-  onChange = () => {}
-}: AutocompleteProps) => {
+const useAutocomplete = ({ feature, items = [], onChange = () => {} }: AutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>();
   const [inputValue, setInputValueBase] = useState('');
   const [isOpen, setOpenBase] = useState(false);
@@ -31,26 +27,27 @@ const useAutocomplete = ({
     isOpen: [isOpen, setOpenBase]
   };
 
-  const featureEvent = { state, props: { items, onChange } };
+  const { onInputChange, onInputClick, onBlur, onKeyDown, onItemClick } =
+    feature?.({ state, props: { items, onChange } }) || {};
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
     value: inputValue,
 
     ref: inputRef,
 
-    onChange: (e) => onInputChange?.({ value: e.target.value, ...featureEvent }),
+    onChange: (e) => onInputChange?.({ value: e.target.value }),
 
-    onClick: () => onInputClick?.(featureEvent),
+    onClick: () => onInputClick?.(),
 
-    onBlur: () => !instance.a && onBlur?.(featureEvent),
+    onBlur: () => !instance.a && onBlur?.(),
 
-    onKeyDown: ({ key }) => onKeyDown?.({ key, ...featureEvent })
+    onKeyDown: ({ key }) => onKeyDown?.({ key })
   });
 
   const getItemProps: GetPropsFunc<'item'> = ({ index = -1 } = {}) => ({
     onMouseDown: () => (instance.a = 1),
     onClick: () => {
-      onItemClick?.({ index, ...featureEvent });
+      onItemClick?.({ index });
       inputRef.current?.focus();
       instance.a = 0;
     }
