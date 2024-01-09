@@ -6,14 +6,17 @@ const useAutocomplete = ({
   onChange = () => {}
 }) => {
   const inputRef = useRef();
-  const [inputValue, setInputValueBase] = useState('');
-  const [isOpen, setOpenBase] = useState(false);
-  const [focusIndex, setfocusIndex] = useState(-1);
+  const [inputValue, setInputValue] = useState('');
+  const [isOpen, setOpen] = useState(false);
+  const [focusIndex, setFocusIndex] = useState(-1);
   const [instance] = useState({});
   const state = {
-    inputValue: [inputValue, setInputValueBase],
-    focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpenBase]
+    inputValue,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    isOpen,
+    setOpen
   };
   const {
     onInputChange,
@@ -22,11 +25,9 @@ const useAutocomplete = ({
     onKeyDown,
     onItemClick
   } = (feature == null ? void 0 : feature({
-    state,
-    props: {
-      items,
-      onChange
-    }
+    items,
+    onChange,
+    ...state
   })) || {};
   const getInputProps = () => ({
     value: inputValue,
@@ -65,7 +66,7 @@ const useAutocomplete = ({
   };
   return {
     getProps,
-    state
+    ...state
   };
 };
 

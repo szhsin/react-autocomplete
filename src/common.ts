@@ -1,7 +1,10 @@
 export interface AutocompleteState {
-  inputValue: [string, React.Dispatch<React.SetStateAction<string>>];
-  focusIndex: [number, React.Dispatch<React.SetStateAction<number>>];
-  isOpen: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  focusIndex: number;
+  setFocusIndex: (value: number) => void;
+  isOpen: boolean;
+  setOpen: (value: boolean) => void;
 }
 
 interface ContextualProps {
@@ -9,10 +12,7 @@ interface ContextualProps {
   items: string[];
 }
 
-export interface Contextual {
-  state: AutocompleteState;
-  props: ContextualProps;
-}
+export interface Contextual extends ContextualProps, AutocompleteState {}
 
 type FeatureEventHandler<E> = (event: E) => void;
 

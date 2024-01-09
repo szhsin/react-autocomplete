@@ -8,14 +8,17 @@ const useAutocomplete = ({
   onChange = () => {}
 }) => {
   const inputRef = react.useRef();
-  const [inputValue, setInputValueBase] = react.useState('');
-  const [isOpen, setOpenBase] = react.useState(false);
-  const [focusIndex, setfocusIndex] = react.useState(-1);
+  const [inputValue, setInputValue] = react.useState('');
+  const [isOpen, setOpen] = react.useState(false);
+  const [focusIndex, setFocusIndex] = react.useState(-1);
   const [instance] = react.useState({});
   const state = {
-    inputValue: [inputValue, setInputValueBase],
-    focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpenBase]
+    inputValue,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    isOpen,
+    setOpen
   };
   const {
     onInputChange,
@@ -24,11 +27,9 @@ const useAutocomplete = ({
     onKeyDown,
     onItemClick
   } = (feature == null ? void 0 : feature({
-    state,
-    props: {
-      items,
-      onChange
-    }
+    items,
+    onChange,
+    ...state
   })) || {};
   const getInputProps = () => ({
     value: inputValue,
@@ -67,20 +68,19 @@ const useAutocomplete = ({
   };
   return {
     getProps,
-    state
+    ...state
   };
 };
 
 const autocomplete = () => ({
-  props: {
-    items,
-    onChange
-  },
-  state: {
-    inputValue: [inputValue, setInputValue],
-    focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpen]
-  }
+  items,
+  onChange,
+  inputValue,
+  setInputValue,
+  focusIndex,
+  setFocusIndex,
+  isOpen,
+  setOpen
 }) => {
   const updateAndCloseList = value => {
     if (isOpen) {
@@ -89,7 +89,7 @@ const autocomplete = () => ({
         onChange(value);
       }
       setOpen(false);
-      setfocusIndex(-1);
+      setFocusIndex(-1);
     }
   };
   return {
@@ -100,7 +100,7 @@ const autocomplete = () => ({
       value
     }) => {
       setInputValue(value);
-      setfocusIndex(-1);
+      setFocusIndex(-1);
       setOpen(true);
       onChange(value);
     },
@@ -110,7 +110,7 @@ const autocomplete = () => ({
       key
     }) => {
       const traverseItems = itemIndex => {
-        setfocusIndex(itemIndex);
+        setFocusIndex(itemIndex);
         setInputValue(items[itemIndex]);
       };
       let nextIndex = focusIndex;

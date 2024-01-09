@@ -2,14 +2,7 @@ import { Feature } from '../common';
 
 const autocomplete: () => Feature =
   () =>
-  ({
-    props: { items, onChange },
-    state: {
-      inputValue: [inputValue, setInputValue],
-      focusIndex: [focusIndex, setfocusIndex],
-      isOpen: [isOpen, setOpen]
-    }
-  }) => {
+  ({ items, onChange, inputValue, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
     const updateAndCloseList = (value: string | undefined) => {
       if (isOpen) {
         if (value != null) {
@@ -17,7 +10,7 @@ const autocomplete: () => Feature =
           onChange(value);
         }
         setOpen(false);
-        setfocusIndex(-1);
+        setFocusIndex(-1);
       }
     };
 
@@ -26,7 +19,7 @@ const autocomplete: () => Feature =
 
       onInputChange: ({ value }) => {
         setInputValue(value);
-        setfocusIndex(-1);
+        setFocusIndex(-1);
         setOpen(true);
         onChange(value);
       },
@@ -37,7 +30,7 @@ const autocomplete: () => Feature =
 
       onKeyDown: ({ key }) => {
         const traverseItems = (itemIndex: number) => {
-          setfocusIndex(itemIndex);
+          setFocusIndex(itemIndex);
           setInputValue(items[itemIndex]);
         };
 

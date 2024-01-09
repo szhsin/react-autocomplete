@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAutocomplete, autocomplete } from '@szhsin/react-autocomplete';
+import { useAutocomplete, autocomplete, Feature } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 
 const US_STATES = [
@@ -55,21 +55,36 @@ const US_STATES = [
   'Wyoming'
 ];
 
+const myFeature: (props: { value: string }) => Feature =
+  ({ value }) =>
+  (cx) => {
+    const { onChange, setInputValue, isOpen, setOpen } = cx;
+    const originalFeature = autocomplete()(cx);
+    return {
+      ...originalFeature,
+      onInputClick: () => setOpen(!isOpen),
+      onKeyDown: ({ key }) => {
+        switch (key) {
+          case 'Escape':
+            originalFeature.onKeyDown?.({ key });
+            setInputValue(value);
+            onChange(value);
+            break;
+          default:
+            originalFeature.onKeyDown?.({ key });
+        }
+      }
+    };
+  };
+
 export default function Home() {
   const [value, setValue] = useState('');
   const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
 
-  const {
-    getProps,
-    state: {
-      inputValue: [, setInputValue],
-      isOpen: [isOpen],
-      focusIndex: [focusIndex]
-    }
-  } = useAutocomplete({
+  const { getProps, setInputValue, isOpen, focusIndex } = useAutocomplete({
     items,
     onChange: setValue,
-    feature: autocomplete()
+    feature: myFeature({ value })
   });
 
   return (
