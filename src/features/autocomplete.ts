@@ -2,26 +2,52 @@ import { Feature } from '../common';
 
 const autocomplete: () => Feature =
   () =>
-  ({ items, onChange, inputValue, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
+  ({
+    _,
+    items,
+    onChange,
+    inputValue,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    isOpen,
+    setOpen
+  }) => {
+    const updateValue = (value: string) => {
+      _.b = value;
+      setInputValue(value);
+      onChange(value);
+    };
+
     const updateAndCloseList = (value: string | undefined) => {
       if (isOpen) {
         if (value != null) {
-          setInputValue(value);
-          onChange(value);
+          updateValue(value);
         }
         setOpen(false);
         setFocusIndex(-1);
       }
     };
 
+    const traverseItems = (isUp: boolean, baseIndex = -1) => {
+      let nextIndex = focusIndex;
+      const itemLength = items.length;
+      if (isUp) {
+        if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+      } else {
+        if (++nextIndex >= itemLength) nextIndex = baseIndex;
+      }
+      setFocusIndex(nextIndex);
+      setInputValue(items[nextIndex] ?? _.b);
+    };
+
     return {
       onItemClick: ({ index }) => updateAndCloseList(items[index]),
 
       onInputChange: ({ value }) => {
-        setInputValue(value);
+        updateValue(value);
         setFocusIndex(-1);
         setOpen(true);
-        onChange(value);
       },
 
       onInputClick: () => setOpen(true),
@@ -29,26 +55,17 @@ const autocomplete: () => Feature =
       onBlur: () => updateAndCloseList(inputValue),
 
       onKeyDown: ({ key }) => {
-        const traverseItems = (itemIndex: number) => {
-          setFocusIndex(itemIndex);
-          setInputValue(items[itemIndex]);
-        };
-
-        let nextIndex = focusIndex;
-        const itemLength = items.length;
         switch (key) {
-          case 'ArrowDown':
+          case 'ArrowUp':
             if (isOpen) {
-              if (++nextIndex >= itemLength) nextIndex = 0;
-              traverseItems(nextIndex);
+              traverseItems(true);
             } else {
               setOpen(true);
             }
             break;
-          case 'ArrowUp':
+          case 'ArrowDown':
             if (isOpen) {
-              if (--nextIndex < 0) nextIndex = itemLength - 1;
-              traverseItems(nextIndex);
+              traverseItems(false);
             } else {
               setOpen(true);
             }

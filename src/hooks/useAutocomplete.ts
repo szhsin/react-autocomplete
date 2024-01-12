@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, HTMLAttributes } from 'react';
 import { useState, useRef } from 'react';
-import type { AutocompleteProps, AutocompleteState } from '../common';
+import type { AutocompleteProps, AutocompleteState, Instance } from '../common';
 
 interface GetProps {
   input: [never, InputHTMLAttributes<HTMLInputElement>];
@@ -14,12 +14,7 @@ const useAutocomplete = ({ feature, items = [], onChange = () => {} }: Autocompl
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
-  const [instance] = useState<{
-    /**
-     * Whether to bypass onblur event on input
-     */
-    a?: number;
-  }>({});
+  const [instance] = useState<Instance>({ b: inputValue });
 
   const state: AutocompleteState = {
     inputValue,
@@ -31,7 +26,7 @@ const useAutocomplete = ({ feature, items = [], onChange = () => {} }: Autocompl
   };
 
   const { onInputChange, onInputClick, onBlur, onKeyDown, onItemClick } =
-    feature?.({ items, onChange, ...state }) || {};
+    feature?.({ _: instance, items, onChange, ...state }) || {};
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
     value: inputValue,
@@ -44,7 +39,11 @@ const useAutocomplete = ({ feature, items = [], onChange = () => {} }: Autocompl
 
     onBlur: () => !instance.a && onBlur?.(),
 
-    onKeyDown: ({ key }) => onKeyDown?.({ key })
+    onKeyDown: (e) => {
+      const { key } = e;
+      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
+      onKeyDown?.({ key });
+    }
   });
 
   const getItemProps: GetPropsFunc<'item'> = ({ index = -1 } = {}) => ({

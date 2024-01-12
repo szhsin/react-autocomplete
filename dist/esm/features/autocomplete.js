@@ -1,4 +1,5 @@
 const autocomplete = () => ({
+  _,
   items,
   onChange,
   inputValue,
@@ -8,15 +9,31 @@ const autocomplete = () => ({
   isOpen,
   setOpen
 }) => {
+  const updateValue = value => {
+    _.b = value;
+    setInputValue(value);
+    onChange(value);
+  };
   const updateAndCloseList = value => {
     if (isOpen) {
       if (value != null) {
-        setInputValue(value);
-        onChange(value);
+        updateValue(value);
       }
       setOpen(false);
       setFocusIndex(-1);
     }
+  };
+  const traverseItems = (isUp, baseIndex = -1) => {
+    var _items$nextIndex;
+    let nextIndex = focusIndex;
+    const itemLength = items.length;
+    if (isUp) {
+      if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+    } else {
+      if (++nextIndex >= itemLength) nextIndex = baseIndex;
+    }
+    setFocusIndex(nextIndex);
+    setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : _.b);
   };
   return {
     onItemClick: ({
@@ -25,35 +42,26 @@ const autocomplete = () => ({
     onInputChange: ({
       value
     }) => {
-      setInputValue(value);
+      updateValue(value);
       setFocusIndex(-1);
       setOpen(true);
-      onChange(value);
     },
     onInputClick: () => setOpen(true),
     onBlur: () => updateAndCloseList(inputValue),
     onKeyDown: ({
       key
     }) => {
-      const traverseItems = itemIndex => {
-        setFocusIndex(itemIndex);
-        setInputValue(items[itemIndex]);
-      };
-      let nextIndex = focusIndex;
-      const itemLength = items.length;
       switch (key) {
-        case 'ArrowDown':
+        case 'ArrowUp':
           if (isOpen) {
-            if (++nextIndex >= itemLength) nextIndex = 0;
-            traverseItems(nextIndex);
+            traverseItems(true);
           } else {
             setOpen(true);
           }
           break;
-        case 'ArrowUp':
+        case 'ArrowDown':
           if (isOpen) {
-            if (--nextIndex < 0) nextIndex = itemLength - 1;
-            traverseItems(nextIndex);
+            traverseItems(false);
           } else {
             setOpen(true);
           }

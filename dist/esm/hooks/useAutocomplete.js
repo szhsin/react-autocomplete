@@ -9,7 +9,9 @@ const useAutocomplete = ({
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
-  const [instance] = useState({});
+  const [instance] = useState({
+    b: inputValue
+  });
   const state = {
     inputValue,
     setInputValue,
@@ -25,6 +27,7 @@ const useAutocomplete = ({
     onKeyDown,
     onItemClick
   } = (feature == null ? void 0 : feature({
+    _: instance,
     items,
     onChange,
     ...state
@@ -37,11 +40,15 @@ const useAutocomplete = ({
     }),
     onClick: () => onInputClick == null ? void 0 : onInputClick(),
     onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur()),
-    onKeyDown: ({
-      key
-    }) => onKeyDown == null ? void 0 : onKeyDown({
-      key
-    })
+    onKeyDown: e => {
+      const {
+        key
+      } = e;
+      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
+      onKeyDown == null || onKeyDown({
+        key
+      });
+    }
   });
   const getItemProps = ({
     index = -1

@@ -10,7 +10,23 @@ interface ContextualProps {
     onChange: (value: string) => void;
     items: string[];
 }
+export interface Instance {
+    /**
+     * ### INTERNAL API ###
+     * Whether to bypass onblur event on input
+     */
+    a?: number;
+    /**
+     * ### INTERNAL API ###
+     * The most recent value
+     */
+    b: string;
+}
 export interface Contextual extends ContextualProps, AutocompleteState {
+    /**
+     * ### INTERNAL API ###
+     */
+    _: Instance;
 }
 type FeatureEventHandler<E> = (event: E) => void;
 export type Feature = (cx: Contextual) => {
