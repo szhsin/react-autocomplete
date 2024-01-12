@@ -1,18 +1,8 @@
 import { Feature } from '../common';
 
-const autocomplete: () => Feature =
-  () =>
-  ({
-    _,
-    items,
-    onChange,
-    inputValue,
-    setInputValue,
-    focusIndex,
-    setFocusIndex,
-    isOpen,
-    setOpen
-  }) => {
+const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
+  ({ rovingInput } = {}) =>
+  ({ _, items, onChange, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
     const updateValue = (value: string) => {
       _.b = value;
       setInputValue(value);
@@ -29,7 +19,8 @@ const autocomplete: () => Feature =
       }
     };
 
-    const traverseItems = (isUp: boolean, baseIndex = -1) => {
+    const traverseItems = (isUp: boolean) => {
+      const baseIndex = rovingInput ? -1 : 0;
       let nextIndex = focusIndex;
       const itemLength = items.length;
       if (isUp) {
@@ -38,7 +29,7 @@ const autocomplete: () => Feature =
         if (++nextIndex >= itemLength) nextIndex = baseIndex;
       }
       setFocusIndex(nextIndex);
-      setInputValue(items[nextIndex] ?? _.b);
+      rovingInput && setInputValue(items[nextIndex] ?? _.b);
     };
 
     return {
@@ -52,7 +43,7 @@ const autocomplete: () => Feature =
 
       onInputClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(inputValue),
+      onBlur: () => updateAndCloseList(items[focusIndex]),
 
       onKeyDown: ({ key }) => {
         switch (key) {
@@ -74,7 +65,7 @@ const autocomplete: () => Feature =
             updateAndCloseList(items[focusIndex]);
             break;
           case 'Escape':
-            updateAndCloseList(inputValue);
+            updateAndCloseList(_.b);
             break;
         }
       }

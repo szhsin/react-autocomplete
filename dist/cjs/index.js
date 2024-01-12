@@ -79,11 +79,12 @@ const useAutocomplete = ({
   };
 };
 
-const autocomplete = () => ({
+const autocomplete = ({
+  rovingInput
+} = {}) => ({
   _,
   items,
   onChange,
-  inputValue,
   setInputValue,
   focusIndex,
   setFocusIndex,
@@ -104,8 +105,9 @@ const autocomplete = () => ({
       setFocusIndex(-1);
     }
   };
-  const traverseItems = (isUp, baseIndex = -1) => {
+  const traverseItems = isUp => {
     var _items$nextIndex;
+    const baseIndex = rovingInput ? -1 : 0;
     let nextIndex = focusIndex;
     const itemLength = items.length;
     if (isUp) {
@@ -114,7 +116,7 @@ const autocomplete = () => ({
       if (++nextIndex >= itemLength) nextIndex = baseIndex;
     }
     setFocusIndex(nextIndex);
-    setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : _.b);
+    rovingInput && setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : _.b);
   };
   return {
     onItemClick: ({
@@ -128,7 +130,7 @@ const autocomplete = () => ({
       setOpen(true);
     },
     onInputClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(inputValue),
+    onBlur: () => updateAndCloseList(items[focusIndex]),
     onKeyDown: ({
       key
     }) => {
@@ -151,7 +153,7 @@ const autocomplete = () => ({
           updateAndCloseList(items[focusIndex]);
           break;
         case 'Escape':
-          updateAndCloseList(inputValue);
+          updateAndCloseList(_.b);
           break;
       }
     }
