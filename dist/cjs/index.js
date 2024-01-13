@@ -3,48 +3,54 @@
 var react = require('react');
 
 const useAutocomplete = ({
-  feature: {
+  feature,
+  items = [],
+  onChange = () => {}
+}) => {
+  const inputRef = react.useRef();
+  const [inputValue, setInputValue] = react.useState('');
+  const [isOpen, setOpen] = react.useState(false);
+  const [focusIndex, setFocusIndex] = react.useState(-1);
+  const [instance] = react.useState({
+    b: inputValue
+  });
+  const state = {
+    inputValue,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    isOpen,
+    setOpen
+  };
+  const {
     onInputChange,
     onInputClick,
     onBlur,
     onKeyDown,
     onItemClick
-  } = {},
-  items = [],
-  onChange = () => {}
-}) => {
-  const inputRef = react.useRef();
-  const [inputValue, setInputValueBase] = react.useState('');
-  const [isOpen, setOpenBase] = react.useState(false);
-  const [focusIndex, setfocusIndex] = react.useState(-1);
-  const [instance] = react.useState({});
-  const state = {
-    inputValue: [inputValue, setInputValueBase],
-    focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpenBase]
-  };
-  const featureEvent = {
-    state,
-    props: {
-      items,
-      onChange
-    }
-  };
+  } = (feature == null ? void 0 : feature({
+    _: instance,
+    items,
+    onChange,
+    ...state
+  })) || {};
   const getInputProps = () => ({
     value: inputValue,
     ref: inputRef,
     onChange: e => onInputChange == null ? void 0 : onInputChange({
-      value: e.target.value,
-      ...featureEvent
+      value: e.target.value
     }),
-    onClick: () => onInputClick == null ? void 0 : onInputClick(featureEvent),
-    onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur(featureEvent)),
-    onKeyDown: ({
-      key
-    }) => onKeyDown == null ? void 0 : onKeyDown({
-      key,
-      ...featureEvent
-    })
+    onClick: () => onInputClick == null ? void 0 : onInputClick(),
+    onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur()),
+    onKeyDown: e => {
+      const {
+        key
+      } = e;
+      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
+      onKeyDown == null || onKeyDown({
+        key
+      });
+    }
   });
   const getItemProps = ({
     index = -1
@@ -53,8 +59,7 @@ const useAutocomplete = ({
     onClick: () => {
       var _inputRef$current;
       onItemClick == null || onItemClick({
-        index,
-        ...featureEvent
+        index
       });
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
       instance.a = 0;
@@ -70,99 +75,85 @@ const useAutocomplete = ({
   };
   return {
     getProps,
-    state
+    ...state
   };
 };
 
-const autocomplete = () => {
-  const updateAndCloseList = ({
-    props: {
-      onChange
-    },
-    state: {
-      inputValue: [, setInputValue],
-      focusIndex: [, setfocusIndex],
-      isOpen: [isOpen, setOpen]
-    }
-  }, value) => {
+const autocomplete = ({
+  rovingInput
+} = {}) => ({
+  _,
+  items,
+  onChange,
+  setInputValue,
+  focusIndex,
+  setFocusIndex,
+  isOpen,
+  setOpen
+}) => {
+  const updateValue = value => {
+    _.b = value;
+    setInputValue(value);
+    onChange(value);
+  };
+  const updateAndCloseList = value => {
     if (isOpen) {
       if (value != null) {
-        setInputValue(value);
-        onChange(value);
+        updateValue(value);
       }
       setOpen(false);
-      setfocusIndex(-1);
+      setFocusIndex(-1);
     }
+  };
+  const traverseItems = isUp => {
+    var _items$nextIndex;
+    const baseIndex = rovingInput ? -1 : 0;
+    let nextIndex = focusIndex;
+    const itemLength = items.length;
+    if (isUp) {
+      if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+    } else {
+      if (++nextIndex >= itemLength) nextIndex = baseIndex;
+    }
+    setFocusIndex(nextIndex);
+    rovingInput && setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : _.b);
   };
   return {
     onItemClick: ({
-      index,
-      ...event
-    }) => updateAndCloseList(event, event.props.items[index]),
+      index
+    }) => updateAndCloseList(items[index]),
     onInputChange: ({
-      value,
-      props: {
-        onChange
-      },
-      state: {
-        inputValue: [, setInputValue],
-        focusIndex: [, setfocusIndex],
-        isOpen: [, setOpen]
-      }
+      value
     }) => {
-      setInputValue(value);
-      setfocusIndex(-1);
+      updateValue(value);
+      setFocusIndex(-1);
       setOpen(true);
-      onChange(value);
     },
-    onInputClick: ({
-      state: {
-        isOpen: [, setOpen]
-      }
-    }) => setOpen(true),
-    onBlur: event => updateAndCloseList(event, event.state.inputValue[0]),
+    onInputClick: () => setOpen(true),
+    onBlur: () => updateAndCloseList(items[focusIndex]),
     onKeyDown: ({
-      key,
-      ...event
+      key
     }) => {
-      const {
-        props: {
-          items
-        },
-        state: {
-          focusIndex: [focusIndex, setfocusIndex],
-          inputValue: [inputValue, setInputValue],
-          isOpen: [isOpen, setOpen]
-        }
-      } = event;
-      const traverseItems = itemIndex => {
-        setfocusIndex(itemIndex);
-        setInputValue(items[itemIndex]);
-      };
-      let nextIndex = focusIndex;
-      const itemLength = items.length;
       switch (key) {
-        case 'ArrowDown':
+        case 'ArrowUp':
           if (isOpen) {
-            if (++nextIndex >= itemLength) nextIndex = 0;
-            traverseItems(nextIndex);
+            traverseItems(true);
           } else {
             setOpen(true);
           }
           break;
-        case 'ArrowUp':
+        case 'ArrowDown':
           if (isOpen) {
-            if (--nextIndex < 0) nextIndex = itemLength - 1;
-            traverseItems(nextIndex);
+            traverseItems(false);
           } else {
             setOpen(true);
           }
           break;
         case 'Enter':
-          updateAndCloseList(event, items[focusIndex]);
+          updateAndCloseList(items[focusIndex]);
           break;
         case 'Escape':
-          updateAndCloseList(event, inputValue);
+          updateAndCloseList(_.b);
           break;
       }
     }

@@ -1,48 +1,54 @@
 import { useRef, useState } from 'react';
 
 const useAutocomplete = ({
-  feature: {
+  feature,
+  items = [],
+  onChange = () => {}
+}) => {
+  const inputRef = useRef();
+  const [inputValue, setInputValue] = useState('');
+  const [isOpen, setOpen] = useState(false);
+  const [focusIndex, setFocusIndex] = useState(-1);
+  const [instance] = useState({
+    b: inputValue
+  });
+  const state = {
+    inputValue,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    isOpen,
+    setOpen
+  };
+  const {
     onInputChange,
     onInputClick,
     onBlur,
     onKeyDown,
     onItemClick
-  } = {},
-  items = [],
-  onChange = () => {}
-}) => {
-  const inputRef = useRef();
-  const [inputValue, setInputValueBase] = useState('');
-  const [isOpen, setOpenBase] = useState(false);
-  const [focusIndex, setfocusIndex] = useState(-1);
-  const [instance] = useState({});
-  const state = {
-    inputValue: [inputValue, setInputValueBase],
-    focusIndex: [focusIndex, setfocusIndex],
-    isOpen: [isOpen, setOpenBase]
-  };
-  const featureEvent = {
-    state,
-    props: {
-      items,
-      onChange
-    }
-  };
+  } = (feature == null ? void 0 : feature({
+    _: instance,
+    items,
+    onChange,
+    ...state
+  })) || {};
   const getInputProps = () => ({
     value: inputValue,
     ref: inputRef,
     onChange: e => onInputChange == null ? void 0 : onInputChange({
-      value: e.target.value,
-      ...featureEvent
+      value: e.target.value
     }),
-    onClick: () => onInputClick == null ? void 0 : onInputClick(featureEvent),
-    onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur(featureEvent)),
-    onKeyDown: ({
-      key
-    }) => onKeyDown == null ? void 0 : onKeyDown({
-      key,
-      ...featureEvent
-    })
+    onClick: () => onInputClick == null ? void 0 : onInputClick(),
+    onBlur: () => !instance.a && (onBlur == null ? void 0 : onBlur()),
+    onKeyDown: e => {
+      const {
+        key
+      } = e;
+      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
+      onKeyDown == null || onKeyDown({
+        key
+      });
+    }
   });
   const getItemProps = ({
     index = -1
@@ -51,8 +57,7 @@ const useAutocomplete = ({
     onClick: () => {
       var _inputRef$current;
       onItemClick == null || onItemClick({
-        index,
-        ...featureEvent
+        index
       });
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
       instance.a = 0;
@@ -68,7 +73,7 @@ const useAutocomplete = ({
   };
   return {
     getProps,
-    state
+    ...state
   };
 };
 

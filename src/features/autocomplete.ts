@@ -1,96 +1,75 @@
-import { Feature, FeatureEvent } from '../common';
+import { Feature } from '../common';
 
-const autocomplete: () => Feature = () => {
-  const updateAndCloseList = (
-    {
-      props: { onChange },
-      state: {
-        inputValue: [, setInputValue],
-        focusIndex: [, setfocusIndex],
-        isOpen: [isOpen, setOpen]
-      }
-    }: FeatureEvent,
-    value: string | undefined
-  ) => {
-    if (isOpen) {
-      if (value != null) {
-        setInputValue(value);
-        onChange(value);
-      }
-      setOpen(false);
-      setfocusIndex(-1);
-    }
-  };
-
-  return {
-    onItemClick: ({ index, ...event }) => updateAndCloseList(event, event.props.items[index]),
-
-    onInputChange: ({
-      value,
-      props: { onChange },
-      state: {
-        inputValue: [, setInputValue],
-        focusIndex: [, setfocusIndex],
-        isOpen: [, setOpen]
-      }
-    }) => {
+const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
+  ({ rovingInput } = {}) =>
+  ({ _, items, onChange, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
+    const updateValue = (value: string) => {
+      _.b = value;
       setInputValue(value);
-      setfocusIndex(-1);
-      setOpen(true);
       onChange(value);
-    },
+    };
 
-    onInputClick: ({
-      state: {
-        isOpen: [, setOpen]
-      }
-    }) => setOpen(true),
-
-    onBlur: (event) => updateAndCloseList(event, event.state.inputValue[0]),
-
-    onKeyDown: ({ key, ...event }) => {
-      const {
-        props: { items },
-        state: {
-          focusIndex: [focusIndex, setfocusIndex],
-          inputValue: [inputValue, setInputValue],
-          isOpen: [isOpen, setOpen]
+    const updateAndCloseList = (value: string | undefined) => {
+      if (isOpen) {
+        if (value != null) {
+          updateValue(value);
         }
-      } = event;
+        setOpen(false);
+        setFocusIndex(-1);
+      }
+    };
 
-      const traverseItems = (itemIndex: number) => {
-        setfocusIndex(itemIndex);
-        setInputValue(items[itemIndex]);
-      };
-
+    const traverseItems = (isUp: boolean) => {
+      const baseIndex = rovingInput ? -1 : 0;
       let nextIndex = focusIndex;
       const itemLength = items.length;
-      switch (key) {
-        case 'ArrowDown':
-          if (isOpen) {
-            if (++nextIndex >= itemLength) nextIndex = 0;
-            traverseItems(nextIndex);
-          } else {
-            setOpen(true);
-          }
-          break;
-        case 'ArrowUp':
-          if (isOpen) {
-            if (--nextIndex < 0) nextIndex = itemLength - 1;
-            traverseItems(nextIndex);
-          } else {
-            setOpen(true);
-          }
-          break;
-        case 'Enter':
-          updateAndCloseList(event, items[focusIndex]);
-          break;
-        case 'Escape':
-          updateAndCloseList(event, inputValue);
-          break;
+      if (isUp) {
+        if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+      } else {
+        if (++nextIndex >= itemLength) nextIndex = baseIndex;
       }
-    }
+      setFocusIndex(nextIndex);
+      rovingInput && setInputValue(items[nextIndex] ?? _.b);
+    };
+
+    return {
+      onItemClick: ({ index }) => updateAndCloseList(items[index]),
+
+      onInputChange: ({ value }) => {
+        updateValue(value);
+        setFocusIndex(-1);
+        setOpen(true);
+      },
+
+      onInputClick: () => setOpen(true),
+
+      onBlur: () => updateAndCloseList(items[focusIndex]),
+
+      onKeyDown: ({ key }) => {
+        switch (key) {
+          case 'ArrowUp':
+            if (isOpen) {
+              traverseItems(true);
+            } else {
+              setOpen(true);
+            }
+            break;
+          case 'ArrowDown':
+            if (isOpen) {
+              traverseItems(false);
+            } else {
+              setOpen(true);
+            }
+            break;
+          case 'Enter':
+            updateAndCloseList(items[focusIndex]);
+            break;
+          case 'Escape':
+            updateAndCloseList(_.b);
+            break;
+        }
+      }
+    };
   };
-};
 
 export { autocomplete };

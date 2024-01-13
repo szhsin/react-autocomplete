@@ -1,29 +1,47 @@
 export interface AutocompleteState {
-  inputValue: [string, React.Dispatch<React.SetStateAction<string>>];
-  focusIndex: [number, React.Dispatch<React.SetStateAction<number>>];
-  isOpen: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  focusIndex: number;
+  setFocusIndex: (value: number) => void;
+  isOpen: boolean;
+  setOpen: (value: boolean) => void;
 }
 
-interface FeatureProps {
+interface ContextualProps {
   onChange: (value: string) => void;
   items: string[];
 }
 
-export interface FeatureEvent {
-  state: AutocompleteState;
-  props: FeatureProps;
+export interface Instance {
+  /**
+   * ### INTERNAL API ###
+   * Whether to bypass onblur event on input
+   */
+  a?: number;
+  /**
+   * ### INTERNAL API ###
+   * The most recent value
+   */
+  b: string;
 }
 
-type FeatureEventHandler<T = object> = (event: T & FeatureEvent) => void;
+export interface Contextual extends ContextualProps, AutocompleteState {
+  /**
+   * ### INTERNAL API ###
+   */
+  _: Instance;
+}
 
-export interface Feature {
+type FeatureEventHandler<E> = (event: E) => void;
+
+export type Feature = (cx: Contextual) => {
   onInputChange?: FeatureEventHandler<{ value: string }>;
-  onInputClick?: FeatureEventHandler;
-  onBlur?: FeatureEventHandler;
+  onInputClick?: () => void;
+  onBlur?: () => void;
   onKeyDown?: FeatureEventHandler<{ key: string }>;
   onItemClick?: FeatureEventHandler<{ index: number }>;
-}
+};
 
-export interface AutocompleteProps extends Partial<FeatureProps> {
+export interface AutocompleteProps extends Partial<ContextualProps> {
   feature?: Feature;
 }
