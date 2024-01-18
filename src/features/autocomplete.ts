@@ -1,18 +1,19 @@
-import { Feature } from '../common';
+import type { Feature, ChangeType } from '../common';
+import { CHANGETYPE_SUBMIT, CHANGETYPE_CHANGE, CHANGETYPE_INSERT } from '../common';
 
 const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
   ({ rovingInput } = {}) =>
   ({ _, items, onChange, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
-    const updateValue = (value: string) => {
+    const updateValue = (value: string, type: ChangeType) => {
       _.b = value;
       setInputValue(value);
-      onChange(value);
+      onChange(value, { type });
     };
 
-    const updateAndCloseList = (value: string | undefined) => {
+    const updateAndCloseList = (value: string | undefined, type: ChangeType) => {
       if (isOpen) {
         if (value != null) {
-          updateValue(value);
+          updateValue(value, type);
         }
         setOpen(false);
         setFocusIndex(-1);
@@ -33,17 +34,22 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
     };
 
     return {
-      onItemClick: ({ index }) => updateAndCloseList(items[index]),
+      onItemClick: (_, { index }) => updateAndCloseList(items[index], CHANGETYPE_SUBMIT),
 
-      onInputChange: ({ value }) => {
-        updateValue(value);
+      onInputChange: (e) => {
         setFocusIndex(-1);
         setOpen(true);
+        updateValue(
+          e.target.value,
+          (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText'
+            ? CHANGETYPE_INSERT
+            : CHANGETYPE_CHANGE
+        );
       },
 
       onInputClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(items[focusIndex]),
+      onBlur: () => updateAndCloseList(items[focusIndex], CHANGETYPE_CHANGE),
 
       onKeyDown: ({ key }) => {
         switch (key) {
@@ -62,10 +68,10 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
             }
             break;
           case 'Enter':
-            updateAndCloseList(items[focusIndex]);
+            updateAndCloseList(items[focusIndex], CHANGETYPE_SUBMIT);
             break;
           case 'Escape':
-            updateAndCloseList(_.b);
+            updateAndCloseList(_.b, CHANGETYPE_CHANGE);
             break;
         }
       }
