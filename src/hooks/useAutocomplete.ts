@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, HTMLAttributes, ChangeEvent } from 'react';
+import type { InputHTMLAttributes, HTMLAttributes } from 'react';
 import { useState, useRef, useCallback } from 'react';
 import type { AutocompleteProps, AutocompleteState, Instance, Feature } from '../common';
 
@@ -16,13 +16,18 @@ const useAutocomplete = <FeatureActions = object>({
 }: AutocompleteProps<FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setOpen] = useState(false);
-  const [focusIndex, setFocusIndex] = useState(-1);
-  const [instance] = useState<Instance>({ b: '' });
+  const [focusIndex, _setFocusIndex] = useState(-1);
+  const [instance] = useState<Instance>({ b: '', d: focusIndex });
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;
     if (input) input.value = value;
   }, []);
+
+  const setFocusIndex = useCallback((value: number) => {
+    _setFocusIndex(value);
+    instance.d = value;
+  }, [instance]);
 
   const state: AutocompleteState = {
     setInputValue,

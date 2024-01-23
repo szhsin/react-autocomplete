@@ -3,10 +3,19 @@ import { CHANGETYPE_SUBMIT, CHANGETYPE_CHANGE, CHANGETYPE_INSERT } from '../comm
 
 const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
   ({ rovingInput } = {}) =>
-  ({ _, items, onChange, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
+  ({
+    _: cxInstance,
+    items,
+    onChange,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    isOpen,
+    setOpen
+  }) => {
     const updateValue = (value: string, type: ChangeType) => {
-      _.b = value;
-      _.c = type;
+      cxInstance.b = value;
+      cxInstance.c = type;
       setInputValue(value);
       onChange(value, { type });
     };
@@ -31,7 +40,7 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
         if (++nextIndex >= itemLength) nextIndex = baseIndex;
       }
       setFocusIndex(nextIndex);
-      rovingInput && setInputValue(items[nextIndex] ?? _.b);
+      rovingInput && setInputValue(items[nextIndex] ?? cxInstance.b);
     };
 
     return {
@@ -72,7 +81,7 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
             updateAndCloseList(items[focusIndex], CHANGETYPE_SUBMIT);
             break;
           case 'Escape':
-            updateAndCloseList(_.b, CHANGETYPE_CHANGE);
+            updateAndCloseList(cxInstance.b, CHANGETYPE_CHANGE);
             break;
         }
       }

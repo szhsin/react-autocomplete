@@ -30,6 +30,11 @@ export interface Instance {
    * The most recent onChange type
    */
   c?: ChangeType;
+  /**
+   * ### INTERNAL API ###
+   * The most recent focus index
+   */
+  d: number;
 }
 
 export interface Contextual extends ContextualProps, AutocompleteState {
