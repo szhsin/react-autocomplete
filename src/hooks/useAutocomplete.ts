@@ -1,13 +1,11 @@
 import type { InputHTMLAttributes, HTMLAttributes, ChangeEvent } from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import type { AutocompleteProps, AutocompleteState, Instance, Feature } from '../common';
 
 interface GetProps {
   input: [never, InputHTMLAttributes<HTMLInputElement>];
   item: [{ index?: number }, HTMLAttributes<HTMLElement>];
 }
-
-type ab = Parameters<NonNullable<InputHTMLAttributes<HTMLInputElement>['onChange']>>[0];
 
 type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
 
@@ -17,13 +15,16 @@ const useAutocomplete = <FeatureActions = object>({
   onChange = () => {}
 }: AutocompleteProps<FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState('');
   const [isOpen, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
-  const [instance] = useState<Instance>({ b: inputValue });
+  const [instance] = useState<Instance>({ b: '' });
+
+  const setInputValue = useCallback((value: string) => {
+    const input = inputRef.current;
+    if (input) input.value = value;
+  }, []);
 
   const state: AutocompleteState = {
-    inputValue,
     setInputValue,
     focusIndex,
     setFocusIndex,
@@ -40,11 +41,10 @@ const useAutocomplete = <FeatureActions = object>({
   });
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
-    value: inputValue,
     ref: inputRef,
     onChange: onInputChange,
     onClick: onInputClick,
-    onBlur,
+    onBlur: (e) => !instance.a && onBlur?.(e),
     onKeyDown: (e) => {
       const { key } = e;
       if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();

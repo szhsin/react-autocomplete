@@ -1,6 +1,5 @@
 /// types
 export interface AutocompleteState {
-  inputValue: string;
   setInputValue: (value: string) => void;
   focusIndex: number;
   setFocusIndex: (value: number) => void;
@@ -26,6 +25,11 @@ export interface Instance {
    * The most recent value
    */
   b: string;
+  /**
+   * ### INTERNAL API ###
+   * The most recent onChange type
+   */
+  c?: ChangeType;
 }
 
 export interface Contextual extends ContextualProps, AutocompleteState {

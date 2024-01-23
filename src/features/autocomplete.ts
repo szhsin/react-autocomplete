@@ -6,6 +6,7 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
   ({ _, items, onChange, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
     const updateValue = (value: string, type: ChangeType) => {
       _.b = value;
+      _.c = type;
       setInputValue(value);
       onChange(value, { type });
     };
