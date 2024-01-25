@@ -3,16 +3,7 @@ import { CHANGETYPE_SUBMIT, CHANGETYPE_CHANGE, CHANGETYPE_INSERT } from '../comm
 
 const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
   ({ rovingInput } = {}) =>
-  ({
-    _: cxInstance,
-    items,
-    onChange,
-    setInputValue,
-    focusIndex,
-    setFocusIndex,
-    isOpen,
-    setOpen
-  }) => {
+  ({ _: cxInstance, items, onChange, setInputValue, focusIndex, setFocusIndex, open, setOpen }) => {
     const updateValue = (value: string, type: ChangeType) => {
       cxInstance.b = value;
       cxInstance.c = type;
@@ -21,7 +12,7 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
     };
 
     const updateAndCloseList = (value: string | undefined, type: ChangeType) => {
-      if (isOpen) {
+      if (open) {
         if (value != null) {
           updateValue(value, type);
         }
@@ -64,14 +55,14 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
       onKeyDown: ({ key }) => {
         switch (key) {
           case 'ArrowUp':
-            if (isOpen) {
+            if (open) {
               traverseItems(true);
             } else {
               setOpen(true);
             }
             break;
           case 'ArrowDown':
-            if (isOpen) {
+            if (open) {
               traverseItems(false);
             } else {
               setOpen(true);

@@ -15,7 +15,7 @@ const useAutocomplete = <FeatureActions = object>({
   onChange = () => {}
 }: AutocompleteProps<FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOpen, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
   const [instance] = useState<Instance>({ b: '' });
 
@@ -28,7 +28,7 @@ const useAutocomplete = <FeatureActions = object>({
     setInputValue,
     focusIndex,
     setFocusIndex,
-    isOpen,
+    open,
     setOpen
   };
 

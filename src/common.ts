@@ -3,7 +3,7 @@ export interface AutocompleteState {
   setInputValue: (value: string) => void;
   focusIndex: number;
   setFocusIndex: (value: number) => void;
-  isOpen: boolean;
+  open: boolean;
   setOpen: (value: boolean) => void;
 }
 
