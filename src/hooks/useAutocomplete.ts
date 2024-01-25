@@ -16,18 +16,13 @@ const useAutocomplete = <FeatureActions = object>({
 }: AutocompleteProps<FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setOpen] = useState(false);
-  const [focusIndex, _setFocusIndex] = useState(-1);
-  const [instance] = useState<Instance>({ b: '', d: focusIndex });
+  const [focusIndex, setFocusIndex] = useState(-1);
+  const [instance] = useState<Instance>({ b: '' });
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;
     if (input) input.value = value;
   }, []);
-
-  const setFocusIndex = useCallback((value: number) => {
-    _setFocusIndex(value);
-    instance.d = value;
-  }, [instance]);
 
   const state: AutocompleteState = {
     setInputValue,

@@ -9,44 +9,59 @@ export interface Instance {
    * action mapper
    */
   a?: [number, () => void];
+
+  /**
+   * ### INTERNAL API ###
+   * The most recent focus index
+   */
+  b?: number;
 }
 
 const supercomplete: () => Feature<{
   inlineComplete: (props: { index: number; value: string }) => void;
-}> = () => (cx) => {
-  const [instance] = useState<Instance>({});
-
-  const base = autocomplete({ rovingInput: true })(cx);
-
-  const { inputRef, setInputValue, setFocusIndex, _: cxInstance } = cx;
-  return {
-    ...base,
-
-    onKeyDown: (e) => {
-      base.onKeyDown!(e);
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        const [index, action] = instance.a || [];
-        if (cxInstance.d === index) action?.();
-        // const { length } = inputValue;
-        // inputRef.current?.setSelectionRange(length, length);
-      }
-    },
-
-    inlineComplete: useCallback(
-      ({ index, value }) => {
-        const action = () => {
-          if (cxInstance.c !== CHANGETYPE_INSERT) return;
-          setFocusIndex(index);
-          const valueLength = cxInstance.b.length;
-          const newValue = cxInstance.b + value.slice(valueLength);
-          setInputValue(newValue);
-          inputRef.current?.setSelectionRange(valueLength, value.length);
-        };
-        action();
-        instance.a = [index, action];
+}> = () => {
+  const base = autocomplete({ rovingInput: true });
+  return ({ setFocusIndex: _setFocusIndex, ...cx }) => {
+    const [instance] = useState<Instance>({});
+    const setFocusIndex = useCallback(
+      (value: number) => {
+        _setFocusIndex(value);
+        instance.b = value;
       },
-      [cxInstance, instance, inputRef, setFocusIndex, setInputValue]
-    )
+      [instance, _setFocusIndex]
+    );
+    const baseFeature = base({ ...cx, setFocusIndex });
+    const { inputRef, setInputValue, _: cxInstance } = cx;
+
+    return {
+      ...baseFeature,
+
+      onKeyDown: (e) => {
+        baseFeature.onKeyDown!(e);
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          const [index, action] = instance.a || [];
+          if (instance.b === index) action?.();
+          // const { length } = inputValue;
+          // inputRef.current?.setSelectionRange(length, length);
+        }
+      },
+
+      inlineComplete: useCallback(
+        ({ index, value }) => {
+          const action = () => {
+            if (cxInstance.c !== CHANGETYPE_INSERT) return;
+            setFocusIndex(index);
+            const valueLength = cxInstance.b.length;
+            const newValue = cxInstance.b + value.slice(valueLength);
+            setInputValue(newValue);
+            inputRef.current?.setSelectionRange(valueLength, value.length);
+          };
+          action();
+          instance.a = [index, action];
+        },
+        [cxInstance, instance, inputRef, setFocusIndex, setInputValue]
+      )
+    };
   };
 };
 
