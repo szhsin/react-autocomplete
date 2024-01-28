@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useAutocomplete, autocomplete, Feature } from '@szhsin/react-autocomplete';
+import { useState, useEffect } from 'react';
+import { useAutocomplete, autocomplete, Feature, supercomplete } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 
 const US_STATES = [
@@ -55,46 +55,37 @@ const US_STATES = [
   'Wyoming'
 ];
 
-const myFeature: (props: { value: string }) => Feature =
-  ({ value }) =>
-  (cx) => {
-    const { onChange, setInputValue, isOpen, setOpen } = cx;
-    const originalFeature = autocomplete()(cx);
-    return {
-      ...originalFeature,
-      onInputClick: () => setOpen(!isOpen),
-      onKeyDown: ({ key }) => {
-        switch (key) {
-          case 'Escape':
-            originalFeature.onKeyDown?.({ key });
-            setInputValue(value);
-            onChange(value);
-            break;
-          default:
-            originalFeature.onKeyDown?.({ key });
-        }
-      }
-    };
-  };
-
 export default function Home() {
   const [value, setValue] = useState('');
-  const items = US_STATES.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+  const items = US_STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase()));
+  // const [myinput, setmyinput] = useState('');
+  // const [items, setItems] = useState(US_STATES);
 
-  const { getProps, setInputValue, isOpen, focusIndex } = useAutocomplete({
+  const { getProps, setInputValue, open, focusIndex, inlineComplete } = useAutocomplete({
     items,
-    onChange: setValue,
-    feature: myFeature({ value })
+    onChange: (value) => {
+      setValue(value);
+      const items = US_STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase()));
+      // setItems(items);
+      items.length && inlineComplete({ index: 0, value: items[0] });
+    },
+    feature: supercomplete()
   });
 
+  // useEffect(() => {
+  //   items.length && inlineComplete({ index: 0, value: items[0] });
+  // }, [items, inlineComplete]);
+
   return (
-    <div>
+    <div className={styles.wrapper}>
       <div>Current value: {value}</div>
       <div>Index: {focusIndex}</div>
-      <input {...getProps('input')} />
+      <input className={styles.input} {...getProps('input')} />
+
       <button
         onClick={() => {
           setInputValue('');
+          // setItems(US_STATES);
           setValue('');
         }}
       >
@@ -104,14 +95,14 @@ export default function Home() {
         style={{
           position: 'absolute',
           border: '1px solid',
-          display: isOpen && items.length ? 'block' : 'none'
+          display: open && items.length ? 'block' : 'none'
         }}
       >
         {items.map((item, index) => (
           <li
             className={styles.option}
             key={item}
-            style={{ background: focusIndex === index ? '#ccc' : 'none' }}
+            style={{ background: focusIndex === index ? '#0a0' : 'none' }}
             {...getProps('item', { index })}
           >
             {item}
