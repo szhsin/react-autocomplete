@@ -1,12 +1,10 @@
 import type { Feature, ChangeType } from '../common';
-import { CHANGETYPE_SUBMIT, CHANGETYPE_CHANGE, CHANGETYPE_INSERT } from '../common';
 
 const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
   ({ rovingInput } = {}) =>
   ({ _: cxInstance, items, onChange, setInputValue, focusIndex, setFocusIndex, open, setOpen }) => {
     const updateValue = (value: string, type: ChangeType) => {
       cxInstance.b = value;
-      cxInstance.c = type;
       setInputValue(value);
       onChange(value, { type });
     };
@@ -35,22 +33,17 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
     };
 
     return {
-      onItemClick: (_, { index }) => updateAndCloseList(items[index], CHANGETYPE_SUBMIT),
+      onItemClick: (_, { index }) => updateAndCloseList(items[index], 'submit'),
 
       onInputChange: (e) => {
         setFocusIndex(-1);
         setOpen(true);
-        updateValue(
-          e.target.value,
-          (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText'
-            ? CHANGETYPE_INSERT
-            : CHANGETYPE_CHANGE
-        );
+        updateValue(e.target.value, 'input');
       },
 
       onInputClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(items[focusIndex], CHANGETYPE_CHANGE),
+      onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
 
       onKeyDown: ({ key }) => {
         switch (key) {
@@ -69,10 +62,10 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
             }
             break;
           case 'Enter':
-            updateAndCloseList(items[focusIndex], CHANGETYPE_SUBMIT);
+            updateAndCloseList(items[focusIndex], 'submit');
             break;
           case 'Escape':
-            updateAndCloseList(cxInstance.b, CHANGETYPE_CHANGE);
+            updateAndCloseList(cxInstance.b, 'esc');
             break;
         }
       }

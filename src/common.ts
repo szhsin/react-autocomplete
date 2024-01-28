@@ -7,7 +7,7 @@ export interface AutocompleteState {
   setOpen: (value: boolean) => void;
 }
 
-export type ChangeType = 'submit' | 'change' | 'insert';
+export type ChangeType = 'submit' | 'input' | 'blur' | 'esc';
 
 export interface ContextualProps {
   onChange: (value: string, meta: { type: ChangeType }) => void;
@@ -25,11 +25,6 @@ export interface Instance {
    * The most recent value
    */
   b: string;
-  /**
-   * ### INTERNAL API ###
-   * The most recent onChange type
-   */
-  c?: ChangeType;
 }
 
 export interface Contextual extends ContextualProps, AutocompleteState {
@@ -53,7 +48,3 @@ export interface AutocompleteProps<FeatureActions = object> extends Partial<Cont
 }
 
 /// constants
-
-export const CHANGETYPE_SUBMIT = 'submit';
-export const CHANGETYPE_CHANGE = 'change';
-export const CHANGETYPE_INSERT = 'insert';
