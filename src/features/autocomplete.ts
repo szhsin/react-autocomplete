@@ -1,18 +1,18 @@
-import { Feature } from '../common';
+import type { Feature, ChangeType } from '../common';
 
 const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
   ({ rovingInput } = {}) =>
-  ({ _, items, onChange, setInputValue, focusIndex, setFocusIndex, isOpen, setOpen }) => {
-    const updateValue = (value: string) => {
-      _.b = value;
+  ({ _: cxInstance, items, onChange, setInputValue, focusIndex, setFocusIndex, open, setOpen }) => {
+    const updateValue = (value: string, type: ChangeType) => {
+      cxInstance.b = value;
       setInputValue(value);
-      onChange(value);
+      onChange(value, { type });
     };
 
-    const updateAndCloseList = (value: string | undefined) => {
-      if (isOpen) {
+    const updateAndCloseList = (value: string | undefined, type: ChangeType) => {
+      if (open) {
         if (value != null) {
-          updateValue(value);
+          updateValue(value, type);
         }
         setOpen(false);
         setFocusIndex(-1);
@@ -29,43 +29,43 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
         if (++nextIndex >= itemLength) nextIndex = baseIndex;
       }
       setFocusIndex(nextIndex);
-      rovingInput && setInputValue(items[nextIndex] ?? _.b);
+      rovingInput && setInputValue(items[nextIndex] ?? cxInstance.b);
     };
 
     return {
-      onItemClick: ({ index }) => updateAndCloseList(items[index]),
+      onItemClick: (_, { index }) => updateAndCloseList(items[index], 'submit'),
 
-      onInputChange: ({ value }) => {
-        updateValue(value);
+      onInputChange: (e) => {
         setFocusIndex(-1);
         setOpen(true);
+        updateValue(e.target.value, 'input');
       },
 
       onInputClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(items[focusIndex]),
+      onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
 
       onKeyDown: ({ key }) => {
         switch (key) {
           case 'ArrowUp':
-            if (isOpen) {
+            if (open) {
               traverseItems(true);
             } else {
               setOpen(true);
             }
             break;
           case 'ArrowDown':
-            if (isOpen) {
+            if (open) {
               traverseItems(false);
             } else {
               setOpen(true);
             }
             break;
           case 'Enter':
-            updateAndCloseList(items[focusIndex]);
+            updateAndCloseList(items[focusIndex], 'submit');
             break;
           case 'Escape':
-            updateAndCloseList(_.b);
+            updateAndCloseList(cxInstance.b, 'esc');
             break;
         }
       }

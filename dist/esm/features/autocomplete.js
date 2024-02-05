@@ -1,24 +1,26 @@
 const autocomplete = ({
   rovingInput
 } = {}) => ({
-  _,
+  _: cxInstance,
   items,
   onChange,
   setInputValue,
   focusIndex,
   setFocusIndex,
-  isOpen,
+  open,
   setOpen
 }) => {
-  const updateValue = value => {
-    _.b = value;
+  const updateValue = (value, type) => {
+    cxInstance.b = value;
     setInputValue(value);
-    onChange(value);
+    onChange(value, {
+      type
+    });
   };
-  const updateAndCloseList = value => {
-    if (isOpen) {
+  const updateAndCloseList = (value, type) => {
+    if (open) {
       if (value != null) {
-        updateValue(value);
+        updateValue(value, type);
       }
       setOpen(false);
       setFocusIndex(-1);
@@ -35,44 +37,42 @@ const autocomplete = ({
       if (++nextIndex >= itemLength) nextIndex = baseIndex;
     }
     setFocusIndex(nextIndex);
-    rovingInput && setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : _.b);
+    rovingInput && setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
   };
   return {
-    onItemClick: ({
+    onItemClick: (_, {
       index
-    }) => updateAndCloseList(items[index]),
-    onInputChange: ({
-      value
-    }) => {
-      updateValue(value);
+    }) => updateAndCloseList(items[index], 'submit'),
+    onInputChange: e => {
       setFocusIndex(-1);
       setOpen(true);
+      updateValue(e.target.value, 'input');
     },
     onInputClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(items[focusIndex]),
+    onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
     onKeyDown: ({
       key
     }) => {
       switch (key) {
         case 'ArrowUp':
-          if (isOpen) {
+          if (open) {
             traverseItems(true);
           } else {
             setOpen(true);
           }
           break;
         case 'ArrowDown':
-          if (isOpen) {
+          if (open) {
             traverseItems(false);
           } else {
             setOpen(true);
           }
           break;
         case 'Enter':
-          updateAndCloseList(items[focusIndex]);
+          updateAndCloseList(items[focusIndex], 'submit');
           break;
         case 'Escape':
-          updateAndCloseList(_.b);
+          updateAndCloseList(cxInstance.b, 'esc');
           break;
       }
     }

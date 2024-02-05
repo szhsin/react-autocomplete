@@ -1,4 +1,16 @@
+.wrapper {
+  font-size: 20px;
+}
+
+.input {
+  font-size: 24px;
+}
+
+.input::selection {
+  background-color: rgb(222, 146, 6);
+}
+
 .option:hover {
   background-color: #777 !important;
-  color: red;
+  color: rgb(163, 210, 42);
 }

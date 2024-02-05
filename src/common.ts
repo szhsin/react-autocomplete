@@ -1,14 +1,16 @@
+/// types
 export interface AutocompleteState {
-  inputValue: string;
   setInputValue: (value: string) => void;
   focusIndex: number;
   setFocusIndex: (value: number) => void;
-  isOpen: boolean;
+  open: boolean;
   setOpen: (value: boolean) => void;
 }
 
-interface ContextualProps {
-  onChange: (value: string) => void;
+export type ChangeType = 'submit' | 'input' | 'blur' | 'esc';
+
+export interface ContextualProps {
+  onChange: (value: string, meta: { type: ChangeType }) => void;
   items: string[];
 }
 
@@ -26,22 +28,23 @@ export interface Instance {
 }
 
 export interface Contextual extends ContextualProps, AutocompleteState {
+  inputRef: React.RefObject<HTMLInputElement>;
   /**
    * ### INTERNAL API ###
    */
   _: Instance;
 }
 
-type FeatureEventHandler<E> = (event: E) => void;
+export type Feature<Actions = object> = (cx: Contextual) => {
+  onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onInputClick?: React.MouseEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  onItemClick?: (event: React.MouseEvent<HTMLElement>, props: { index: number }) => void;
+} & Actions;
 
-export type Feature = (cx: Contextual) => {
-  onInputChange?: FeatureEventHandler<{ value: string }>;
-  onInputClick?: () => void;
-  onBlur?: () => void;
-  onKeyDown?: FeatureEventHandler<{ key: string }>;
-  onItemClick?: FeatureEventHandler<{ index: number }>;
-};
-
-export interface AutocompleteProps extends Partial<ContextualProps> {
-  feature?: Feature;
+export interface AutocompleteProps<FeatureActions = object> extends Partial<ContextualProps> {
+  feature?: Feature<FeatureActions>;
 }
+
+/// constants
