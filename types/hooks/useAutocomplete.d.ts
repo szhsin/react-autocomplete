@@ -6,13 +6,12 @@ interface GetProps {
         index?: number;
     }, HTMLAttributes<HTMLElement>];
 }
-declare const useAutocomplete: ({ feature, items, onChange }: AutocompleteProps) => {
-    inputValue: string;
+declare const useAutocomplete: <FeatureActions = object>({ feature: useFeature, items, onChange }: AutocompleteProps<FeatureActions>) => {
     setInputValue: (value: string) => void;
     focusIndex: number;
     setFocusIndex: (value: number) => void;
-    isOpen: boolean;
+    open: boolean;
     setOpen: (value: boolean) => void;
     getProps: <T extends keyof GetProps>(elementType: T, option?: GetProps[T][0] | undefined) => GetProps[T][1];
-};
+} & FeatureActions;
 export { useAutocomplete };

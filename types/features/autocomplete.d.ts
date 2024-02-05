@@ -1,4 +1,4 @@
-import { Feature } from '../common';
+import type { Feature } from '../common';
 declare const autocomplete: (props?: {
     rovingInput?: boolean;
 }) => Feature;
