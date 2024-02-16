@@ -9,7 +9,8 @@ const useAutocomplete = ({
   const [open, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
   const [instance] = useState({
-    b: ''
+    b: '',
+    c: []
   });
   const setInputValue = useCallback(value => {
     const input = inputRef.current;
@@ -24,6 +25,7 @@ const useAutocomplete = ({
   };
   const {
     onInputChange,
+    onInputSelect,
     onInputClick,
     onBlur,
     onKeyDown,
@@ -39,6 +41,7 @@ const useAutocomplete = ({
   const getInputProps = () => ({
     ref: inputRef,
     onChange: onInputChange,
+    onSelect: onInputSelect,
     onClick: onInputClick,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
     onKeyDown: e => {

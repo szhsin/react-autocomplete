@@ -17,7 +17,7 @@ const useAutocomplete = <FeatureActions = object>({
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
-  const [instance] = useState<Instance>({ b: '' });
+  const [instance] = useState<Instance>({ b: '', c: [] });
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;
@@ -32,17 +32,19 @@ const useAutocomplete = <FeatureActions = object>({
     setOpen
   };
 
-  const { onInputChange, onInputClick, onBlur, onKeyDown, onItemClick, ...actions } = useFeature({
-    _: instance,
-    items,
-    onChange,
-    inputRef,
-    ...state
-  });
+  const { onInputChange, onInputSelect, onInputClick, onBlur, onKeyDown, onItemClick, ...actions } =
+    useFeature({
+      _: instance,
+      items,
+      onChange,
+      inputRef,
+      ...state
+    });
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
     ref: inputRef,
     onChange: onInputChange,
+    onSelect: onInputSelect,
     onClick: onInputClick,
     onBlur: (e) => !instance.a && onBlur?.(e),
     onKeyDown: (e) => {

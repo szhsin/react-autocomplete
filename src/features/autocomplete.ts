@@ -1,8 +1,18 @@
 import type { Feature, ChangeType } from '../common';
 
-const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
-  ({ rovingInput } = {}) =>
-  ({ _: cxInstance, items, onChange, setInputValue, focusIndex, setFocusIndex, open, setOpen }) => {
+const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) => Feature =
+  ({ rovingText, traverseInput } = {}) =>
+  ({
+    _: cxInstance,
+    items,
+    onChange,
+    setInputValue,
+    focusIndex,
+    setFocusIndex,
+    open,
+    setOpen,
+    inputRef
+  }) => {
     const updateValue = (value: string, type: ChangeType) => {
       cxInstance.b = value;
       setInputValue(value);
@@ -20,7 +30,7 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
     };
 
     const traverseItems = (isUp: boolean) => {
-      const baseIndex = rovingInput ? -1 : 0;
+      const baseIndex = traverseInput ?? rovingText ? -1 : 0;
       let nextIndex = focusIndex;
       const itemLength = items.length;
       if (isUp) {
@@ -29,7 +39,11 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
         if (++nextIndex >= itemLength) nextIndex = baseIndex;
       }
       setFocusIndex(nextIndex);
-      rovingInput && setInputValue(items[nextIndex] ?? cxInstance.b);
+      if (rovingText) {
+        setInputValue(items[nextIndex] ?? cxInstance.b);
+        const input = inputRef.current!;
+        cxInstance.c = [input.selectionStart, input.selectionEnd];
+      }
     };
 
     return {
@@ -39,6 +53,15 @@ const autocomplete: (props?: { rovingInput?: boolean }) => Feature =
         setFocusIndex(-1);
         setOpen(true);
         updateValue(e.target.value, 'input');
+      },
+
+      onInputSelect: (e) => {
+        const { value, selectionStart, selectionEnd } = e.target as HTMLInputElement;
+        const [start, end] = cxInstance.c;
+        if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
+          setFocusIndex(-1);
+          updateValue(value, 'input');
+        }
       },
 
       onInputClick: () => setOpen(true),

@@ -25,6 +25,11 @@ export interface Instance {
    * The most recent value
    */
   b: string;
+  /**
+   * ### INTERNAL API ###
+   * The last recorded selection position
+   */
+  c: [number | null, number | null] | [];
 }
 
 export interface Contextual extends ContextualProps, AutocompleteState {
@@ -38,6 +43,7 @@ export interface Contextual extends ContextualProps, AutocompleteState {
 export type Feature<Actions = object> = (cx: Contextual) => {
   onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
   onInputClick?: React.MouseEventHandler<HTMLInputElement>;
+  onInputSelect?: React.ReactEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   onItemClick?: (event: React.MouseEvent<HTMLElement>, props: { index: number }) => void;
