@@ -2,19 +2,9 @@ import type { Feature } from '../common';
 export interface Instance {
     /**
      * ### INTERNAL API ###
-     * action mapper
-     */
-    a: [number, () => void] | [];
-    /**
-     * ### INTERNAL API ###
-     * The most recent focus index
-     */
-    b?: number;
-    /**
-     * ### INTERNAL API ###
      * Whether the last value change is "insertText"
      */
-    c?: boolean;
+    c?: boolean | 0 | 1;
 }
 declare const supercomplete: () => Feature<{
     inlineComplete: (props: {

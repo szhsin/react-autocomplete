@@ -11,7 +11,8 @@ const useAutocomplete = ({
   const [open, setOpen] = react.useState(false);
   const [focusIndex, setFocusIndex] = react.useState(-1);
   const [instance] = react.useState({
-    b: ''
+    b: '',
+    c: []
   });
   const setInputValue = react.useCallback(value => {
     const input = inputRef.current;
@@ -26,6 +27,7 @@ const useAutocomplete = ({
   };
   const {
     onInputChange,
+    onInputSelect,
     onInputClick,
     onBlur,
     onKeyDown,
@@ -41,6 +43,7 @@ const useAutocomplete = ({
   const getInputProps = () => ({
     ref: inputRef,
     onChange: onInputChange,
+    onSelect: onInputSelect,
     onClick: onInputClick,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
     onKeyDown: e => {
@@ -80,7 +83,8 @@ const useAutocomplete = ({
 };
 
 const autocomplete = ({
-  rovingInput
+  rovingText,
+  traverseInput
 } = {}) => ({
   _: cxInstance,
   items,
@@ -89,7 +93,8 @@ const autocomplete = ({
   focusIndex,
   setFocusIndex,
   open,
-  setOpen
+  setOpen,
+  inputRef
 }) => {
   const updateValue = (value, type) => {
     cxInstance.b = value;
@@ -108,8 +113,7 @@ const autocomplete = ({
     }
   };
   const traverseItems = isUp => {
-    var _items$nextIndex;
-    const baseIndex = rovingInput ? -1 : 0;
+    const baseIndex = (traverseInput != null ? traverseInput : rovingText) ? -1 : 0;
     let nextIndex = focusIndex;
     const itemLength = items.length;
     if (isUp) {
@@ -118,7 +122,12 @@ const autocomplete = ({
       if (++nextIndex >= itemLength) nextIndex = baseIndex;
     }
     setFocusIndex(nextIndex);
-    rovingInput && setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
+    if (rovingText) {
+      var _items$nextIndex;
+      setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
+      const input = inputRef.current;
+      cxInstance.c = [input.selectionStart, input.selectionEnd];
+    }
   };
   return {
     onItemClick: (_, {
@@ -128,6 +137,18 @@ const autocomplete = ({
       setFocusIndex(-1);
       setOpen(true);
       updateValue(e.target.value, 'input');
+    },
+    onInputSelect: e => {
+      const {
+        value,
+        selectionStart,
+        selectionEnd
+      } = e.target;
+      const [start, end] = cxInstance.c;
+      if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
+        setFocusIndex(-1);
+        updateValue(value, 'input');
+      }
     },
     onInputClick: () => setOpen(true),
     onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
@@ -161,67 +182,37 @@ const autocomplete = ({
 };
 
 const supercomplete = () => {
-  const base = autocomplete({
-    rovingInput: true
+  const useAutocomplete = autocomplete({
+    rovingText: true
   });
-  return ({
-    setFocusIndex: _setFocusIndex,
-    onChange: _onChange,
-    ...cx
-  }) => {
-    const [instance] = react.useState({
-      a: []
-    });
-    const setFocusIndex = react.useCallback(value => {
-      instance.b = value;
-      _setFocusIndex(value);
-    }, [instance, _setFocusIndex]);
-    const onChange = (value, meta) => {
-      if (meta.type !== 'input') {
-        instance.c = false;
-        instance.a = [];
-      }
-      _onChange(value, meta);
-    };
-    const baseFeature = base({
-      ...cx,
-      setFocusIndex,
-      onChange
-    });
+  return cx => {
+    const autocompleteFeature = useAutocomplete(cx);
+    const [instance] = react.useState({});
     const {
       inputRef,
       setInputValue,
+      setFocusIndex,
       _: cxInstance
     } = cx;
     return {
-      ...baseFeature,
+      ...autocompleteFeature,
       onInputChange: e => {
         instance.c = e.nativeEvent.inputType === 'insertText';
-        if (!instance.c) instance.a = [];
-        baseFeature.onInputChange(e);
-      },
-      onKeyDown: e => {
-        baseFeature.onKeyDown(e);
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-          const [index, action] = instance.a;
-          if (instance.b === index) action == null || action();
-        }
+        autocompleteFeature.onInputChange(e);
       },
       inlineComplete: react.useCallback(({
         index,
         value
       }) => {
         if (instance.c) {
-          const action = () => {
-            var _inputRef$current;
-            setFocusIndex(index);
-            const valueLength = cxInstance.b.length;
-            const newValue = cxInstance.b + value.slice(valueLength);
-            setInputValue(newValue);
-            (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(valueLength, value.length);
-          };
-          action();
-          instance.a = [index, action];
+          var _inputRef$current;
+          instance.c = 0;
+          setFocusIndex(index);
+          const start = cxInstance.b.length;
+          const end = value.length;
+          setInputValue(cxInstance.b + value.slice(start));
+          cxInstance.c = [start, end];
+          (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
       }, [cxInstance, instance, inputRef, setFocusIndex, setInputValue])
     };

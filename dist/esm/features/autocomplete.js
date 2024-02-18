@@ -1,5 +1,6 @@
 const autocomplete = ({
-  rovingInput
+  rovingText,
+  traverseInput
 } = {}) => ({
   _: cxInstance,
   items,
@@ -8,7 +9,8 @@ const autocomplete = ({
   focusIndex,
   setFocusIndex,
   open,
-  setOpen
+  setOpen,
+  inputRef
 }) => {
   const updateValue = (value, type) => {
     cxInstance.b = value;
@@ -27,8 +29,7 @@ const autocomplete = ({
     }
   };
   const traverseItems = isUp => {
-    var _items$nextIndex;
-    const baseIndex = rovingInput ? -1 : 0;
+    const baseIndex = (traverseInput != null ? traverseInput : rovingText) ? -1 : 0;
     let nextIndex = focusIndex;
     const itemLength = items.length;
     if (isUp) {
@@ -37,7 +38,12 @@ const autocomplete = ({
       if (++nextIndex >= itemLength) nextIndex = baseIndex;
     }
     setFocusIndex(nextIndex);
-    rovingInput && setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
+    if (rovingText) {
+      var _items$nextIndex;
+      setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
+      const input = inputRef.current;
+      cxInstance.c = [input.selectionStart, input.selectionEnd];
+    }
   };
   return {
     onItemClick: (_, {
@@ -47,6 +53,18 @@ const autocomplete = ({
       setFocusIndex(-1);
       setOpen(true);
       updateValue(e.target.value, 'input');
+    },
+    onInputSelect: e => {
+      const {
+        value,
+        selectionStart,
+        selectionEnd
+      } = e.target;
+      const [start, end] = cxInstance.c;
+      if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
+        setFocusIndex(-1);
+        updateValue(value, 'input');
+      }
     },
     onInputClick: () => setOpen(true),
     onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
