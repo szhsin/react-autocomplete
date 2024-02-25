@@ -6,7 +6,10 @@ const supercomplete = () => {
     rovingText: true
   });
   return cx => {
-    const autocompleteFeature = useAutocomplete(cx);
+    const {
+      inputProps,
+      ...rest
+    } = useAutocomplete(cx);
     const [instance] = useState({});
     const {
       inputRef,
@@ -15,10 +18,13 @@ const supercomplete = () => {
       _: cxInstance
     } = cx;
     return {
-      ...autocompleteFeature,
-      onInputChange: e => {
-        instance.c = e.nativeEvent.inputType === 'insertText';
-        autocompleteFeature.onInputChange(e);
+      ...rest,
+      inputProps: {
+        ...inputProps,
+        onChange: e => {
+          instance.c = e.nativeEvent.inputType === 'insertText';
+          inputProps.onChange(e);
+        }
       },
       inlineComplete: useCallback(({
         index,

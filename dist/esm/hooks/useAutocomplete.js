@@ -24,11 +24,11 @@ const useAutocomplete = ({
     setOpen
   };
   const {
-    onInputChange,
-    onInputSelect,
-    onInputClick,
-    onBlur,
-    onKeyDown,
+    inputProps: {
+      onBlur,
+      onKeyDown,
+      ...inputProps
+    },
     onItemClick,
     ...actions
   } = useFeature({
@@ -39,10 +39,7 @@ const useAutocomplete = ({
     ...state
   });
   const getInputProps = () => ({
-    ref: inputRef,
-    onChange: onInputChange,
-    onSelect: onInputSelect,
-    onClick: onInputClick,
+    ...inputProps,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
     onKeyDown: e => {
       const {
@@ -50,7 +47,8 @@ const useAutocomplete = ({
       } = e;
       if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
       onKeyDown == null || onKeyDown(e);
-    }
+    },
+    ref: inputRef
   });
   const getItemProps = ({
     index = -1
