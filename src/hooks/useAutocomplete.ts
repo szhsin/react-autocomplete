@@ -12,7 +12,7 @@ type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetPr
 const useAutocomplete = <FeatureActions = object>({
   feature: useFeature = (() => ({})) as unknown as Feature<FeatureActions>,
   items = [],
-  onChange = () => {}
+  onChange = () => { }
 }: AutocompleteProps<FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ const useAutocomplete = <FeatureActions = object>({
     setOpen
   };
 
-  const { onInputChange, onInputSelect, onInputClick, onBlur, onKeyDown, onItemClick, ...actions } =
+  const { inputProps: { onBlur, onKeyDown, ...inputProps }, onItemClick, ...actions } =
     useFeature({
       _: instance,
       items,
@@ -42,16 +42,14 @@ const useAutocomplete = <FeatureActions = object>({
     });
 
   const getInputProps: GetPropsFunc<'input'> = () => ({
-    ref: inputRef,
-    onChange: onInputChange,
-    onSelect: onInputSelect,
-    onClick: onInputClick,
+    ...inputProps,
     onBlur: (e) => !instance.a && onBlur?.(e),
     onKeyDown: (e) => {
       const { key } = e;
       if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
       onKeyDown?.(e);
-    }
+    },
+    ref: inputRef,
   });
 
   const getItemProps: GetPropsFunc<'item'> = ({ index = -1 } = {}) => ({

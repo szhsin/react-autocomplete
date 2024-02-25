@@ -15,16 +15,19 @@ const supercomplete: () => Feature<{
 }> = () => {
   const useAutocomplete = autocomplete({ rovingText: true });
   return (cx) => {
-    const autocompleteFeature = useAutocomplete(cx);
+    const { inputProps, ...rest } = useAutocomplete(cx);
     const [instance] = useState<Instance>({});
     const { inputRef, setInputValue, setFocusIndex, _: cxInstance } = cx;
 
     return {
-      ...autocompleteFeature,
+      ...rest,
 
-      onInputChange: (e) => {
-        instance.c = (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
-        autocompleteFeature.onInputChange!(e);
+      inputProps: {
+        ...inputProps,
+        onChange: (e) => {
+          instance.c = (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
+          inputProps.onChange!(e);
+        },
       },
 
       inlineComplete: useCallback(

@@ -26,11 +26,11 @@ const useAutocomplete = ({
     setOpen
   };
   const {
-    onInputChange,
-    onInputSelect,
-    onInputClick,
-    onBlur,
-    onKeyDown,
+    inputProps: {
+      onBlur,
+      onKeyDown,
+      ...inputProps
+    },
     onItemClick,
     ...actions
   } = useFeature({
@@ -41,10 +41,7 @@ const useAutocomplete = ({
     ...state
   });
   const getInputProps = () => ({
-    ref: inputRef,
-    onChange: onInputChange,
-    onSelect: onInputSelect,
-    onClick: onInputClick,
+    ...inputProps,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
     onKeyDown: e => {
       const {
@@ -52,7 +49,8 @@ const useAutocomplete = ({
       } = e;
       if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
       onKeyDown == null || onKeyDown(e);
-    }
+    },
+    ref: inputRef
   });
   const getItemProps = ({
     index = -1
@@ -133,49 +131,51 @@ const autocomplete = ({
     onItemClick: (_, {
       index
     }) => updateAndCloseList(items[index], 'submit'),
-    onInputChange: e => {
-      setFocusIndex(-1);
-      setOpen(true);
-      updateValue(e.target.value, 'input');
-    },
-    onInputSelect: e => {
-      const {
-        value,
-        selectionStart,
-        selectionEnd
-      } = e.target;
-      const [start, end] = cxInstance.c;
-      if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
+    inputProps: {
+      onChange: e => {
         setFocusIndex(-1);
-        updateValue(value, 'input');
-      }
-    },
-    onInputClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
-    onKeyDown: ({
-      key
-    }) => {
-      switch (key) {
-        case 'ArrowUp':
-          if (open) {
-            traverseItems(true);
-          } else {
-            setOpen(true);
-          }
-          break;
-        case 'ArrowDown':
-          if (open) {
-            traverseItems(false);
-          } else {
-            setOpen(true);
-          }
-          break;
-        case 'Enter':
-          updateAndCloseList(items[focusIndex], 'submit');
-          break;
-        case 'Escape':
-          updateAndCloseList(cxInstance.b, 'esc');
-          break;
+        setOpen(true);
+        updateValue(e.target.value, 'input');
+      },
+      onSelect: e => {
+        const {
+          value,
+          selectionStart,
+          selectionEnd
+        } = e.target;
+        const [start, end] = cxInstance.c;
+        if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
+          setFocusIndex(-1);
+          updateValue(value, 'input');
+        }
+      },
+      onClick: () => setOpen(true),
+      onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
+      onKeyDown: ({
+        key
+      }) => {
+        switch (key) {
+          case 'ArrowUp':
+            if (open) {
+              traverseItems(true);
+            } else {
+              setOpen(true);
+            }
+            break;
+          case 'ArrowDown':
+            if (open) {
+              traverseItems(false);
+            } else {
+              setOpen(true);
+            }
+            break;
+          case 'Enter':
+            updateAndCloseList(items[focusIndex], 'submit');
+            break;
+          case 'Escape':
+            updateAndCloseList(cxInstance.b, 'esc');
+            break;
+        }
       }
     }
   };
@@ -186,7 +186,10 @@ const supercomplete = () => {
     rovingText: true
   });
   return cx => {
-    const autocompleteFeature = useAutocomplete(cx);
+    const {
+      inputProps,
+      ...rest
+    } = useAutocomplete(cx);
     const [instance] = react.useState({});
     const {
       inputRef,
@@ -195,10 +198,13 @@ const supercomplete = () => {
       _: cxInstance
     } = cx;
     return {
-      ...autocompleteFeature,
-      onInputChange: e => {
-        instance.c = e.nativeEvent.inputType === 'insertText';
-        autocompleteFeature.onInputChange(e);
+      ...rest,
+      inputProps: {
+        ...inputProps,
+        onChange: e => {
+          instance.c = e.nativeEvent.inputType === 'insertText';
+          inputProps.onChange(e);
+        }
       },
       inlineComplete: react.useCallback(({
         index,

@@ -1,4 +1,4 @@
-/// <reference types="react" />
+import type { InputHTMLAttributes } from 'react';
 export interface AutocompleteState {
     setInputValue: (value: string) => void;
     focusIndex: number;
@@ -38,11 +38,7 @@ export interface Contextual extends ContextualProps, AutocompleteState {
     _: Instance;
 }
 export type Feature<Actions = object> = (cx: Contextual) => {
-    onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
-    onInputClick?: React.MouseEventHandler<HTMLInputElement>;
-    onInputSelect?: React.ReactEventHandler<HTMLInputElement>;
-    onBlur?: React.FocusEventHandler<HTMLInputElement>;
-    onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+    inputProps: InputHTMLAttributes<HTMLInputElement>;
     onItemClick?: (event: React.MouseEvent<HTMLElement>, props: {
         index: number;
     }) => void;
