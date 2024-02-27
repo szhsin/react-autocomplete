@@ -1,11 +1,4 @@
-import type { InputHTMLAttributes, HTMLAttributes } from 'react';
-import type { AutocompleteProps } from '../common';
-interface GetProps {
-    input: [never, InputHTMLAttributes<HTMLInputElement>];
-    item: [{
-        index?: number;
-    }, HTMLAttributes<HTMLElement>];
-}
+import type { GetProps, AutocompleteProps } from '../common';
 declare const useAutocomplete: <FeatureActions = object>({ feature: useFeature, items, onChange }: AutocompleteProps<FeatureActions>) => {
     setInputValue: (value: string) => void;
     focusIndex: number;

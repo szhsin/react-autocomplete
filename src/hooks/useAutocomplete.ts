@@ -1,18 +1,18 @@
-import type { InputHTMLAttributes, HTMLAttributes } from 'react';
 import { useState, useRef, useCallback } from 'react';
-import type { AutocompleteProps, AutocompleteState, Instance, Feature } from '../common';
-
-interface GetProps {
-  input: [never, InputHTMLAttributes<HTMLInputElement>];
-  item: [{ index?: number }, HTMLAttributes<HTMLElement>];
-}
-
-type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetProps[T][1];
+import type {
+  GetProps,
+  GetPropsResult,
+  GetPropsFunc,
+  AutocompleteProps,
+  AutocompleteState,
+  Instance,
+  Feature
+} from '../common';
 
 const useAutocomplete = <FeatureActions = object>({
   feature: useFeature = (() => ({})) as unknown as Feature<FeatureActions>,
   items = [],
-  onChange = () => { }
+  onChange = () => {}
 }: AutocompleteProps<FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -32,44 +32,53 @@ const useAutocomplete = <FeatureActions = object>({
     setOpen
   };
 
-  const { inputProps: { onBlur, onKeyDown, ...inputProps }, onItemClick, ...actions } =
-    useFeature({
-      _: instance,
-      items,
-      onChange,
-      inputRef,
-      ...state
-    });
+  const { getProps: getFeatureProps, ...actions } = useFeature({
+    _: instance,
+    items,
+    onChange,
+    inputRef,
+    ...state
+  });
 
-  const getInputProps: GetPropsFunc<'input'> = () => ({
-    ...inputProps,
+  const { onBlur, onKeyDown, ...featureInputProps } = getFeatureProps('input');
+
+  const inputProps: GetPropsResult<'input'> = {
+    ...featureInputProps,
     onBlur: (e) => !instance.a && onBlur?.(e),
     onKeyDown: (e) => {
       const { key } = e;
       if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
       onKeyDown?.(e);
     },
-    ref: inputRef,
-  });
+    ref: inputRef
+  } as GetPropsResult<'input'>;
 
-  const getItemProps: GetPropsFunc<'item'> = ({ index = -1 } = {}) => ({
-    onMouseDown: () => (instance.a = 1),
-    onClick: (e) => {
-      onItemClick?.(e, { index });
-      inputRef.current?.focus();
-      instance.a = 0;
-    }
-  });
+  const getItemProps: GetPropsFunc<'item'> = (option) => {
+    const { onMouseDown, onClick, ...featureItemProps } = getFeatureProps('item', option);
+    return {
+      ...featureItemProps,
+      onMouseDown: (e) => {
+        onMouseDown?.(e);
+        instance.a = 1;
+      },
+      onClick: (e) => {
+        onClick?.(e);
+        inputRef.current?.focus();
+        instance.a = 0;
+      }
+    };
+  };
 
   const getProps: <T extends keyof GetProps>(
     elementType: T,
     option?: GetProps[T][0]
   ) => GetProps[T][1] = (elementType, option) => {
     switch (elementType) {
-      case 'input':
-        return getInputProps();
-      default:
+      case 'item':
         return getItemProps(option);
+      case 'input':
+      default:
+        return inputProps;
     }
   };
 

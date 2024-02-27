@@ -45,55 +45,64 @@ const autocomplete = ({
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
   };
-  return {
-    onItemClick: (_, {
-      index
-    }) => updateAndCloseList(items[index], 'submit'),
-    inputProps: {
-      onChange: e => {
+  const inputProps = {
+    onChange: e => {
+      setFocusIndex(-1);
+      setOpen(true);
+      updateValue(e.target.value, 'input');
+    },
+    onSelect: e => {
+      const {
+        value,
+        selectionStart,
+        selectionEnd
+      } = e.target;
+      const [start, end] = cxInstance.c;
+      if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
         setFocusIndex(-1);
-        setOpen(true);
-        updateValue(e.target.value, 'input');
-      },
-      onSelect: e => {
-        const {
-          value,
-          selectionStart,
-          selectionEnd
-        } = e.target;
-        const [start, end] = cxInstance.c;
-        if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
-          setFocusIndex(-1);
-          updateValue(value, 'input');
-        }
-      },
-      onClick: () => setOpen(true),
-      onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
-      onKeyDown: ({
-        key
-      }) => {
-        switch (key) {
-          case 'ArrowUp':
-            if (open) {
-              traverseItems(true);
-            } else {
-              setOpen(true);
-            }
-            break;
-          case 'ArrowDown':
-            if (open) {
-              traverseItems(false);
-            } else {
-              setOpen(true);
-            }
-            break;
-          case 'Enter':
-            updateAndCloseList(items[focusIndex], 'submit');
-            break;
-          case 'Escape':
-            updateAndCloseList(cxInstance.b, 'esc');
-            break;
-        }
+        updateValue(value, 'input');
+      }
+    },
+    onClick: () => setOpen(true),
+    onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
+    onKeyDown: ({
+      key
+    }) => {
+      switch (key) {
+        case 'ArrowUp':
+          if (open) {
+            traverseItems(true);
+          } else {
+            setOpen(true);
+          }
+          break;
+        case 'ArrowDown':
+          if (open) {
+            traverseItems(false);
+          } else {
+            setOpen(true);
+          }
+          break;
+        case 'Enter':
+          updateAndCloseList(items[focusIndex], 'submit');
+          break;
+        case 'Escape':
+          updateAndCloseList(cxInstance.b, 'esc');
+          break;
+      }
+    }
+  };
+  const getItemProps = option => ({
+    onClick: () => updateAndCloseList(items[option.index], 'submit')
+  });
+  return {
+    getProps: (elementType, option) => {
+      switch (elementType) {
+        case 'item':
+          return getItemProps(option);
+        case 'input':
+        default:
+          return inputProps;
       }
     }
   };

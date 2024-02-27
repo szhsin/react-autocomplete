@@ -7,7 +7,7 @@ const supercomplete = () => {
   });
   return cx => {
     const {
-      inputProps,
+      getProps: _getProps,
       ...rest
     } = useAutocomplete(cx);
     const [instance] = useState({});
@@ -19,11 +19,18 @@ const supercomplete = () => {
     } = cx;
     return {
       ...rest,
-      inputProps: {
-        ...inputProps,
-        onChange: e => {
-          instance.c = e.nativeEvent.inputType === 'insertText';
-          inputProps.onChange(e);
+      getProps: (elementType, option) => {
+        if (elementType === 'input') {
+          const inputProps = _getProps(elementType);
+          return {
+            ...inputProps,
+            onChange: e => {
+              instance.c = e.nativeEvent.inputType === 'insertText';
+              inputProps.onChange(e);
+            }
+          };
+        } else {
+          return _getProps(elementType, option);
         }
       },
       inlineComplete: useCallback(({
