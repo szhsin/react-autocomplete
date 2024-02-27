@@ -3,13 +3,9 @@ import type { HTMLAttributes, InputHTMLAttributes } from 'react';
 /// types
 
 export interface GetProps {
-  input: [never, InputHTMLAttributes<HTMLInputElement>];
-  item: [{ index?: number }, HTMLAttributes<HTMLElement>];
+  getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
+  getItemProps: (option?: { index?: number }) => HTMLAttributes<HTMLElement>;
 }
-
-export type GetPropsResult<T extends keyof GetProps> = GetProps[T][1];
-
-export type GetPropsFunc<T extends keyof GetProps> = (option?: GetProps[T][0]) => GetPropsResult<T>;
 
 export interface AutocompleteState {
   setInputValue: (value: string) => void;
@@ -52,12 +48,10 @@ export interface Contextual extends ContextualProps, AutocompleteState {
   _: Instance;
 }
 
-export type Feature<Actions = object> = (cx: Contextual) => {
-  getProps: <T extends keyof GetProps>(elementType: T, option?: GetProps[T][0]) => GetProps[T][1];
-} & Actions;
+export type Feature<Actions = object> = (cx: Contextual) => GetProps & Actions;
 
 export interface AutocompleteProps<FeatureActions = object> extends Partial<ContextualProps> {
-  feature?: Feature<FeatureActions>;
+  feature: Feature<FeatureActions>;
 }
 
 /// constants

@@ -61,16 +61,19 @@ export default function Home() {
   // const [myinput, setmyinput] = useState('');
   // const [items, setItems] = useState(US_STATES);
 
-  const { getProps, setInputValue, open, focusIndex, inlineComplete } = useAutocomplete({
-    items,
-    onChange: (value) => {
-      setValue(value);
-      const items = US_STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase()));
-      // setItems(items);
-      items.length && inlineComplete({ index: 0, value: items[0] });
-    },
-    feature: supercomplete()
-  });
+  const { getInputProps, getItemProps, setInputValue, open, focusIndex, inlineComplete } =
+    useAutocomplete({
+      items,
+      onChange: (value) => {
+        setValue(value);
+        const items = US_STATES.filter((item) =>
+          item.toLowerCase().startsWith(value.toLowerCase())
+        );
+        // setItems(items);
+        items.length && inlineComplete({ value: items[0] });
+      },
+      feature: supercomplete()
+    });
 
   // useEffect(() => {
   //   items.length && inlineComplete({ index: 0, value: items[0] });
@@ -80,7 +83,7 @@ export default function Home() {
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
       <div>Index: {focusIndex}</div>
-      <input className={styles.input} {...getProps('input')} />
+      <input className={styles.input} {...getInputProps()} />
 
       <button
         onClick={() => {
@@ -103,7 +106,7 @@ export default function Home() {
             className={styles.option}
             key={item}
             style={{ background: focusIndex === index ? '#0a0' : 'none' }}
-            {...getProps('item', { index })}
+            {...getItemProps({ index })}
           >
             {item}
           </li>
