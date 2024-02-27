@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { Feature } from '../common';
+import type { Feature, GetPropsResult } from '../common';
 import { autocomplete } from './autocomplete';
 
 export interface Instance {
@@ -15,19 +15,27 @@ const supercomplete: () => Feature<{
 }> = () => {
   const useAutocomplete = autocomplete({ rovingText: true });
   return (cx) => {
-    const { inputProps, ...rest } = useAutocomplete(cx);
+    const { getProps: _getProps, ...rest } = useAutocomplete(cx);
     const [instance] = useState<Instance>({});
     const { inputRef, setInputValue, setFocusIndex, _: cxInstance } = cx;
 
     return {
       ...rest,
 
-      inputProps: {
-        ...inputProps,
-        onChange: (e) => {
-          instance.c = (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
-          inputProps.onChange!(e);
-        },
+      getProps: (elementType, option) => {
+        if (elementType === 'input') {
+          const inputProps = _getProps(elementType);
+          return {
+            ...inputProps,
+            onChange: (e) => {
+              instance.c =
+                (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
+              inputProps.onChange!(e);
+            }
+          } as GetPropsResult<'input'>;
+        } else {
+          return _getProps(elementType, option);
+        }
       },
 
       inlineComplete: useCallback(
