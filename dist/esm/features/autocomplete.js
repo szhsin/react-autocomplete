@@ -45,7 +45,7 @@ const autocomplete = ({
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
   };
-  const inputProps = {
+  const getInputProps = () => ({
     onChange: e => {
       setFocusIndex(-1);
       setOpen(true);
@@ -91,20 +91,13 @@ const autocomplete = ({
           break;
       }
     }
-  };
+  });
   const getItemProps = option => ({
-    onClick: () => updateAndCloseList(items[option.index], 'submit')
+    onClick: () => updateAndCloseList(items[option == null ? void 0 : option.index], 'submit')
   });
   return {
-    getProps: (elementType, option) => {
-      switch (elementType) {
-        case 'item':
-          return getItemProps(option);
-        case 'input':
-        default:
-          return inputProps;
-      }
-    }
+    getInputProps,
+    getItemProps
   };
 };
 

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { Feature, GetPropsResult } from '../common';
+import type { Feature } from '../common';
 import { autocomplete } from './autocomplete';
 
 export interface Instance {
@@ -11,35 +11,31 @@ export interface Instance {
 }
 
 const supercomplete: () => Feature<{
-  inlineComplete: (props: { index: number; value: string }) => void;
+  inlineComplete: (props: { index?: number; value: string }) => void;
 }> = () => {
   const useAutocomplete = autocomplete({ rovingText: true });
   return (cx) => {
-    const { getProps: _getProps, ...rest } = useAutocomplete(cx);
+    const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
     const [instance] = useState<Instance>({});
     const { inputRef, setInputValue, setFocusIndex, _: cxInstance } = cx;
 
     return {
       ...rest,
 
-      getProps: (elementType, option) => {
-        if (elementType === 'input') {
-          const inputProps = _getProps(elementType);
-          return {
-            ...inputProps,
-            onChange: (e) => {
-              instance.c =
-                (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
-              inputProps.onChange!(e);
-            }
-          } as GetPropsResult<'input'>;
-        } else {
-          return _getProps(elementType, option);
-        }
+      getInputProps: () => {
+        const inputProps = _getInputProps();
+        return {
+          ...inputProps,
+          onChange: (e) => {
+            instance.c =
+              (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
+            inputProps.onChange!(e);
+          }
+        };
       },
 
       inlineComplete: useCallback(
-        ({ index, value }) => {
+        ({ index = 0, value }) => {
           if (instance.c) {
             instance.c = 0;
             setFocusIndex(index);

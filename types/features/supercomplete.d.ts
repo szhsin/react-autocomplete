@@ -8,7 +8,7 @@ export interface Instance {
 }
 declare const supercomplete: () => Feature<{
     inlineComplete: (props: {
-        index: number;
+        index?: number;
         value: string;
     }) => void;
 }>;

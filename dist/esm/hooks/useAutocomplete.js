@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 
 const useAutocomplete = ({
-  feature: useFeature = () => ({}),
+  feature: useFeature,
   items = [],
   onChange = () => {}
 }) => {
@@ -24,7 +24,8 @@ const useAutocomplete = ({
     setOpen
   };
   const {
-    getProps: getFeatureProps,
+    getInputProps: _getInputProps,
+    getItemProps: _getItemProps,
     ...actions
   } = useFeature({
     _: instance,
@@ -37,8 +38,8 @@ const useAutocomplete = ({
     onBlur,
     onKeyDown,
     ...featureInputProps
-  } = getFeatureProps('input');
-  const inputProps = {
+  } = _getInputProps();
+  const getInputProps = () => ({
     ...featureInputProps,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
     onKeyDown: e => {
@@ -49,13 +50,13 @@ const useAutocomplete = ({
       onKeyDown == null || onKeyDown(e);
     },
     ref: inputRef
-  };
+  });
   const getItemProps = option => {
     const {
       onMouseDown,
       onClick,
       ...featureItemProps
-    } = getFeatureProps('item', option);
+    } = _getItemProps(option);
     return {
       ...featureItemProps,
       onMouseDown: e => {
@@ -70,17 +71,9 @@ const useAutocomplete = ({
       }
     };
   };
-  const getProps = (elementType, option) => {
-    switch (elementType) {
-      case 'item':
-        return getItemProps(option);
-      case 'input':
-      default:
-        return inputProps;
-    }
-  };
   return {
-    getProps,
+    getInputProps,
+    getItemProps,
     ...state,
     ...actions
   };

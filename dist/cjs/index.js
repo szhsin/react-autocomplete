@@ -3,7 +3,7 @@
 var react = require('react');
 
 const useAutocomplete = ({
-  feature: useFeature = () => ({}),
+  feature: useFeature,
   items = [],
   onChange = () => {}
 }) => {
@@ -26,7 +26,8 @@ const useAutocomplete = ({
     setOpen
   };
   const {
-    getProps: getFeatureProps,
+    getInputProps: _getInputProps,
+    getItemProps: _getItemProps,
     ...actions
   } = useFeature({
     _: instance,
@@ -39,8 +40,8 @@ const useAutocomplete = ({
     onBlur,
     onKeyDown,
     ...featureInputProps
-  } = getFeatureProps('input');
-  const inputProps = {
+  } = _getInputProps();
+  const getInputProps = () => ({
     ...featureInputProps,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
     onKeyDown: e => {
@@ -51,13 +52,13 @@ const useAutocomplete = ({
       onKeyDown == null || onKeyDown(e);
     },
     ref: inputRef
-  };
+  });
   const getItemProps = option => {
     const {
       onMouseDown,
       onClick,
       ...featureItemProps
-    } = getFeatureProps('item', option);
+    } = _getItemProps(option);
     return {
       ...featureItemProps,
       onMouseDown: e => {
@@ -72,17 +73,9 @@ const useAutocomplete = ({
       }
     };
   };
-  const getProps = (elementType, option) => {
-    switch (elementType) {
-      case 'item':
-        return getItemProps(option);
-      case 'input':
-      default:
-        return inputProps;
-    }
-  };
   return {
-    getProps,
+    getInputProps,
+    getItemProps,
     ...state,
     ...actions
   };
@@ -135,7 +128,7 @@ const autocomplete = ({
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
   };
-  const inputProps = {
+  const getInputProps = () => ({
     onChange: e => {
       setFocusIndex(-1);
       setOpen(true);
@@ -181,20 +174,13 @@ const autocomplete = ({
           break;
       }
     }
-  };
+  });
   const getItemProps = option => ({
-    onClick: () => updateAndCloseList(items[option.index], 'submit')
+    onClick: () => updateAndCloseList(items[option == null ? void 0 : option.index], 'submit')
   });
   return {
-    getProps: (elementType, option) => {
-      switch (elementType) {
-        case 'item':
-          return getItemProps(option);
-        case 'input':
-        default:
-          return inputProps;
-      }
-    }
+    getInputProps,
+    getItemProps
   };
 };
 
@@ -204,7 +190,7 @@ const supercomplete = () => {
   });
   return cx => {
     const {
-      getProps: _getProps,
+      getInputProps: _getInputProps,
       ...rest
     } = useAutocomplete(cx);
     const [instance] = react.useState({});
@@ -216,22 +202,18 @@ const supercomplete = () => {
     } = cx;
     return {
       ...rest,
-      getProps: (elementType, option) => {
-        if (elementType === 'input') {
-          const inputProps = _getProps(elementType);
-          return {
-            ...inputProps,
-            onChange: e => {
-              instance.c = e.nativeEvent.inputType === 'insertText';
-              inputProps.onChange(e);
-            }
-          };
-        } else {
-          return _getProps(elementType, option);
-        }
+      getInputProps: () => {
+        const inputProps = _getInputProps();
+        return {
+          ...inputProps,
+          onChange: e => {
+            instance.c = e.nativeEvent.inputType === 'insertText';
+            inputProps.onChange(e);
+          }
+        };
       },
       inlineComplete: react.useCallback(({
-        index,
+        index = 0,
         value
       }) => {
         if (instance.c) {

@@ -1,16 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
-import type {
-  GetProps,
-  GetPropsResult,
-  GetPropsFunc,
-  AutocompleteProps,
-  AutocompleteState,
-  Instance,
-  Feature
-} from '../common';
+import type { GetProps, AutocompleteProps, AutocompleteState, Instance } from '../common';
 
-const useAutocomplete = <FeatureActions = object>({
-  feature: useFeature = (() => ({})) as unknown as Feature<FeatureActions>,
+const useAutocomplete = <FeatureActions>({
+  feature: useFeature,
   items = [],
   onChange = () => {}
 }: AutocompleteProps<FeatureActions>) => {
@@ -32,7 +24,11 @@ const useAutocomplete = <FeatureActions = object>({
     setOpen
   };
 
-  const { getProps: getFeatureProps, ...actions } = useFeature({
+  const {
+    getInputProps: _getInputProps,
+    getItemProps: _getItemProps,
+    ...actions
+  } = useFeature({
     _: instance,
     items,
     onChange,
@@ -40,9 +36,9 @@ const useAutocomplete = <FeatureActions = object>({
     ...state
   });
 
-  const { onBlur, onKeyDown, ...featureInputProps } = getFeatureProps('input');
+  const { onBlur, onKeyDown, ...featureInputProps } = _getInputProps();
 
-  const inputProps: GetPropsResult<'input'> = {
+  const getInputProps: GetProps['getInputProps'] = () => ({
     ...featureInputProps,
     onBlur: (e) => !instance.a && onBlur?.(e),
     onKeyDown: (e) => {
@@ -51,10 +47,10 @@ const useAutocomplete = <FeatureActions = object>({
       onKeyDown?.(e);
     },
     ref: inputRef
-  } as GetPropsResult<'input'>;
+  });
 
-  const getItemProps: GetPropsFunc<'item'> = (option) => {
-    const { onMouseDown, onClick, ...featureItemProps } = getFeatureProps('item', option);
+  const getItemProps: GetProps['getItemProps'] = (option) => {
+    const { onMouseDown, onClick, ...featureItemProps } = _getItemProps(option);
     return {
       ...featureItemProps,
       onMouseDown: (e) => {
@@ -69,21 +65,9 @@ const useAutocomplete = <FeatureActions = object>({
     };
   };
 
-  const getProps: <T extends keyof GetProps>(
-    elementType: T,
-    option?: GetProps[T][0]
-  ) => GetProps[T][1] = (elementType, option) => {
-    switch (elementType) {
-      case 'item':
-        return getItemProps(option);
-      case 'input':
-      default:
-        return inputProps;
-    }
-  };
-
   return {
-    getProps,
+    getInputProps,
+    getItemProps,
     ...state,
     ...(actions as FeatureActions)
   };

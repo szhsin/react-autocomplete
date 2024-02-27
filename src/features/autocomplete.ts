@@ -1,4 +1,4 @@
-import type { Feature, ChangeType, GetPropsResult, GetPropsFunc } from '../common';
+import type { Feature, ChangeType, GetProps } from '../common';
 
 const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) => Feature =
   ({ rovingText, traverseInput } = {}) =>
@@ -46,7 +46,7 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
       }
     };
 
-    const inputProps: GetPropsResult<'input'> = {
+    const getInputProps: GetProps['getInputProps'] = () => ({
       onChange: (e) => {
         setFocusIndex(-1);
         setOpen(true);
@@ -90,22 +90,15 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
             break;
         }
       }
-    };
+    });
 
-    const getItemProps: GetPropsFunc<'item'> = (option) => ({
-      onClick: () => updateAndCloseList(items[option!.index!], 'submit')
+    const getItemProps: GetProps['getItemProps'] = (option) => ({
+      onClick: () => updateAndCloseList(items[option?.index as number], 'submit')
     });
 
     return {
-      getProps: (elementType, option) => {
-        switch (elementType) {
-          case 'item':
-            return getItemProps(option);
-          case 'input':
-          default:
-            return inputProps;
-        }
-      }
+      getInputProps,
+      getItemProps
     };
   };
 
