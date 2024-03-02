@@ -1,10 +1,11 @@
 import type { Feature, ChangeType, GetProps } from '../common';
 
-const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) => Feature =
+const autocomplete: <T>(props?: { rovingText?: boolean; traverseInput?: boolean }) => Feature<T> =
   ({ rovingText, traverseInput } = {}) =>
   ({
     _: cxInstance,
     items,
+    getItemValue,
     onChange,
     setInputValue,
     focusIndex,
@@ -19,7 +20,7 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
       onChange(value, { type });
     };
 
-    const updateAndCloseList = (value: string | undefined, type: ChangeType) => {
+    const updateAndCloseList = (value: string | undefined | null, type: ChangeType) => {
       if (open) {
         if (value != null) {
           updateValue(value, type);
@@ -40,7 +41,7 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
       }
       setFocusIndex(nextIndex);
       if (rovingText) {
-        setInputValue(items[nextIndex] ?? cxInstance.b);
+        setInputValue(getItemValue(items[nextIndex]) ?? cxInstance.b);
         const input = inputRef.current!;
         cxInstance.c = [input.selectionStart, input.selectionEnd];
       }
@@ -64,7 +65,7 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
 
       onClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
+      onBlur: () => updateAndCloseList(getItemValue(items[focusIndex]), 'blur'),
 
       onKeyDown: ({ key }) => {
         switch (key) {
@@ -83,7 +84,7 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
             }
             break;
           case 'Enter':
-            updateAndCloseList(items[focusIndex], 'submit');
+            updateAndCloseList(getItemValue(items[focusIndex]), 'submit');
             break;
           case 'Escape':
             updateAndCloseList(cxInstance.b, 'esc');
@@ -93,7 +94,7 @@ const autocomplete: (props?: { rovingText?: boolean; traverseInput?: boolean }) 
     });
 
     const getItemProps: GetProps['getItemProps'] = (option) => ({
-      onClick: () => updateAndCloseList(items[option?.index as number], 'submit')
+      onClick: () => updateAndCloseList(getItemValue(items[option?.index as number]), 'submit')
     });
 
     return {

@@ -4,6 +4,7 @@ const autocomplete = ({
 } = {}) => ({
   _: cxInstance,
   items,
+  getItemValue,
   onChange,
   setInputValue,
   focusIndex,
@@ -39,8 +40,8 @@ const autocomplete = ({
     }
     setFocusIndex(nextIndex);
     if (rovingText) {
-      var _items$nextIndex;
-      setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
+      var _getItemValue;
+      setInputValue((_getItemValue = getItemValue(items[nextIndex])) != null ? _getItemValue : cxInstance.b);
       const input = inputRef.current;
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
@@ -64,7 +65,7 @@ const autocomplete = ({
       }
     },
     onClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
+    onBlur: () => updateAndCloseList(getItemValue(items[focusIndex]), 'blur'),
     onKeyDown: ({
       key
     }) => {
@@ -84,7 +85,7 @@ const autocomplete = ({
           }
           break;
         case 'Enter':
-          updateAndCloseList(items[focusIndex], 'submit');
+          updateAndCloseList(getItemValue(items[focusIndex]), 'submit');
           break;
         case 'Escape':
           updateAndCloseList(cxInstance.b, 'esc');
@@ -93,7 +94,7 @@ const autocomplete = ({
     }
   });
   const getItemProps = option => ({
-    onClick: () => updateAndCloseList(items[option == null ? void 0 : option.index], 'submit')
+    onClick: () => updateAndCloseList(getItemValue(items[option == null ? void 0 : option.index]), 'submit')
   });
   return {
     getInputProps,

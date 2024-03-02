@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import type { AutocompleteProps } from '../common';
-declare const useAutocomplete: <FeatureActions>({ feature: useFeature, items, onChange }: AutocompleteProps<FeatureActions>) => {
+import type { GetProps, AutocompleteProps } from '../common';
+declare const useAutocomplete: <T, FeatureActions>({ items, onChange, feature: useFeature, getItemValue: _getItemValue }: AutocompleteProps<T, FeatureActions>) => {
     setInputValue: (value: string) => void;
     focusIndex: number;
     setFocusIndex: (value: number) => void;
@@ -10,5 +10,5 @@ declare const useAutocomplete: <FeatureActions>({ feature: useFeature, items, on
     getItemProps: (option?: {
         index?: number | undefined;
     } | undefined) => import("react").HTMLAttributes<HTMLElement>;
-} & FeatureActions;
+} & Omit<GetProps & FeatureActions, "getInputProps" | "getItemProps">;
 export { useAutocomplete };

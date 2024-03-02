@@ -5,7 +5,7 @@ const supercomplete = () => {
   const useAutocomplete = autocomplete({
     rovingText: true
   });
-  return cx => {
+  const useSupercomplete = cx => {
     const {
       getInputProps: _getInputProps,
       ...rest
@@ -46,6 +46,7 @@ const supercomplete = () => {
       }, [cxInstance, instance, inputRef, setFocusIndex, setInputValue])
     };
   };
+  return useSupercomplete;
 };
 
 export { supercomplete };

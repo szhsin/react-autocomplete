@@ -1,15 +1,31 @@
 import { useState, useRef, useCallback } from 'react';
-import type { GetProps, AutocompleteProps, AutocompleteState, Instance } from '../common';
+import type {
+  GetProps,
+  AutocompleteProps,
+  AutocompleteState,
+  Instance,
+  Contextual
+} from '../common';
 
-const useAutocomplete = <FeatureActions>({
-  feature: useFeature,
+const useAutocomplete = <T, FeatureActions>({
   items = [],
-  onChange = () => {}
-}: AutocompleteProps<FeatureActions>) => {
+  onChange = () => {},
+  feature: useFeature,
+  getItemValue: _getItemValue
+}: AutocompleteProps<T, FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
   const [instance] = useState<Instance>({ b: '', c: [] });
+
+  const getItemValue: Contextual<T>['getItemValue'] = (item) =>
+    item == null
+      ? null
+      : _getItemValue
+      ? _getItemValue(item)
+      : typeof item === 'string'
+      ? item
+      : null;
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;
@@ -31,6 +47,7 @@ const useAutocomplete = <FeatureActions>({
   } = useFeature({
     _: instance,
     items,
+    getItemValue,
     onChange,
     inputRef,
     ...state
@@ -69,7 +86,7 @@ const useAutocomplete = <FeatureActions>({
     getInputProps,
     getItemProps,
     ...state,
-    ...(actions as FeatureActions)
+    ...actions
   };
 };
 

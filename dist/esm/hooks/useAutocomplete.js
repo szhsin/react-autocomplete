@@ -1,9 +1,10 @@
 import { useRef, useState, useCallback } from 'react';
 
 const useAutocomplete = ({
-  feature: useFeature,
   items = [],
-  onChange = () => {}
+  onChange = () => {},
+  feature: useFeature,
+  getItemValue: _getItemValue
 }) => {
   const inputRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -12,6 +13,7 @@ const useAutocomplete = ({
     b: '',
     c: []
   });
+  const getItemValue = item => item == null ? null : _getItemValue ? _getItemValue(item) : typeof item === 'string' ? item : null;
   const setInputValue = useCallback(value => {
     const input = inputRef.current;
     if (input) input.value = value;
@@ -30,6 +32,7 @@ const useAutocomplete = ({
   } = useFeature({
     _: instance,
     items,
+    getItemValue,
     onChange,
     inputRef,
     ...state
