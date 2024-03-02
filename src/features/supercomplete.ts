@@ -10,11 +10,14 @@ export interface Instance {
   c?: boolean | 0 | 1;
 }
 
-const supercomplete: () => Feature<{
-  inlineComplete: (props: { index?: number; value: string }) => void;
-}> = () => {
-  const useAutocomplete = autocomplete({ rovingText: true });
-  return (cx) => {
+const supercomplete = <T>() => {
+  const useAutocomplete = autocomplete<T>({ rovingText: true });
+  const useSupercomplete: Feature<
+    T,
+    {
+      inlineComplete: (props: { index?: number; value: string }) => void;
+    }
+  > = (cx) => {
     const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
     const [instance] = useState<Instance>({});
     const { inputRef, setInputValue, setFocusIndex, _: cxInstance } = cx;
@@ -50,6 +53,8 @@ const supercomplete: () => Feature<{
       )
     };
   };
+
+  return useSupercomplete;
 };
 
 export { supercomplete };

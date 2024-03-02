@@ -17,9 +17,9 @@ export interface AutocompleteState {
 
 export type ChangeType = 'submit' | 'input' | 'blur' | 'esc';
 
-export interface ContextualProps {
+export interface ContextualProps<T> {
   onChange: (value: string, meta: { type: ChangeType }) => void;
-  items: string[];
+  items: T[];
 }
 
 export interface Instance {
@@ -40,18 +40,23 @@ export interface Instance {
   c: [number | null, number | null] | [];
 }
 
-export interface Contextual extends ContextualProps, AutocompleteState {
+export interface Contextual<T> extends ContextualProps<T>, AutocompleteState {
   inputRef: React.RefObject<HTMLInputElement>;
+  getItemValue: (item: T | undefined | null) => string | undefined | null;
   /**
    * ### INTERNAL API ###
    */
   _: Instance;
 }
 
-export type Feature<Actions = object> = (cx: Contextual) => GetProps & Actions;
+export type Feature<T, Actions = object> = (cx: Contextual<T>) => GetProps & Actions;
 
-export interface AutocompleteProps<FeatureActions = object> extends Partial<ContextualProps> {
-  feature: Feature<FeatureActions>;
+interface GetItemValue<T> {
+  getItemValue: (item: T) => string;
 }
+
+export type AutocompleteProps<T, FeatureActions = object> = Partial<ContextualProps<T>> & {
+  feature: Feature<T, FeatureActions>;
+} & (T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>);
 
 /// constants

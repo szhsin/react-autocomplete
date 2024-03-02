@@ -3,9 +3,10 @@
 var react = require('react');
 
 const useAutocomplete = ({
-  feature: useFeature,
   items = [],
-  onChange = () => {}
+  onChange = () => {},
+  feature: useFeature,
+  getItemValue: _getItemValue
 }) => {
   const inputRef = react.useRef(null);
   const [open, setOpen] = react.useState(false);
@@ -14,6 +15,7 @@ const useAutocomplete = ({
     b: '',
     c: []
   });
+  const getItemValue = item => item == null ? null : _getItemValue ? _getItemValue(item) : typeof item === 'string' ? item : null;
   const setInputValue = react.useCallback(value => {
     const input = inputRef.current;
     if (input) input.value = value;
@@ -32,6 +34,7 @@ const useAutocomplete = ({
   } = useFeature({
     _: instance,
     items,
+    getItemValue,
     onChange,
     inputRef,
     ...state
@@ -87,6 +90,7 @@ const autocomplete = ({
 } = {}) => ({
   _: cxInstance,
   items,
+  getItemValue,
   onChange,
   setInputValue,
   focusIndex,
@@ -122,8 +126,8 @@ const autocomplete = ({
     }
     setFocusIndex(nextIndex);
     if (rovingText) {
-      var _items$nextIndex;
-      setInputValue((_items$nextIndex = items[nextIndex]) != null ? _items$nextIndex : cxInstance.b);
+      var _getItemValue;
+      setInputValue((_getItemValue = getItemValue(items[nextIndex])) != null ? _getItemValue : cxInstance.b);
       const input = inputRef.current;
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
@@ -147,7 +151,7 @@ const autocomplete = ({
       }
     },
     onClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(items[focusIndex], 'blur'),
+    onBlur: () => updateAndCloseList(getItemValue(items[focusIndex]), 'blur'),
     onKeyDown: ({
       key
     }) => {
@@ -167,7 +171,7 @@ const autocomplete = ({
           }
           break;
         case 'Enter':
-          updateAndCloseList(items[focusIndex], 'submit');
+          updateAndCloseList(getItemValue(items[focusIndex]), 'submit');
           break;
         case 'Escape':
           updateAndCloseList(cxInstance.b, 'esc');
@@ -176,7 +180,7 @@ const autocomplete = ({
     }
   });
   const getItemProps = option => ({
-    onClick: () => updateAndCloseList(items[option == null ? void 0 : option.index], 'submit')
+    onClick: () => updateAndCloseList(getItemValue(items[option == null ? void 0 : option.index]), 'submit')
   });
   return {
     getInputProps,
@@ -188,7 +192,7 @@ const supercomplete = () => {
   const useAutocomplete = autocomplete({
     rovingText: true
   });
-  return cx => {
+  const useSupercomplete = cx => {
     const {
       getInputProps: _getInputProps,
       ...rest
@@ -229,6 +233,7 @@ const supercomplete = () => {
       }, [cxInstance, instance, inputRef, setFocusIndex, setInputValue])
     };
   };
+  return useSupercomplete;
 };
 
 exports.autocomplete = autocomplete;

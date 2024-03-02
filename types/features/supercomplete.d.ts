@@ -6,7 +6,7 @@ export interface Instance {
      */
     c?: boolean | 0 | 1;
 }
-declare const supercomplete: () => Feature<{
+declare const supercomplete: <T>() => Feature<T, {
     inlineComplete: (props: {
         index?: number;
         value: string;
