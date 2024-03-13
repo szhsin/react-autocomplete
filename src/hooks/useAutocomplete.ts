@@ -19,13 +19,7 @@ const useAutocomplete = <T, FeatureActions>({
   const [instance] = useState<Instance>({ b: '', c: [] });
 
   const getItemValue: Contextual<T>['getItemValue'] = (item) =>
-    item == null
-      ? null
-      : _getItemValue
-      ? _getItemValue(item)
-      : typeof item === 'string'
-      ? item
-      : null;
+    item == null ? null : _getItemValue ? _getItemValue(item) : item.toString();
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;

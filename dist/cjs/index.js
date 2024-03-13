@@ -15,7 +15,7 @@ const useAutocomplete = ({
     b: '',
     c: []
   });
-  const getItemValue = item => item == null ? null : _getItemValue ? _getItemValue(item) : typeof item === 'string' ? item : null;
+  const getItemValue = item => item == null ? null : _getItemValue ? _getItemValue(item) : item.toString();
   const setInputValue = react.useCallback(value => {
     const input = inputRef.current;
     if (input) input.value = value;
@@ -192,7 +192,7 @@ const supercomplete = () => {
   const useAutocomplete = autocomplete({
     rovingText: true
   });
-  const useSupercomplete = cx => {
+  return cx => {
     const {
       getInputProps: _getInputProps,
       ...rest
@@ -233,7 +233,6 @@ const supercomplete = () => {
       }, [cxInstance, instance, inputRef, setFocusIndex, setInputValue])
     };
   };
-  return useSupercomplete;
 };
 
 exports.autocomplete = autocomplete;

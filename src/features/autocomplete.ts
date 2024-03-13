@@ -1,7 +1,10 @@
 import type { Feature, ChangeType, GetProps } from '../common';
 
-const autocomplete: <T>(props?: { rovingText?: boolean; traverseInput?: boolean }) => Feature<T> =
-  ({ rovingText, traverseInput } = {}) =>
+const autocomplete =
+  <T>({
+    rovingText,
+    traverseInput
+  }: { rovingText?: boolean; traverseInput?: boolean } = {}): Feature<T> =>
   ({
     _: cxInstance,
     items,
