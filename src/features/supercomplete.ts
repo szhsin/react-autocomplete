@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import type { Feature } from '../common';
 import { autocomplete } from './autocomplete';
 
-export interface Instance {
+interface Instance {
   /**
    * ### INTERNAL API ###
    * Whether the last value change is "insertText"
@@ -13,14 +13,14 @@ export interface Instance {
 const supercomplete = <T>(): Feature<
   T,
   {
-    inlineComplete: (props: { index?: number; value: string }) => void;
+    inlineComplete: (props: { item: T; value: string }) => void;
   }
 > => {
   const useAutocomplete = autocomplete<T>({ rovingText: true });
   return (cx) => {
     const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
     const [instance] = useState<Instance>({});
-    const { inputRef, setInputValue, setFocusIndex, _: cxInstance } = cx;
+    const { inputRef, setInputValue, setFocusItem, _: cxInstance } = cx;
 
     return {
       ...rest,
@@ -38,10 +38,10 @@ const supercomplete = <T>(): Feature<
       },
 
       inlineComplete: useCallback(
-        ({ index = 0, value }) => {
+        ({ item, value }) => {
           if (instance.c) {
             instance.c = 0;
-            setFocusIndex(index);
+            setFocusItem(item);
             const start = cxInstance.b.length;
             const end = value.length;
             setInputValue(cxInstance.b + value.slice(start));
@@ -49,7 +49,7 @@ const supercomplete = <T>(): Feature<
             inputRef.current?.setSelectionRange(start, end);
           }
         },
-        [cxInstance, instance, inputRef, setFocusIndex, setInputValue]
+        [cxInstance, instance, inputRef, setFocusItem, setInputValue]
       )
     };
   };
