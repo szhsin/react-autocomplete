@@ -18,8 +18,10 @@ const useAutocomplete = <T, FeatureActions>({
   const [focusItem, setFocusItem] = useState<T | null | undefined>();
   const [instance] = useState<Instance>({ b: '', c: [] });
 
-  const getItemValue: Contextual<T>['getItemValue'] = (item) =>
-    item == null ? null : _getItemValue ? _getItemValue(item) : item.toString();
+  const getItemValue: Contextual<T>['getItemValue'] = useCallback(
+    (item) => (item == null ? null : _getItemValue ? _getItemValue(item) : item.toString()),
+    [_getItemValue]
+  );
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;

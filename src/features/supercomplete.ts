@@ -13,14 +13,14 @@ interface Instance {
 const supercomplete = <T>(): Feature<
   T,
   {
-    inlineComplete: (props: { item: T; value: string }) => void;
+    inlineComplete: (props: { item: T }) => void;
   }
 > => {
   const useAutocomplete = autocomplete<T>({ rovingText: true });
   return (cx) => {
     const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
     const [instance] = useState<Instance>({});
-    const { inputRef, setInputValue, setFocusItem, _: cxInstance } = cx;
+    const { inputRef, getItemValue, setInputValue, setFocusItem, _: cxInstance } = cx;
 
     return {
       ...rest,
@@ -38,10 +38,11 @@ const supercomplete = <T>(): Feature<
       },
 
       inlineComplete: useCallback(
-        ({ item, value }) => {
+        ({ item }) => {
           if (instance.c) {
             instance.c = 0;
             setFocusItem(item);
+            const value = getItemValue(item)!;
             const start = cxInstance.b.length;
             const end = value.length;
             setInputValue(cxInstance.b + value.slice(start));
@@ -49,7 +50,7 @@ const supercomplete = <T>(): Feature<
             inputRef.current?.setSelectionRange(start, end);
           }
         },
-        [cxInstance, instance, inputRef, setFocusItem, setInputValue]
+        [cxInstance, instance, inputRef, getItemValue, setFocusItem, setInputValue]
       )
     };
   };
