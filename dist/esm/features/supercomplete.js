@@ -13,8 +13,9 @@ const supercomplete = () => {
     const [instance] = useState({});
     const {
       inputRef,
+      getItemValue,
       setInputValue,
-      setFocusIndex,
+      setFocusItem,
       _: cxInstance
     } = cx;
     return {
@@ -30,20 +31,20 @@ const supercomplete = () => {
         };
       },
       inlineComplete: useCallback(({
-        index = 0,
-        value
+        item
       }) => {
         if (instance.c) {
           var _inputRef$current;
           instance.c = 0;
-          setFocusIndex(index);
+          setFocusItem(item);
+          const value = getItemValue(item);
           const start = cxInstance.b.length;
           const end = value.length;
           setInputValue(cxInstance.b + value.slice(start));
           cxInstance.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
-      }, [cxInstance, instance, inputRef, setFocusIndex, setInputValue])
+      }, [cxInstance, instance, inputRef, getItemValue, setFocusItem, setInputValue])
     };
   };
 };

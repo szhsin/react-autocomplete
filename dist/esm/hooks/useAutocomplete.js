@@ -1,57 +1,52 @@
 import { useRef, useState, useCallback } from 'react';
 
 const useAutocomplete = ({
-  items = [],
   onChange = () => {},
   feature: useFeature,
+  traversal: useTraversal,
   getItemValue: _getItemValue
 }) => {
   const inputRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const [focusIndex, setFocusIndex] = useState(-1);
+  const [focusItem, setFocusItem] = useState();
   const [instance] = useState({
     b: '',
     c: []
   });
-  const getItemValue = item => item == null ? null : _getItemValue ? _getItemValue(item) : item.toString();
+  const getItemValue = useCallback(item => item == null ? null : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = useCallback(value => {
     const input = inputRef.current;
     if (input) input.value = value;
   }, []);
   const state = {
     setInputValue,
-    focusIndex,
-    setFocusIndex,
+    focusItem,
+    setFocusItem,
     open,
     setOpen
+  };
+  const contextual = {
+    _: instance,
+    getItemValue,
+    onChange,
+    inputRef,
+    ...state
   };
   const {
     getInputProps: _getInputProps,
     getItemProps: _getItemProps,
     ...actions
   } = useFeature({
-    _: instance,
-    items,
-    getItemValue,
-    onChange,
-    inputRef,
-    ...state
+    ...contextual,
+    ...useTraversal(contextual)
   });
   const {
     onBlur,
-    onKeyDown,
     ...featureInputProps
   } = _getInputProps();
   const getInputProps = () => ({
     ...featureInputProps,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
-    onKeyDown: e => {
-      const {
-        key
-      } = e;
-      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
-      onKeyDown == null || onKeyDown(e);
-    },
     ref: inputRef
   });
   const getItemProps = option => {

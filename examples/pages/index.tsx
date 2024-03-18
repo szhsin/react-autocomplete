@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useAutocomplete, autocomplete, Feature, supercomplete } from '@szhsin/react-autocomplete';
+import {
+  useAutocomplete,
+  autocomplete,
+  Feature,
+  supercomplete,
+  linearTraversal
+} from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 
 const US_STATES = [
@@ -72,9 +78,13 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   const feature = supercomplete<{ name: string; code: string }>();
 
-  const { getInputProps, getItemProps, setInputValue, open, focusIndex, inlineComplete } =
+  const { getInputProps, getItemProps, setInputValue, open, focusItem, inlineComplete } =
     useAutocomplete({
-      items,
+      traversal: linearTraversal({
+        items,
+        traverseInput: true,
+        isItemDisabled: ({ code }) => code === 'ca'
+      }),
       getItemValue,
       onChange: (value) => {
         setValue(value);
@@ -82,7 +92,7 @@ export default function Home() {
           item.name.toLowerCase().startsWith(value.toLowerCase())
         );
         // setItems(items);
-        items.length && inlineComplete({ value: items[0].name });
+        items.length && inlineComplete({ item: items[1] });
       },
       feature
     });
@@ -94,7 +104,7 @@ export default function Home() {
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
-      <div>Index: {focusIndex}</div>
+      <div>Focus item: {focusItem?.name}</div>
       <input className={styles.input} {...getInputProps()} />
 
       <button
@@ -113,12 +123,13 @@ export default function Home() {
           display: open && items.length ? 'block' : 'none'
         }}
       >
-        {items.map((item, index) => (
+        <div>Header</div>
+        {items.map((item) => (
           <li
             className={styles.option}
             key={item.code}
-            style={{ background: focusIndex === index ? '#0a0' : 'none' }}
-            {...getItemProps({ index })}
+            style={{ background: focusItem === item ? '#0a0' : 'none' }}
+            {...getItemProps({ item })}
           >
             {item.name}
           </li>
