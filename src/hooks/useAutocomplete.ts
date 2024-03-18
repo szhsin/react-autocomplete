@@ -8,65 +8,57 @@ import type {
 } from '../common';
 
 const useAutocomplete = <T, FeatureActions>({
-  items = [],
   onChange = () => {},
   feature: useFeature,
+  traversal: useTraversal,
   getItemValue: _getItemValue
 }: AutocompleteProps<T, FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [focusIndex, setFocusIndex] = useState(-1);
+  const [focusItem, setFocusItem] = useState<T | null | undefined>();
   const [instance] = useState<Instance>({ b: '', c: [] });
 
-  const getItemValue: Contextual<T>['getItemValue'] = (item) =>
-    item == null
-      ? null
-      : _getItemValue
-      ? _getItemValue(item)
-      : typeof item === 'string'
-      ? item
-      : null;
+  const getItemValue: Contextual<T>['getItemValue'] = useCallback(
+    (item) => (item == null ? null : _getItemValue ? _getItemValue(item) : item.toString()),
+    [_getItemValue]
+  );
 
   const setInputValue = useCallback((value: string) => {
     const input = inputRef.current;
     if (input) input.value = value;
   }, []);
 
-  const state: AutocompleteState = {
+  const state: AutocompleteState<T> = {
     setInputValue,
-    focusIndex,
-    setFocusIndex,
+    focusItem,
+    setFocusItem,
     open,
     setOpen
+  };
+
+  const contextual = {
+    _: instance,
+    getItemValue,
+    onChange,
+    inputRef,
+    ...state
   };
 
   const {
     getInputProps: _getInputProps,
     getItemProps: _getItemProps,
     ...actions
-  } = useFeature({
-    _: instance,
-    items,
-    getItemValue,
-    onChange,
-    inputRef,
-    ...state
-  });
+  } = useFeature({ ...contextual, ...useTraversal(contextual) });
 
-  const { onBlur, onKeyDown, ...featureInputProps } = _getInputProps();
+  const { onBlur, ...featureInputProps } = _getInputProps();
 
-  const getInputProps: GetProps['getInputProps'] = () => ({
+  const getInputProps: GetProps<T>['getInputProps'] = () => ({
     ...featureInputProps,
     onBlur: (e) => !instance.a && onBlur?.(e),
-    onKeyDown: (e) => {
-      const { key } = e;
-      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
-      onKeyDown?.(e);
-    },
     ref: inputRef
   });
 
-  const getItemProps: GetProps['getItemProps'] = (option) => {
+  const getItemProps: GetProps<T>['getItemProps'] = (option) => {
     const { onMouseDown, onClick, ...featureItemProps } = _getItemProps(option);
     return {
       ...featureItemProps,

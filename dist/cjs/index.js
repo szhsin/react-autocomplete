@@ -3,57 +3,52 @@
 var react = require('react');
 
 const useAutocomplete = ({
-  items = [],
   onChange = () => {},
   feature: useFeature,
+  traversal: useTraversal,
   getItemValue: _getItemValue
 }) => {
   const inputRef = react.useRef(null);
   const [open, setOpen] = react.useState(false);
-  const [focusIndex, setFocusIndex] = react.useState(-1);
+  const [focusItem, setFocusItem] = react.useState();
   const [instance] = react.useState({
     b: '',
     c: []
   });
-  const getItemValue = item => item == null ? null : _getItemValue ? _getItemValue(item) : typeof item === 'string' ? item : null;
+  const getItemValue = react.useCallback(item => item == null ? null : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = react.useCallback(value => {
     const input = inputRef.current;
     if (input) input.value = value;
   }, []);
   const state = {
     setInputValue,
-    focusIndex,
-    setFocusIndex,
+    focusItem,
+    setFocusItem,
     open,
     setOpen
+  };
+  const contextual = {
+    _: instance,
+    getItemValue,
+    onChange,
+    inputRef,
+    ...state
   };
   const {
     getInputProps: _getInputProps,
     getItemProps: _getItemProps,
     ...actions
   } = useFeature({
-    _: instance,
-    items,
-    getItemValue,
-    onChange,
-    inputRef,
-    ...state
+    ...contextual,
+    ...useTraversal(contextual)
   });
   const {
     onBlur,
-    onKeyDown,
     ...featureInputProps
   } = _getInputProps();
   const getInputProps = () => ({
     ...featureInputProps,
     onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
-    onKeyDown: e => {
-      const {
-        key
-      } = e;
-      if (items.length && (key === 'ArrowUp' || key === 'ArrowDown')) e.preventDefault();
-      onKeyDown == null || onKeyDown(e);
-    },
     ref: inputRef
   });
   const getItemProps = option => {
@@ -85,16 +80,15 @@ const useAutocomplete = ({
 };
 
 const autocomplete = ({
-  rovingText,
-  traverseInput
+  rovingText
 } = {}) => ({
   _: cxInstance,
-  items,
   getItemValue,
+  traverse,
   onChange,
   setInputValue,
-  focusIndex,
-  setFocusIndex,
+  focusItem,
+  setFocusItem,
   open,
   setOpen,
   inputRef
@@ -112,29 +106,21 @@ const autocomplete = ({
         updateValue(value, type);
       }
       setOpen(false);
-      setFocusIndex(-1);
+      setFocusItem();
     }
   };
-  const traverseItems = isUp => {
-    const baseIndex = (traverseInput != null ? traverseInput : rovingText) ? -1 : 0;
-    let nextIndex = focusIndex;
-    const itemLength = items.length;
-    if (isUp) {
-      if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
-    } else {
-      if (++nextIndex >= itemLength) nextIndex = baseIndex;
-    }
-    setFocusIndex(nextIndex);
+  const traverseItems = isForward => {
+    const nextItem = traverse(isForward);
     if (rovingText) {
       var _getItemValue;
-      setInputValue((_getItemValue = getItemValue(items[nextIndex])) != null ? _getItemValue : cxInstance.b);
+      setInputValue((_getItemValue = getItemValue(nextItem)) != null ? _getItemValue : cxInstance.b);
       const input = inputRef.current;
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
   };
   const getInputProps = () => ({
     onChange: e => {
-      setFocusIndex(-1);
+      setFocusItem();
       setOpen(true);
       updateValue(e.target.value, 'input');
     },
@@ -146,32 +132,25 @@ const autocomplete = ({
       } = e.target;
       const [start, end] = cxInstance.c;
       if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
-        setFocusIndex(-1);
+        setFocusItem();
         updateValue(value, 'input');
       }
     },
     onClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(getItemValue(items[focusIndex]), 'blur'),
-    onKeyDown: ({
-      key
-    }) => {
-      switch (key) {
+    onBlur: () => updateAndCloseList(getItemValue(focusItem), 'blur'),
+    onKeyDown: e => {
+      switch (e.key) {
         case 'ArrowUp':
-          if (open) {
-            traverseItems(true);
-          } else {
-            setOpen(true);
-          }
-          break;
         case 'ArrowDown':
+          e.preventDefault();
           if (open) {
-            traverseItems(false);
+            traverseItems(e.key === 'ArrowDown');
           } else {
             setOpen(true);
           }
           break;
         case 'Enter':
-          updateAndCloseList(getItemValue(items[focusIndex]), 'submit');
+          updateAndCloseList(getItemValue(focusItem), 'submit');
           break;
         case 'Escape':
           updateAndCloseList(cxInstance.b, 'esc');
@@ -179,8 +158,10 @@ const autocomplete = ({
       }
     }
   });
-  const getItemProps = option => ({
-    onClick: () => updateAndCloseList(getItemValue(items[option == null ? void 0 : option.index]), 'submit')
+  const getItemProps = ({
+    item
+  }) => ({
+    onClick: () => updateAndCloseList(getItemValue(item), 'submit')
   });
   return {
     getInputProps,
@@ -192,7 +173,7 @@ const supercomplete = () => {
   const useAutocomplete = autocomplete({
     rovingText: true
   });
-  const useSupercomplete = cx => {
+  return cx => {
     const {
       getInputProps: _getInputProps,
       ...rest
@@ -200,8 +181,9 @@ const supercomplete = () => {
     const [instance] = react.useState({});
     const {
       inputRef,
+      getItemValue,
       setInputValue,
-      setFocusIndex,
+      setFocusItem,
       _: cxInstance
     } = cx;
     return {
@@ -217,25 +199,59 @@ const supercomplete = () => {
         };
       },
       inlineComplete: react.useCallback(({
-        index = 0,
-        value
+        item
       }) => {
         if (instance.c) {
           var _inputRef$current;
           instance.c = 0;
-          setFocusIndex(index);
+          setFocusItem(item);
+          const value = getItemValue(item);
           const start = cxInstance.b.length;
           const end = value.length;
           setInputValue(cxInstance.b + value.slice(start));
           cxInstance.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
-      }, [cxInstance, instance, inputRef, setFocusIndex, setInputValue])
+      }, [cxInstance, instance, inputRef, getItemValue, setFocusItem, setInputValue])
     };
   };
-  return useSupercomplete;
+};
+
+const linearTraversal = ({
+  traverseInput,
+  isItemDisabled,
+  items = []
+}) => ({
+  focusItem,
+  setFocusItem
+}) => {
+  const [instance] = react.useState({
+    a: -1
+  });
+  return {
+    traverse: isForward => {
+      if (!focusItem) instance.a = -1;else if (focusItem !== items[instance.a]) instance.a = items.indexOf(focusItem);
+      const baseIndex = traverseInput ? -1 : 0;
+      let nextIndex = instance.a;
+      let nextItem;
+      const itemLength = items.length;
+      do {
+        if (isForward) {
+          if (++nextIndex >= itemLength) nextIndex = baseIndex;
+        } else {
+          if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+        }
+        nextItem = items[nextIndex];
+        if (!nextItem || !(isItemDisabled != null && isItemDisabled(nextItem))) break;
+      } while (nextIndex !== instance.a);
+      instance.a = nextIndex;
+      setFocusItem(nextItem);
+      return nextItem;
+    }
+  };
 };
 
 exports.autocomplete = autocomplete;
+exports.linearTraversal = linearTraversal;
 exports.supercomplete = supercomplete;
 exports.useAutocomplete = useAutocomplete;

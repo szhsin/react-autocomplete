@@ -1,15 +1,15 @@
 import type { Feature, ChangeType, GetProps } from '../common';
 
-const autocomplete: <T>(props?: { rovingText?: boolean; traverseInput?: boolean }) => Feature<T> =
-  ({ rovingText, traverseInput } = {}) =>
+const autocomplete =
+  <T>({ rovingText }: { rovingText?: boolean } = {}): Feature<T> =>
   ({
     _: cxInstance,
-    items,
     getItemValue,
+    traverse,
     onChange,
     setInputValue,
-    focusIndex,
-    setFocusIndex,
+    focusItem,
+    setFocusItem,
     open,
     setOpen,
     inputRef
@@ -26,30 +26,22 @@ const autocomplete: <T>(props?: { rovingText?: boolean; traverseInput?: boolean 
           updateValue(value, type);
         }
         setOpen(false);
-        setFocusIndex(-1);
+        setFocusItem();
       }
     };
 
-    const traverseItems = (isUp: boolean) => {
-      const baseIndex = traverseInput ?? rovingText ? -1 : 0;
-      let nextIndex = focusIndex;
-      const itemLength = items.length;
-      if (isUp) {
-        if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
-      } else {
-        if (++nextIndex >= itemLength) nextIndex = baseIndex;
-      }
-      setFocusIndex(nextIndex);
+    const traverseItems = (isForward: boolean) => {
+      const nextItem = traverse(isForward);
       if (rovingText) {
-        setInputValue(getItemValue(items[nextIndex]) ?? cxInstance.b);
+        setInputValue(getItemValue(nextItem) ?? cxInstance.b);
         const input = inputRef.current!;
         cxInstance.c = [input.selectionStart, input.selectionEnd];
       }
     };
 
-    const getInputProps: GetProps['getInputProps'] = () => ({
+    const getInputProps: GetProps<T>['getInputProps'] = () => ({
       onChange: (e) => {
-        setFocusIndex(-1);
+        setFocusItem();
         setOpen(true);
         updateValue(e.target.value, 'input');
       },
@@ -58,33 +50,28 @@ const autocomplete: <T>(props?: { rovingText?: boolean; traverseInput?: boolean 
         const { value, selectionStart, selectionEnd } = e.target as HTMLInputElement;
         const [start, end] = cxInstance.c;
         if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
-          setFocusIndex(-1);
+          setFocusItem();
           updateValue(value, 'input');
         }
       },
 
       onClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(getItemValue(items[focusIndex]), 'blur'),
+      onBlur: () => updateAndCloseList(getItemValue(focusItem), 'blur'),
 
-      onKeyDown: ({ key }) => {
-        switch (key) {
+      onKeyDown: (e) => {
+        switch (e.key) {
           case 'ArrowUp':
-            if (open) {
-              traverseItems(true);
-            } else {
-              setOpen(true);
-            }
-            break;
           case 'ArrowDown':
+            e.preventDefault();
             if (open) {
-              traverseItems(false);
+              traverseItems(e.key === 'ArrowDown');
             } else {
               setOpen(true);
             }
             break;
           case 'Enter':
-            updateAndCloseList(getItemValue(items[focusIndex]), 'submit');
+            updateAndCloseList(getItemValue(focusItem), 'submit');
             break;
           case 'Escape':
             updateAndCloseList(cxInstance.b, 'esc');
@@ -93,8 +80,8 @@ const autocomplete: <T>(props?: { rovingText?: boolean; traverseInput?: boolean 
       }
     });
 
-    const getItemProps: GetProps['getItemProps'] = (option) => ({
-      onClick: () => updateAndCloseList(getItemValue(items[option?.index as number]), 'submit')
+    const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
+      onClick: () => updateAndCloseList(getItemValue(item), 'submit')
     });
 
     return {

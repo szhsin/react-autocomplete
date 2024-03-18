@@ -1,6 +1,5 @@
 import type { Feature } from '../common';
-declare const autocomplete: <T>(props?: {
-    rovingText?: boolean;
-    traverseInput?: boolean;
+declare const autocomplete: <T>({ rovingText }?: {
+    rovingText?: boolean | undefined;
 }) => Feature<T>;
 export { autocomplete };

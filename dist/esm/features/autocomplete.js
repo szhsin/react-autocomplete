@@ -1,14 +1,13 @@
 const autocomplete = ({
-  rovingText,
-  traverseInput
+  rovingText
 } = {}) => ({
   _: cxInstance,
-  items,
   getItemValue,
+  traverse,
   onChange,
   setInputValue,
-  focusIndex,
-  setFocusIndex,
+  focusItem,
+  setFocusItem,
   open,
   setOpen,
   inputRef
@@ -26,29 +25,21 @@ const autocomplete = ({
         updateValue(value, type);
       }
       setOpen(false);
-      setFocusIndex(-1);
+      setFocusItem();
     }
   };
-  const traverseItems = isUp => {
-    const baseIndex = (traverseInput != null ? traverseInput : rovingText) ? -1 : 0;
-    let nextIndex = focusIndex;
-    const itemLength = items.length;
-    if (isUp) {
-      if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
-    } else {
-      if (++nextIndex >= itemLength) nextIndex = baseIndex;
-    }
-    setFocusIndex(nextIndex);
+  const traverseItems = isForward => {
+    const nextItem = traverse(isForward);
     if (rovingText) {
       var _getItemValue;
-      setInputValue((_getItemValue = getItemValue(items[nextIndex])) != null ? _getItemValue : cxInstance.b);
+      setInputValue((_getItemValue = getItemValue(nextItem)) != null ? _getItemValue : cxInstance.b);
       const input = inputRef.current;
       cxInstance.c = [input.selectionStart, input.selectionEnd];
     }
   };
   const getInputProps = () => ({
     onChange: e => {
-      setFocusIndex(-1);
+      setFocusItem();
       setOpen(true);
       updateValue(e.target.value, 'input');
     },
@@ -60,32 +51,25 @@ const autocomplete = ({
       } = e.target;
       const [start, end] = cxInstance.c;
       if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
-        setFocusIndex(-1);
+        setFocusItem();
         updateValue(value, 'input');
       }
     },
     onClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(getItemValue(items[focusIndex]), 'blur'),
-    onKeyDown: ({
-      key
-    }) => {
-      switch (key) {
+    onBlur: () => updateAndCloseList(getItemValue(focusItem), 'blur'),
+    onKeyDown: e => {
+      switch (e.key) {
         case 'ArrowUp':
-          if (open) {
-            traverseItems(true);
-          } else {
-            setOpen(true);
-          }
-          break;
         case 'ArrowDown':
+          e.preventDefault();
           if (open) {
-            traverseItems(false);
+            traverseItems(e.key === 'ArrowDown');
           } else {
             setOpen(true);
           }
           break;
         case 'Enter':
-          updateAndCloseList(getItemValue(items[focusIndex]), 'submit');
+          updateAndCloseList(getItemValue(focusItem), 'submit');
           break;
         case 'Escape':
           updateAndCloseList(cxInstance.b, 'esc');
@@ -93,8 +77,10 @@ const autocomplete = ({
       }
     }
   });
-  const getItemProps = option => ({
-    onClick: () => updateAndCloseList(getItemValue(items[option == null ? void 0 : option.index]), 'submit')
+  const getItemProps = ({
+    item
+  }) => ({
+    onClick: () => updateAndCloseList(getItemValue(item), 'submit')
   });
   return {
     getInputProps,
