@@ -7,8 +7,6 @@ declare const useAutocomplete: <T, FeatureActions>({ onChange, feature: useFeatu
     open: boolean;
     setOpen: (value: boolean) => void;
     getInputProps: () => import("react").InputHTMLAttributes<HTMLInputElement>;
-    getItemProps: (option: {
-        item: T;
-    }) => import("react").HTMLAttributes<HTMLElement>;
-} & Omit<GetProps<T> & FeatureActions, "getInputProps" | "getItemProps">;
+    getListProps: () => import("react").HTMLAttributes<HTMLElement>;
+} & Omit<GetProps<T> & FeatureActions, "getInputProps" | "getListProps">;
 export { useAutocomplete };

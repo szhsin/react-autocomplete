@@ -78,24 +78,31 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   const feature = supercomplete<{ name: string; code: string }>();
 
-  const { getInputProps, getItemProps, setInputValue, open, focusItem, inlineComplete } =
-    useAutocomplete({
-      traversal: linearTraversal({
-        items,
-        traverseInput: true,
-        isItemDisabled: ({ code }) => code === 'ca'
-      }),
-      getItemValue,
-      onChange: (value) => {
-        setValue(value);
-        const items = US_STATES.filter((item) =>
-          item.name.toLowerCase().startsWith(value.toLowerCase())
-        );
-        // setItems(items);
-        items.length && inlineComplete({ item: items[1] });
-      },
-      feature
-    });
+  const {
+    getInputProps,
+    getListProps,
+    getItemProps,
+    setInputValue,
+    open,
+    focusItem,
+    inlineComplete
+  } = useAutocomplete({
+    traversal: linearTraversal({
+      items,
+      traverseInput: true,
+      isItemDisabled: ({ code }) => code === 'ca'
+    }),
+    getItemValue,
+    onChange: (value) => {
+      setValue(value);
+      const items = US_STATES.filter((item) =>
+        item.name.toLowerCase().startsWith(value.toLowerCase())
+      );
+      // setItems(items);
+      items.length && inlineComplete({ item: items[1] });
+    },
+    feature
+  });
 
   // useEffect(() => {
   //   items.length && inlineComplete({ index: 0, value: items[0] });
@@ -117,6 +124,7 @@ export default function Home() {
         Clear
       </button>
       <ul
+        {...getListProps()}
         style={{
           position: 'absolute',
           border: '1px solid',

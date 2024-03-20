@@ -46,22 +46,23 @@ const useAutocomplete = <T, FeatureActions>({
 
   const {
     getInputProps: _getInputProps,
-    getItemProps: _getItemProps,
-    ...actions
+    getListProps: _getListProps,
+    ...otherProps
   } = useFeature({ ...contextual, ...useTraversal(contextual) });
 
-  const { onBlur, ...featureInputProps } = _getInputProps();
-
-  const getInputProps: GetProps<T>['getInputProps'] = () => ({
-    ...featureInputProps,
-    onBlur: (e) => !instance.a && onBlur?.(e),
-    ref: inputRef
-  });
-
-  const getItemProps: GetProps<T>['getItemProps'] = (option) => {
-    const { onMouseDown, onClick, ...featureItemProps } = _getItemProps(option);
+  const getInputProps: GetProps<T>['getInputProps'] = () => {
+    const { onBlur, ...rest } = _getInputProps();
     return {
-      ...featureItemProps,
+      ...rest,
+      onBlur: (e) => !instance.a && onBlur?.(e),
+      ref: inputRef
+    };
+  };
+
+  const getListProps: GetProps<T>['getListProps'] = () => {
+    const { onMouseDown, onClick, ...rest } = _getListProps();
+    return {
+      ...rest,
       onMouseDown: (e) => {
         onMouseDown?.(e);
         instance.a = 1;
@@ -76,9 +77,9 @@ const useAutocomplete = <T, FeatureActions>({
 
   return {
     getInputProps,
-    getItemProps,
+    getListProps,
     ...state,
-    ...actions
+    ...otherProps
   };
 };
 

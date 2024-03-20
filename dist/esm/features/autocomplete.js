@@ -84,7 +84,8 @@ const autocomplete = ({
   });
   return {
     getInputProps,
-    getItemProps
+    getItemProps,
+    getListProps: () => ({})
   };
 };
 

@@ -4,6 +4,7 @@ import type { HTMLAttributes, InputHTMLAttributes } from 'react';
 
 export interface GetProps<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
+  getListProps: () => HTMLAttributes<HTMLElement>;
   getItemProps: (option: { item: T }) => HTMLAttributes<HTMLElement>;
 }
 
