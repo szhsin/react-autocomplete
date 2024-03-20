@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Traversal, TraversalProps } from '../common';
 
-interface LinearTraversalProps<T> extends TraversalProps<T> {
+interface LinearTraversalProps<T> extends TraversalProps {
   items?: T[];
 }
 
@@ -14,8 +14,8 @@ interface Instance {
 }
 
 const linearTraversal =
-  <T>({ traverseInput, isItemDisabled, items = [] }: LinearTraversalProps<T>): Traversal<T> =>
-  ({ focusItem, setFocusItem }) => {
+  <T>({ traverseInput, items = [] }: LinearTraversalProps<T>): Traversal<T> =>
+  ({ focusItem, setFocusItem, isItemDisabled }) => {
     const [instance] = useState<Instance>({ a: -1 });
     return {
       traverse: (isForward) => {
@@ -33,7 +33,7 @@ const linearTraversal =
             if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
           }
           nextItem = items[nextIndex];
-          if (!nextItem || !isItemDisabled?.(nextItem)) break;
+          if (!nextItem || !isItemDisabled(nextItem)) break;
         } while (nextIndex !== instance.a);
 
         instance.a = nextIndex;

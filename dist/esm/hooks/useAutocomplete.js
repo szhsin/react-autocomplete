@@ -2,6 +2,7 @@ import { useRef, useState, useCallback } from 'react';
 
 const useAutocomplete = ({
   onChange = () => {},
+  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
   getItemValue: _getItemValue
@@ -28,35 +29,38 @@ const useAutocomplete = ({
   const contextual = {
     _: instance,
     getItemValue,
+    isItemDisabled,
     onChange,
     inputRef,
     ...state
   };
   const {
     getInputProps: _getInputProps,
-    getItemProps: _getItemProps,
-    ...actions
+    getListProps: _getListProps,
+    ...restFeature
   } = useFeature({
     ...contextual,
     ...useTraversal(contextual)
   });
-  const {
-    onBlur,
-    ...featureInputProps
-  } = _getInputProps();
-  const getInputProps = () => ({
-    ...featureInputProps,
-    onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
-    ref: inputRef
-  });
-  const getItemProps = option => {
+  const getInputProps = () => {
+    const {
+      onBlur,
+      ...rest
+    } = _getInputProps();
+    return {
+      ...rest,
+      onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
+      ref: inputRef
+    };
+  };
+  const getListProps = () => {
     const {
       onMouseDown,
       onClick,
-      ...featureItemProps
-    } = _getItemProps(option);
+      ...rest
+    } = _getListProps();
     return {
-      ...featureItemProps,
+      ...rest,
       onMouseDown: e => {
         onMouseDown == null || onMouseDown(e);
         instance.a = 1;
@@ -71,9 +75,9 @@ const useAutocomplete = ({
   };
   return {
     getInputProps,
-    getItemProps,
+    getListProps,
     ...state,
-    ...actions
+    ...restFeature
   };
 };
 

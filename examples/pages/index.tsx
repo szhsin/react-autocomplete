@@ -17,6 +17,7 @@ const US_STATES = [
 ];
 
 const getItemValue = (item: (typeof US_STATES)[number]) => item.name;
+const isItemDisabled = ({ code }: { code: string }) => code === 'ca';
 
 // const US_STATES = [
 //   'Alabama',
@@ -78,24 +79,31 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   const feature = supercomplete<{ name: string; code: string }>();
 
-  const { getInputProps, getItemProps, setInputValue, open, focusItem, inlineComplete } =
-    useAutocomplete({
-      traversal: linearTraversal({
-        items,
-        traverseInput: true,
-        isItemDisabled: ({ code }) => code === 'ca'
-      }),
-      getItemValue,
-      onChange: (value) => {
-        setValue(value);
-        const items = US_STATES.filter((item) =>
-          item.name.toLowerCase().startsWith(value.toLowerCase())
-        );
-        // setItems(items);
-        items.length && inlineComplete({ item: items[1] });
-      },
-      feature
-    });
+  const {
+    getInputProps,
+    getListProps,
+    getItemProps,
+    setInputValue,
+    open,
+    focusItem,
+    inlineComplete
+  } = useAutocomplete({
+    traversal: linearTraversal({
+      items,
+      traverseInput: true
+    }),
+    getItemValue,
+    isItemDisabled,
+    onChange: (value) => {
+      setValue(value);
+      const items = US_STATES.filter((item) =>
+        item.name.toLowerCase().startsWith(value.toLowerCase())
+      );
+      // setItems(items);
+      items.length && inlineComplete({ item: items[1] });
+    },
+    feature
+  });
 
   // useEffect(() => {
   //   items.length && inlineComplete({ index: 0, value: items[0] });
@@ -117,6 +125,7 @@ export default function Home() {
         Clear
       </button>
       <ul
+        {...getListProps()}
         style={{
           position: 'absolute',
           border: '1px solid',
@@ -126,7 +135,7 @@ export default function Home() {
         <div>Header</div>
         {items.map((item) => (
           <li
-            className={styles.option}
+            className={isItemDisabled(item) ? styles.disabled : styles.option}
             key={item.code}
             style={{ background: focusItem === item ? '#0a0' : 'none' }}
             {...getItemProps({ item })}
