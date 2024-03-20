@@ -2,6 +2,23 @@
 
 var react = require('react');
 
+const mergeEvents = (events1, events2) => {
+  const result = {
+    ...events1
+  };
+  Object.keys(events2).forEach(key => {
+    const e2 = events2[key];
+    if (e2) {
+      const e1 = events1[key];
+      result[key] = e1 ? e => {
+        e1(e);
+        e2(e);
+      } : e2;
+    }
+  });
+  return result;
+};
+
 const useAutocomplete = ({
   onChange = () => {},
   isItemDisabled = () => false,
@@ -55,26 +72,16 @@ const useAutocomplete = ({
       ref: inputRef
     };
   };
-  const getListProps = () => {
-    const {
-      onMouseDown,
-      onClick,
-      ...rest
-    } = _getListProps();
-    return {
-      ...rest,
-      onMouseDown: e => {
-        onMouseDown == null || onMouseDown(e);
-        instance.a = 1;
-      },
-      onClick: e => {
-        var _inputRef$current;
-        onClick == null || onClick(e);
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-        instance.a = 0;
-      }
-    };
-  };
+  const getListProps = () => mergeEvents(_getListProps(), {
+    onMouseDown: () => {
+      instance.a = 1;
+    },
+    onClick: () => {
+      var _inputRef$current;
+      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+      instance.a = 0;
+    }
+  });
   return {
     getInputProps,
     getListProps,
@@ -194,16 +201,11 @@ const supercomplete = () => {
     } = cx;
     return {
       ...rest,
-      getInputProps: () => {
-        const inputProps = _getInputProps();
-        return {
-          ...inputProps,
-          onChange: e => {
-            instance.c = e.nativeEvent.inputType === 'insertText';
-            inputProps.onChange(e);
-          }
-        };
-      },
+      getInputProps: () => mergeEvents({
+        onChange: e => {
+          instance.c = e.nativeEvent.inputType === 'insertText';
+        }
+      }, _getInputProps()),
       inlineComplete: react.useCallback(({
         item
       }) => {

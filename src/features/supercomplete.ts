@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { Feature } from '../common';
+import { mergeEvents } from '../utils/mergeEvents';
 import { autocomplete } from './autocomplete';
 
 interface Instance {
@@ -25,17 +26,16 @@ const supercomplete = <T>(): Feature<
     return {
       ...rest,
 
-      getInputProps: () => {
-        const inputProps = _getInputProps();
-        return {
-          ...inputProps,
-          onChange: (e) => {
-            instance.c =
-              (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
-            inputProps.onChange!(e);
-          }
-        };
-      },
+      getInputProps: () =>
+        mergeEvents(
+          {
+            onChange: (e) => {
+              instance.c =
+                (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
+            }
+          },
+          _getInputProps()
+        ),
 
       inlineComplete: useCallback(
         ({ item }) => {

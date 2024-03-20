@@ -6,6 +6,7 @@ import type {
   Instance,
   Contextual
 } from '../common';
+import { mergeEvents } from '../utils/mergeEvents';
 
 const useAutocomplete = <T, FeatureActions>({
   onChange = () => {},
@@ -61,21 +62,16 @@ const useAutocomplete = <T, FeatureActions>({
     };
   };
 
-  const getListProps: GetProps<T>['getListProps'] = () => {
-    const { onMouseDown, onClick, ...rest } = _getListProps();
-    return {
-      ...rest,
-      onMouseDown: (e) => {
-        onMouseDown?.(e);
+  const getListProps: GetProps<T>['getListProps'] = () =>
+    mergeEvents(_getListProps(), {
+      onMouseDown: () => {
         instance.a = 1;
       },
-      onClick: (e) => {
-        onClick?.(e);
+      onClick: () => {
         inputRef.current?.focus();
         instance.a = 0;
       }
-    };
-  };
+    });
 
   return {
     getInputProps,

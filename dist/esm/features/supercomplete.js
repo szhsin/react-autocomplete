@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { mergeEvents } from '../utils/mergeEvents.js';
 import { autocomplete } from './autocomplete.js';
 
 const supercomplete = () => {
@@ -20,16 +21,11 @@ const supercomplete = () => {
     } = cx;
     return {
       ...rest,
-      getInputProps: () => {
-        const inputProps = _getInputProps();
-        return {
-          ...inputProps,
-          onChange: e => {
-            instance.c = e.nativeEvent.inputType === 'insertText';
-            inputProps.onChange(e);
-          }
-        };
-      },
+      getInputProps: () => mergeEvents({
+        onChange: e => {
+          instance.c = e.nativeEvent.inputType === 'insertText';
+        }
+      }, _getInputProps()),
       inlineComplete: useCallback(({
         item
       }) => {
