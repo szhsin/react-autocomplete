@@ -18,7 +18,8 @@ export interface AutocompleteState<T> {
 
 export type ChangeType = 'submit' | 'input' | 'blur' | 'esc';
 
-export interface ContextualProps {
+export interface ContextualProps<T> {
+  isItemDisabled: (item: T) => boolean;
   onChange: (value: string, meta: { type: ChangeType }) => void;
 }
 
@@ -40,7 +41,7 @@ export interface Instance {
   c: [number | null, number | null] | [];
 }
 
-export interface Contextual<T> extends ContextualProps, AutocompleteState<T> {
+export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
   inputRef: React.RefObject<HTMLInputElement>;
   getItemValue: (item: T | undefined | null) => string | undefined | null;
   /**
@@ -49,9 +50,8 @@ export interface Contextual<T> extends ContextualProps, AutocompleteState<T> {
   _: Instance;
 }
 
-export interface TraversalProps<T> {
+export interface TraversalProps {
   traverseInput?: boolean;
-  isItemDisabled?: (item: T) => boolean;
 }
 
 export type Traversal<T> = (cx: Contextual<T>) => {
@@ -66,7 +66,7 @@ interface GetItemValue<T> {
   getItemValue: (item: T) => string;
 }
 
-export type AutocompleteProps<T, FeatureActions = object> = Partial<ContextualProps> & {
+export type AutocompleteProps<T, FeatureActions = object> = Partial<ContextualProps<T>> & {
   feature: Feature<T, FeatureActions>;
   traversal: Traversal<T>;
 } & (T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>);

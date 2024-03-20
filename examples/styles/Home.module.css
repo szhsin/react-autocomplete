@@ -14,3 +14,8 @@
   background-color: #777 !important;
   color: rgb(163, 210, 42);
 }
+
+.disabled {
+  color: #777;
+  user-select: none;
+}

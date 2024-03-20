@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 const linearTraversal = ({
   traverseInput,
-  isItemDisabled,
   items = []
 }) => ({
   focusItem,
-  setFocusItem
+  setFocusItem,
+  isItemDisabled
 }) => {
   const [instance] = useState({
     a: -1
@@ -25,7 +25,7 @@ const linearTraversal = ({
           if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
         }
         nextItem = items[nextIndex];
-        if (!nextItem || !(isItemDisabled != null && isItemDisabled(nextItem))) break;
+        if (!nextItem || !isItemDisabled(nextItem)) break;
       } while (nextIndex !== instance.a);
       instance.a = nextIndex;
       setFocusItem(nextItem);

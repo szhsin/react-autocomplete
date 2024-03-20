@@ -5,6 +5,7 @@ const autocomplete =
   ({
     _: cxInstance,
     getItemValue,
+    isItemDisabled,
     traverse,
     onChange,
     setInputValue,
@@ -81,7 +82,7 @@ const autocomplete =
     });
 
     const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
-      onClick: () => updateAndCloseList(getItemValue(item), 'submit')
+      onClick: () => !isItemDisabled(item) && updateAndCloseList(getItemValue(item), 'submit')
     });
 
     return {

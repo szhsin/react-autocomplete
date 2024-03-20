@@ -4,6 +4,7 @@ var react = require('react');
 
 const useAutocomplete = ({
   onChange = () => {},
+  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
   getItemValue: _getItemValue
@@ -30,6 +31,7 @@ const useAutocomplete = ({
   const contextual = {
     _: instance,
     getItemValue,
+    isItemDisabled,
     onChange,
     inputRef,
     ...state
@@ -37,7 +39,7 @@ const useAutocomplete = ({
   const {
     getInputProps: _getInputProps,
     getListProps: _getListProps,
-    ...otherProps
+    ...restFeature
   } = useFeature({
     ...contextual,
     ...useTraversal(contextual)
@@ -77,7 +79,7 @@ const useAutocomplete = ({
     getInputProps,
     getListProps,
     ...state,
-    ...otherProps
+    ...restFeature
   };
 };
 
@@ -86,6 +88,7 @@ const autocomplete = ({
 } = {}) => ({
   _: cxInstance,
   getItemValue,
+  isItemDisabled,
   traverse,
   onChange,
   setInputValue,
@@ -163,7 +166,7 @@ const autocomplete = ({
   const getItemProps = ({
     item
   }) => ({
-    onClick: () => updateAndCloseList(getItemValue(item), 'submit')
+    onClick: () => !isItemDisabled(item) && updateAndCloseList(getItemValue(item), 'submit')
   });
   return {
     getInputProps,
@@ -222,11 +225,11 @@ const supercomplete = () => {
 
 const linearTraversal = ({
   traverseInput,
-  isItemDisabled,
   items = []
 }) => ({
   focusItem,
-  setFocusItem
+  setFocusItem,
+  isItemDisabled
 }) => {
   const [instance] = react.useState({
     a: -1
@@ -245,7 +248,7 @@ const linearTraversal = ({
           if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
         }
         nextItem = items[nextIndex];
-        if (!nextItem || !(isItemDisabled != null && isItemDisabled(nextItem))) break;
+        if (!nextItem || !isItemDisabled(nextItem)) break;
       } while (nextIndex !== instance.a);
       instance.a = nextIndex;
       setFocusItem(nextItem);

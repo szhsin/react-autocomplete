@@ -2,6 +2,7 @@ import { useRef, useState, useCallback } from 'react';
 
 const useAutocomplete = ({
   onChange = () => {},
+  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
   getItemValue: _getItemValue
@@ -28,6 +29,7 @@ const useAutocomplete = ({
   const contextual = {
     _: instance,
     getItemValue,
+    isItemDisabled,
     onChange,
     inputRef,
     ...state
@@ -35,7 +37,7 @@ const useAutocomplete = ({
   const {
     getInputProps: _getInputProps,
     getListProps: _getListProps,
-    ...otherProps
+    ...restFeature
   } = useFeature({
     ...contextual,
     ...useTraversal(contextual)
@@ -75,7 +77,7 @@ const useAutocomplete = ({
     getInputProps,
     getListProps,
     ...state,
-    ...otherProps
+    ...restFeature
   };
 };
 

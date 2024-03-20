@@ -9,6 +9,7 @@ import type {
 
 const useAutocomplete = <T, FeatureActions>({
   onChange = () => {},
+  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
   getItemValue: _getItemValue
@@ -39,6 +40,7 @@ const useAutocomplete = <T, FeatureActions>({
   const contextual = {
     _: instance,
     getItemValue,
+    isItemDisabled,
     onChange,
     inputRef,
     ...state
@@ -47,7 +49,7 @@ const useAutocomplete = <T, FeatureActions>({
   const {
     getInputProps: _getInputProps,
     getListProps: _getListProps,
-    ...otherProps
+    ...restFeature
   } = useFeature({ ...contextual, ...useTraversal(contextual) });
 
   const getInputProps: GetProps<T>['getInputProps'] = () => {
@@ -79,7 +81,7 @@ const useAutocomplete = <T, FeatureActions>({
     getInputProps,
     getListProps,
     ...state,
-    ...otherProps
+    ...restFeature
   };
 };
 
