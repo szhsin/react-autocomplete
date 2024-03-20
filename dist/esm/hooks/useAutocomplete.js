@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
+import { mergeEvents } from '../utils/mergeEvents.js';
 
 const useAutocomplete = ({
   onChange = () => {},
@@ -53,26 +54,16 @@ const useAutocomplete = ({
       ref: inputRef
     };
   };
-  const getListProps = () => {
-    const {
-      onMouseDown,
-      onClick,
-      ...rest
-    } = _getListProps();
-    return {
-      ...rest,
-      onMouseDown: e => {
-        onMouseDown == null || onMouseDown(e);
-        instance.a = 1;
-      },
-      onClick: e => {
-        var _inputRef$current;
-        onClick == null || onClick(e);
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-        instance.a = 0;
-      }
-    };
-  };
+  const getListProps = () => mergeEvents(_getListProps(), {
+    onMouseDown: () => {
+      instance.a = 1;
+    },
+    onClick: () => {
+      var _inputRef$current;
+      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+      instance.a = 0;
+    }
+  });
   return {
     getInputProps,
     getListProps,

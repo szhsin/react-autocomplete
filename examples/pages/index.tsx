@@ -96,11 +96,11 @@ export default function Home() {
     isItemDisabled,
     onChange: (value) => {
       setValue(value);
-      const items = US_STATES.filter((item) =>
+      const item = US_STATES.filter((item) =>
         item.name.toLowerCase().startsWith(value.toLowerCase())
-      );
+      ).find((item) => !isItemDisabled(item));
       // setItems(items);
-      items.length && inlineComplete({ item: items[1] });
+      item && inlineComplete({ item });
     },
     feature
   });
