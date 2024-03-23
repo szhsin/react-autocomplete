@@ -20,7 +20,7 @@ export type ChangeType = 'submit' | 'input' | 'blur' | 'esc';
 
 export interface ContextualProps<T> {
   isItemDisabled: (item: T) => boolean;
-  onChange: (value: string, meta: { type: ChangeType }) => void;
+  onChange: (value: string, meta: { type: ChangeType; item: T | null | undefined }) => void;
 }
 
 export interface Instance {

@@ -34,7 +34,8 @@ export default function Home() {
     }),
     getItemValue,
     isItemDisabled,
-    onChange: (value) => {
+    onChange: (value, meta) => {
+      console.log('onChange', meta);
       setValue(value);
       const item = US_STATES.filter((item) =>
         item.name.toLowerCase().startsWith(value.toLowerCase())

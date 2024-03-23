@@ -16,17 +16,18 @@ const autocomplete = ({
   setOpen,
   inputRef
 }) => {
-  const updateValue = (value, type) => {
+  const updateValue = (type, value, item) => {
     cxInstance.b = value;
     setInputValue(value);
     onChange(value, {
-      type
+      type,
+      item
     });
   };
-  const updateAndCloseList = (value, type) => {
+  const updateAndCloseList = (type, value, item) => {
     if (open) {
       if (value != null) {
-        updateValue(value, type);
+        updateValue(type, value, item);
       }
       setOpen(false);
       setFocusItem();
@@ -45,7 +46,7 @@ const autocomplete = ({
     onChange: e => {
       setFocusItem();
       setOpen(true);
-      updateValue(e.target.value, 'input');
+      updateValue('input', e.target.value);
     },
     onSelect: e => {
       const {
@@ -56,11 +57,11 @@ const autocomplete = ({
       const [start, end] = cxInstance.c;
       if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
         setFocusItem();
-        updateValue(value, 'input');
+        updateValue('input', value);
       }
     },
     onClick: () => setOpen(true),
-    onBlur: () => updateAndCloseList(getItemValue(focusItem), 'blur'),
+    onBlur: () => updateAndCloseList('blur', getItemValue(focusItem), focusItem),
     onKeyDown: e => {
       switch (e.key) {
         case 'ArrowUp':
@@ -73,10 +74,10 @@ const autocomplete = ({
           }
           break;
         case 'Enter':
-          updateAndCloseList(getItemValue(focusItem), 'submit');
+          updateAndCloseList('submit', getItemValue(focusItem), focusItem);
           break;
         case 'Escape':
-          updateAndCloseList(cxInstance.b, 'esc');
+          updateAndCloseList('esc', cxInstance.b);
           break;
       }
     }
@@ -85,7 +86,7 @@ const autocomplete = ({
     item
   }) => ({
     ref: focusItem === item ? scrollIntoView : null,
-    onClick: () => !isItemDisabled(item) && updateAndCloseList(getItemValue(item), 'submit')
+    onClick: () => !isItemDisabled(item) && updateAndCloseList('submit', getItemValue(item), item)
   });
   return {
     getInputProps,

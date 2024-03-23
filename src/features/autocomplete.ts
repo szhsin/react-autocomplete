@@ -18,16 +18,20 @@ const autocomplete =
     setOpen,
     inputRef
   }) => {
-    const updateValue = (value: string, type: ChangeType) => {
+    const updateValue = (type: ChangeType, value: string, item?: T | null | undefined) => {
       cxInstance.b = value;
       setInputValue(value);
-      onChange(value, { type });
+      onChange(value, { type, item });
     };
 
-    const updateAndCloseList = (value: string | undefined | null, type: ChangeType) => {
+    const updateAndCloseList = (
+      type: ChangeType,
+      value: string | null | undefined,
+      item?: T | null | undefined
+    ) => {
       if (open) {
         if (value != null) {
-          updateValue(value, type);
+          updateValue(type, value, item);
         }
         setOpen(false);
         setFocusItem();
@@ -47,7 +51,7 @@ const autocomplete =
       onChange: (e) => {
         setFocusItem();
         setOpen(true);
-        updateValue(e.target.value, 'input');
+        updateValue('input', e.target.value);
       },
 
       onSelect: (e) => {
@@ -55,13 +59,13 @@ const autocomplete =
         const [start, end] = cxInstance.c;
         if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
           setFocusItem();
-          updateValue(value, 'input');
+          updateValue('input', value);
         }
       },
 
       onClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList(getItemValue(focusItem), 'blur'),
+      onBlur: () => updateAndCloseList('blur', getItemValue(focusItem), focusItem),
 
       onKeyDown: (e) => {
         switch (e.key) {
@@ -75,10 +79,10 @@ const autocomplete =
             }
             break;
           case 'Enter':
-            updateAndCloseList(getItemValue(focusItem), 'submit');
+            updateAndCloseList('submit', getItemValue(focusItem), focusItem);
             break;
           case 'Escape':
-            updateAndCloseList(cxInstance.b, 'esc');
+            updateAndCloseList('esc', cxInstance.b);
             break;
         }
       }
@@ -86,7 +90,7 @@ const autocomplete =
 
     const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
       ref: focusItem === item ? scrollIntoView : null,
-      onClick: () => !isItemDisabled(item) && updateAndCloseList(getItemValue(item), 'submit')
+      onClick: () => !isItemDisabled(item) && updateAndCloseList('submit', getItemValue(item), item)
     });
 
     return {
