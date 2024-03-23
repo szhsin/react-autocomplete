@@ -10,6 +10,11 @@
   background-color: rgb(222, 146, 6);
 }
 
+.list {
+  max-height: 300px;
+  overflow: auto;
+}
+
 .option:hover {
   background-color: #777 !important;
   color: rgb(163, 210, 42);

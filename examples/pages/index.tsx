@@ -7,77 +7,17 @@ import {
   linearTraversal
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-
-const US_STATES = [
-  { name: 'Alabama', code: 'al' },
-  { name: 'Alaska', code: 'as' },
-  { name: 'California', code: 'ca' },
-  { name: 'Colorado', code: 'co' },
-  { name: 'Connecticut', code: 'ct' }
-];
+import { US_STATES_OJB as US_STATES } from './data';
 
 const getItemValue = (item: (typeof US_STATES)[number]) => item.name;
-const isItemDisabled = ({ code }: { code: string }) => code === 'ca';
-
-// const US_STATES = [
-//   'Alabama',
-//   'Alaska',
-//   'Arizona',
-//   'Arkansas',
-//   'California',
-//   'Colorado',
-//   'Connecticut',
-//   'Delaware',
-//   'Florida',
-//   'Georgia',
-//   'Hawaii',
-//   'Idaho',
-//   'Illinois',
-//   'Indiana',
-//   'Iowa',
-//   'Kansas',
-//   'Kentucky',
-//   'Louisiana',
-//   'Maine',
-//   'Maryland',
-//   'Massachusetts',
-//   'Michigan',
-//   'Minnesota',
-//   'Mississippi',
-//   'Missouri',
-//   'Montana',
-//   'Nebraska',
-//   'Nevada',
-//   'New Hampshire',
-//   'New Jersey',
-//   'New Mexico',
-//   'New York',
-//   'North Carolina',
-//   'North Dakota',
-//   'Ohio',
-//   'Oklahoma',
-//   'Oregon',
-//   'Pennsylvania',
-//   'Rhode Island',
-//   'South Carolina',
-//   'South Dakota',
-//   'Tennessee',
-//   'Texas',
-//   'Utah',
-//   'Vermont',
-//   'Virginia',
-//   'Washington',
-//   'West Virginia',
-//   'Wisconsin',
-//   'Wyoming'
-// ];
+const isItemDisabled = ({ abbr }: { abbr: string }) => abbr === 'CA';
 
 export default function Home() {
   const [value, setValue] = useState('');
   const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
   // const [myinput, setmyinput] = useState('');
   // const [items, setItems] = useState(US_STATES);
-  const feature = supercomplete<{ name: string; code: string }>();
+  const feature = supercomplete<{ name: string; abbr: string }>();
 
   const {
     getInputProps,
@@ -126,17 +66,18 @@ export default function Home() {
       </button>
       <ul
         {...getListProps()}
+        className={styles.list}
         style={{
           position: 'absolute',
           border: '1px solid',
           display: open && items.length ? 'block' : 'none'
         }}
       >
-        <div>Header</div>
+        <h3>US STATES</h3>
         {items.map((item) => (
           <li
             className={isItemDisabled(item) ? styles.disabled : styles.option}
-            key={item.code}
+            key={item.abbr}
             style={{ background: focusItem === item ? '#0a0' : 'none' }}
             {...getItemProps({ item })}
           >

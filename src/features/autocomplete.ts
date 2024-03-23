@@ -1,5 +1,8 @@
 import type { Feature, ChangeType, GetProps } from '../common';
 
+const scrollIntoView = (element: HTMLElement | null) =>
+  element?.scrollIntoView({ block: 'nearest' });
+
 const autocomplete =
   <T>({ rovingText }: { rovingText?: boolean } = {}): Feature<T> =>
   ({
@@ -82,6 +85,7 @@ const autocomplete =
     });
 
     const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
+      ref: focusItem === item ? scrollIntoView : null,
       onClick: () => !isItemDisabled(item) && updateAndCloseList(getItemValue(item), 'submit')
     });
 
