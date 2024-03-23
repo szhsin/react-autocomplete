@@ -1,3 +1,6 @@
+const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
+  block: 'nearest'
+});
 const autocomplete = ({
   rovingText
 } = {}) => ({
@@ -81,6 +84,7 @@ const autocomplete = ({
   const getItemProps = ({
     item
   }) => ({
+    ref: focusItem === item ? scrollIntoView : null,
     onClick: () => !isItemDisabled(item) && updateAndCloseList(getItemValue(item), 'submit')
   });
   return {
