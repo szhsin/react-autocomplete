@@ -12,7 +12,13 @@ import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from './
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
-const isItemDisabled = ({ abbr }: { abbr: string }) => true || abbr.startsWith('CO');
+const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
+
+const getGroupedItems = (value: string) =>
+  LIST_GROUP.map((group) => ({
+    ...group,
+    states: group.states.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
+  })).filter((group) => !!group.states.length);
 
 export default function Home() {
   const [value, setValue] = useState('');
@@ -21,8 +27,7 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   // const feature = supercomplete<{ name: string; abbr: string }>();
 
-  const groupedItems = KEYED_GROUP;
-  console.log('render main');
+  const groupedItems = getGroupedItems(value);
 
   const {
     getInputProps,
@@ -47,13 +52,14 @@ export default function Home() {
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
-      // item && inlineComplete({ item });
+      const item = getGroupedItems(value)[0].states.find((item) => !isItemDisabled(item));
+      item && inlineComplete({ item });
     },
-    feature: supercomplete<Item>(),
+    feature: supercomplete(),
     traversal: groupedTraversal({
-      traverseInput: false,
-      groupedItems
-      // getItemsInGroup: g=>g.states
+      traverseInput: true,
+      groupedItems,
+      getItemsInGroup: (gp) => gp.states
     })
   });
 
@@ -98,7 +104,7 @@ export default function Home() {
           </li>
         ))} */}
 
-        {Object.entries(groupedItems).map(([key, group]) => (
+        {groupedItems.map(({ groupKey: key, states: group }) => (
           <React.Fragment key={key}>
             <li>
               <h4 style={{ color: 'lightskyblue', margin: '10px 0' }}>{key}</h4>
