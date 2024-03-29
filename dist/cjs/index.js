@@ -245,26 +245,47 @@ const linearTraversal = ({
     traverse: isForward => {
       if (!focusItem) instance.a = -1;else if (focusItem !== items[instance.a]) instance.a = items.indexOf(focusItem);
       const baseIndex = traverseInput ? -1 : 0;
-      let nextIndex = instance.a;
-      let nextItem;
+      let newItem,
+        nextIndex = instance.a,
+        itemCounter = 0;
       const itemLength = items.length;
-      do {
+      for (;;) {
         if (isForward) {
           if (++nextIndex >= itemLength) nextIndex = baseIndex;
         } else {
           if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
         }
-        nextItem = items[nextIndex];
-        if (!nextItem || !isItemDisabled(nextItem)) break;
-      } while (nextIndex !== instance.a);
+        newItem = items[nextIndex];
+        if (!newItem || !isItemDisabled(newItem)) break;
+        if (++itemCounter >= itemLength) return focusItem;
+      }
       instance.a = nextIndex;
-      setFocusItem(nextItem);
-      return nextItem;
+      setFocusItem(newItem);
+      return newItem;
     }
   };
 };
 
+const isArray = Array.isArray;
+const groupedTraversal = ({
+  groupedItems,
+  getItemsInGroup,
+  ...restProps
+}) => {
+  const groups = isArray(groupedItems) ? groupedItems : groupedItems ? Object.values(groupedItems) : [];
+  const items = [];
+  groups.forEach(group => {
+    const itemsInGroup = isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : [];
+    items.push(...itemsInGroup);
+  });
+  return linearTraversal({
+    ...restProps,
+    items
+  });
+};
+
 exports.autocomplete = autocomplete;
+exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
 exports.supercomplete = supercomplete;
 exports.useAutocomplete = useAutocomplete;

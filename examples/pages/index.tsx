@@ -1,23 +1,33 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   useAutocomplete,
   autocomplete,
   Feature,
   supercomplete,
-  linearTraversal
+  linearTraversal,
+  groupedTraversal
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { US_STATES_OJB as US_STATES } from './data';
+import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from './data';
 
-const getItemValue = (item: (typeof US_STATES)[number]) => item.name;
-const isItemDisabled = ({ abbr }: { abbr: string }) => abbr === 'CA';
+type Item = { name: string; abbr: string };
+const getItemValue = (item: Item) => item.name;
+const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
+
+const getGroupedItems = (value: string) =>
+  LIST_GROUP.map((group) => ({
+    ...group,
+    states: group.states.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
+  })).filter((group) => !!group.states.length);
 
 export default function Home() {
   const [value, setValue] = useState('');
-  const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
+  // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
   // const [myinput, setmyinput] = useState('');
   // const [items, setItems] = useState(US_STATES);
-  const feature = supercomplete<{ name: string; abbr: string }>();
+  // const feature = supercomplete<{ name: string; abbr: string }>();
+
+  const groupedItems = getGroupedItems(value);
 
   const {
     getInputProps,
@@ -28,22 +38,29 @@ export default function Home() {
     focusItem,
     inlineComplete
   } = useAutocomplete({
-    traversal: linearTraversal({
-      items,
-      traverseInput: true
-    }),
+    // traversal: linearTraversal({
+    //   items,
+    //   traverseInput: true
+    // }),
+
     getItemValue,
     isItemDisabled,
     onChange: (value, meta) => {
       console.log('onChange', meta);
       setValue(value);
-      const item = US_STATES.filter((item) =>
-        item.name.toLowerCase().startsWith(value.toLowerCase())
-      ).find((item) => !isItemDisabled(item));
-      // setItems(items);
+      // const item = US_STATES.filter((item) =>
+      //   item.name.toLowerCase().startsWith(value.toLowerCase())
+      // ).find((item) => !isItemDisabled(item));
+      // // setItems(items);
+      const item = getGroupedItems(value)[0].states.find((item) => !isItemDisabled(item));
       item && inlineComplete({ item });
     },
-    feature
+    feature: supercomplete(),
+    traversal: groupedTraversal({
+      traverseInput: true,
+      groupedItems,
+      getItemsInGroup: (gp) => gp.states
+    })
   });
 
   // useEffect(() => {
@@ -71,11 +88,12 @@ export default function Home() {
         style={{
           position: 'absolute',
           border: '1px solid',
-          display: open && items.length ? 'block' : 'none'
+          // display: open && items.length ? 'block' : 'none'
+          display: open ? 'block' : 'none'
         }}
       >
         <h3>US STATES</h3>
-        {items.map((item) => (
+        {/* {items.map((item) => (
           <li
             className={isItemDisabled(item) ? styles.disabled : styles.option}
             key={item.abbr}
@@ -84,6 +102,24 @@ export default function Home() {
           >
             {item.name}
           </li>
+        ))} */}
+
+        {groupedItems.map(({ groupKey: key, states: group }) => (
+          <React.Fragment key={key}>
+            <li>
+              <h4 style={{ color: 'lightskyblue', margin: '10px 0' }}>{key}</h4>
+            </li>
+            {group.map((item) => (
+              <li
+                className={isItemDisabled(item) ? styles.disabled : styles.option}
+                key={item.abbr}
+                style={{ background: focusItem === item ? '#0a0' : 'none' }}
+                {...getItemProps({ item })}
+              >
+                {item.name}
+              </li>
+            ))}
+          </React.Fragment>
         ))}
       </ul>
     </div>
