@@ -111,6 +111,8 @@ const autocomplete = ({
   const updateValue = (type, value, item) => {
     cxInstance.b = value;
     setInputValue(value);
+    const endIndex = value.length;
+    type !== 'input' && inputRef.current.setSelectionRange(endIndex, endIndex);
     onChange(value, {
       type,
       item
