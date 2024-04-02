@@ -90,6 +90,25 @@ const useAutocomplete = ({
   };
 };
 
+const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? react.useLayoutEffect : react.useEffect;
+const useAutoHeight = ({
+  anchorRef,
+  show,
+  margin = 0
+}) => {
+  const [height, setHeight] = react.useState();
+  const computeHeight = react.useCallback(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    const newHeight = window.innerHeight - anchor.getBoundingClientRect().bottom - margin;
+    setHeight(newHeight >= 0 ? newHeight : undefined);
+  }, [anchorRef, margin]);
+  useLayoutEffect(() => {
+    show && computeHeight();
+  }, [show, computeHeight]);
+  return [height, computeHeight];
+};
+
 const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
   block: 'nearest'
 });
@@ -290,4 +309,5 @@ exports.autocomplete = autocomplete;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
 exports.supercomplete = supercomplete;
+exports.useAutoHeight = useAutoHeight;
 exports.useAutocomplete = useAutocomplete;
