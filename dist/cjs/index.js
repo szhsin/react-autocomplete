@@ -90,6 +90,39 @@ const useAutocomplete = ({
   };
 };
 
+const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? react.useLayoutEffect : react.useEffect;
+const findOverflowAncestor = element => {
+  while (element) {
+    element = element.parentElement;
+    if (!element || element === document.body) return;
+    const {
+      overflow,
+      overflowX,
+      overflowY
+    } = getComputedStyle(element);
+    if (/auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX)) return element;
+  }
+};
+const useAutoHeight = ({
+  anchorRef,
+  show,
+  margin = 0
+}) => {
+  const [height, setHeight] = react.useState();
+  const computeHeight = react.useCallback(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    const overflowAncestor = findOverflowAncestor(anchor);
+    const bottomBoundary = overflowAncestor ? overflowAncestor.getBoundingClientRect().bottom : window.innerHeight;
+    const newHeight = bottomBoundary - anchor.getBoundingClientRect().bottom - margin;
+    setHeight(Math.max(newHeight, 0));
+  }, [anchorRef, margin]);
+  useLayoutEffect(() => {
+    show && computeHeight();
+  }, [show, computeHeight]);
+  return [height, computeHeight];
+};
+
 const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
   block: 'nearest'
 });
@@ -290,4 +323,5 @@ exports.autocomplete = autocomplete;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
 exports.supercomplete = supercomplete;
+exports.useAutoHeight = useAutoHeight;
 exports.useAutocomplete = useAutocomplete;

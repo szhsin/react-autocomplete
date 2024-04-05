@@ -1,4 +1,5 @@
 export { useAutocomplete } from './hooks/useAutocomplete';
+export { useAutoHeight } from './hooks/useAutoHeight';
 export { autocomplete } from './features/autocomplete';
 export { supercomplete } from './features/supercomplete';
 export { linearTraversal } from './traversals/linearTraversal';

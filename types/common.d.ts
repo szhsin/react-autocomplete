@@ -1,4 +1,7 @@
 import type { HTMLAttributes, InputHTMLAttributes } from 'react';
+export type PropsWithObjectRef<T> = T extends HTMLAttributes<infer E> ? T & {
+    ref: React.RefObject<E>;
+} : never;
 export interface GetProps<T> {
     getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
     getListProps: () => HTMLAttributes<HTMLElement>;

@@ -1,10 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
+import type { InputHTMLAttributes } from 'react';
 import type {
   GetProps,
   AutocompleteProps,
   AutocompleteState,
   Instance,
-  Contextual
+  Contextual,
+  PropsWithObjectRef
 } from '../common';
 import { mergeEvents } from '../utils/mergeEvents';
 
@@ -53,7 +55,7 @@ const useAutocomplete = <T, FeatureActions>({
     ...restFeature
   } = useFeature({ ...contextual, ...useTraversal(contextual) });
 
-  const getInputProps: GetProps<T>['getInputProps'] = () => {
+  const getInputProps: () => PropsWithObjectRef<InputHTMLAttributes<HTMLInputElement>> = () => {
     const { onBlur, ...rest } = _getInputProps();
     return {
       ...rest,
