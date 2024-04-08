@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { mergeEvents } from '../utils/mergeEvents.js';
+import { useMutableState } from '../hooks/useMutableState.js';
 import { autocomplete } from './autocomplete.js';
 
 const supercomplete = () => {
@@ -11,7 +12,7 @@ const supercomplete = () => {
       getInputProps: _getInputProps,
       ...rest
     } = useAutocomplete(cx);
-    const [instance] = useState({});
+    const mutable = useMutableState({});
     const {
       inputRef,
       getItemValue,
@@ -23,15 +24,15 @@ const supercomplete = () => {
       ...rest,
       getInputProps: () => mergeEvents({
         onChange: e => {
-          instance.c = e.nativeEvent.inputType === 'insertText';
+          mutable.c = e.nativeEvent.inputType === 'insertText';
         }
       }, _getInputProps()),
       inlineComplete: useCallback(({
         item
       }) => {
-        if (instance.c) {
+        if (mutable.c) {
           var _inputRef$current;
-          instance.c = 0;
+          mutable.c = 0;
           setFocusItem(item);
           const value = getItemValue(item);
           const start = cxInstance.b.length;
@@ -40,7 +41,7 @@ const supercomplete = () => {
           cxInstance.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
-      }, [cxInstance, instance, inputRef, getItemValue, setFocusItem, setInputValue])
+      }, [cxInstance, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
     };
   };
 };

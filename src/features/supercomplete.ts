@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import type { Feature } from '../common';
 import { mergeEvents } from '../utils/mergeEvents';
+import { useMutableState } from '../hooks/useMutableState';
 import { autocomplete } from './autocomplete';
 
-interface Instance {
+interface MutableState {
   /**
    * ### INTERNAL API ###
    * Whether the last value change is "insertText"
@@ -20,7 +21,7 @@ const supercomplete = <T>(): Feature<
   const useAutocomplete = autocomplete<T>({ rovingText: true });
   return (cx) => {
     const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
-    const [instance] = useState<Instance>({});
+    const mutable = useMutableState<MutableState>({});
     const { inputRef, getItemValue, setInputValue, setFocusItem, _: cxInstance } = cx;
 
     return {
@@ -30,7 +31,7 @@ const supercomplete = <T>(): Feature<
         mergeEvents(
           {
             onChange: (e) => {
-              instance.c =
+              mutable.c =
                 (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
             }
           },
@@ -39,8 +40,8 @@ const supercomplete = <T>(): Feature<
 
       inlineComplete: useCallback(
         ({ item }) => {
-          if (instance.c) {
-            instance.c = 0;
+          if (mutable.c) {
+            mutable.c = 0;
             setFocusItem(item);
             const value = getItemValue(item)!;
             const start = cxInstance.b.length;
@@ -50,7 +51,7 @@ const supercomplete = <T>(): Feature<
             inputRef.current?.setSelectionRange(start, end);
           }
         },
-        [cxInstance, instance, inputRef, getItemValue, setFocusItem, setInputValue]
+        [cxInstance, mutable, inputRef, getItemValue, setFocusItem, setInputValue]
       )
     };
   };

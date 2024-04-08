@@ -2,6 +2,8 @@
 
 var react = require('react');
 
+const useMutableState = stateContainer => react.useState(stateContainer)[0];
+
 const mergeEvents = (events1, events2) => {
   const result = {
     ...events1
@@ -29,7 +31,7 @@ const useAutocomplete = ({
   const inputRef = react.useRef(null);
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
-  const [instance] = react.useState({
+  const mutable = useMutableState({
     b: '',
     c: []
   });
@@ -46,7 +48,7 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
-    _: instance,
+    _: mutable,
     getItemValue,
     isItemDisabled,
     onChange,
@@ -68,18 +70,18 @@ const useAutocomplete = ({
     } = _getInputProps();
     return {
       ...rest,
-      onBlur: e => !instance.a && (onBlur == null ? void 0 : onBlur(e)),
+      onBlur: e => !mutable.a && (onBlur == null ? void 0 : onBlur(e)),
       ref: inputRef
     };
   };
   const getListProps = () => mergeEvents(_getListProps(), {
     onMouseDown: () => {
-      instance.a = 1;
+      mutable.a = 1;
     },
     onClick: () => {
       var _inputRef$current;
       (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-      instance.a = 0;
+      mutable.a = 0;
     }
   });
   return {
@@ -231,7 +233,7 @@ const supercomplete = () => {
       getInputProps: _getInputProps,
       ...rest
     } = useAutocomplete(cx);
-    const [instance] = react.useState({});
+    const mutable = useMutableState({});
     const {
       inputRef,
       getItemValue,
@@ -243,15 +245,15 @@ const supercomplete = () => {
       ...rest,
       getInputProps: () => mergeEvents({
         onChange: e => {
-          instance.c = e.nativeEvent.inputType === 'insertText';
+          mutable.c = e.nativeEvent.inputType === 'insertText';
         }
       }, _getInputProps()),
       inlineComplete: react.useCallback(({
         item
       }) => {
-        if (instance.c) {
+        if (mutable.c) {
           var _inputRef$current;
-          instance.c = 0;
+          mutable.c = 0;
           setFocusItem(item);
           const value = getItemValue(item);
           const start = cxInstance.b.length;
@@ -260,7 +262,7 @@ const supercomplete = () => {
           cxInstance.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
-      }, [cxInstance, instance, inputRef, getItemValue, setFocusItem, setInputValue])
+      }, [cxInstance, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
     };
   };
 };
@@ -273,15 +275,15 @@ const linearTraversal = ({
   setFocusItem,
   isItemDisabled
 }) => {
-  const [instance] = react.useState({
+  const mutable = useMutableState({
     a: -1
   });
   return {
     traverse: isForward => {
-      if (!focusItem) instance.a = -1;else if (focusItem !== items[instance.a]) instance.a = items.indexOf(focusItem);
+      if (!focusItem) mutable.a = -1;else if (focusItem !== items[mutable.a]) mutable.a = items.indexOf(focusItem);
       const baseIndex = traverseInput ? -1 : 0;
       let newItem,
-        nextIndex = instance.a,
+        nextIndex = mutable.a,
         itemCounter = 0;
       const itemLength = items.length;
       for (;;) {
@@ -294,7 +296,7 @@ const linearTraversal = ({
         if (!newItem || !isItemDisabled(newItem)) break;
         if (++itemCounter >= itemLength) return focusItem;
       }
-      instance.a = nextIndex;
+      mutable.a = nextIndex;
       setFocusItem(newItem);
       return newItem;
     }
