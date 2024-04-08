@@ -27,7 +27,7 @@ export interface ContextualProps<T> {
   onChange: (value: string, meta: { type: ChangeType; item: T | null | undefined }) => void;
 }
 
-export interface Instance {
+export interface MutableState {
   /**
    * ### INTERNAL API ###
    * Whether to bypass onblur event on input
@@ -51,7 +51,7 @@ export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> 
   /**
    * ### INTERNAL API ###
    */
-  _: Instance;
+  _: MutableState;
 }
 
 export interface TraversalProps {

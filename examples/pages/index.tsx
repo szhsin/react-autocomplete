@@ -52,7 +52,7 @@ export default function Home() {
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
-      const item = getGroupedItems(value)[0].states.find((item) => !isItemDisabled(item));
+      const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
       item && inlineComplete({ item });
     },
     feature: supercomplete(),

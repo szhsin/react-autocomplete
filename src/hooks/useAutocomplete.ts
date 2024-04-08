@@ -4,10 +4,11 @@ import type {
   GetProps,
   AutocompleteProps,
   AutocompleteState,
-  Instance,
+  MutableState,
   Contextual,
   PropsWithObjectRef
 } from '../common';
+import { useMutableState } from './useMutableState';
 import { mergeEvents } from '../utils/mergeEvents';
 
 const useAutocomplete = <T, FeatureActions>({
@@ -20,7 +21,7 @@ const useAutocomplete = <T, FeatureActions>({
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState<T | null | undefined>();
-  const [instance] = useState<Instance>({ b: '', c: [] });
+  const mutable = useMutableState<MutableState>({ b: '', c: [] });
 
   const getItemValue: Contextual<T>['getItemValue'] = useCallback(
     (item) => (item == null ? null : _getItemValue ? _getItemValue(item) : item.toString()),
@@ -41,7 +42,7 @@ const useAutocomplete = <T, FeatureActions>({
   };
 
   const contextual = {
-    _: instance,
+    _: mutable,
     getItemValue,
     isItemDisabled,
     onChange,
@@ -59,7 +60,7 @@ const useAutocomplete = <T, FeatureActions>({
     const { onBlur, ...rest } = _getInputProps();
     return {
       ...rest,
-      onBlur: (e) => !instance.a && onBlur?.(e),
+      onBlur: (e) => !mutable.a && onBlur?.(e),
       ref: inputRef
     };
   };
@@ -67,11 +68,11 @@ const useAutocomplete = <T, FeatureActions>({
   const getListProps: GetProps<T>['getListProps'] = () =>
     mergeEvents(_getListProps(), {
       onMouseDown: () => {
-        instance.a = 1;
+        mutable.a = 1;
       },
       onClick: () => {
         inputRef.current?.focus();
-        instance.a = 0;
+        mutable.a = 0;
       }
     });
 

@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import type { Traversal, TraversalProps } from '../common';
+import { useMutableState } from '../hooks/useMutableState';
 
 interface LinearTraversalProps<T> extends TraversalProps {
   items?: T[];
 }
 
-interface Instance {
+interface MutableState {
   /**
    * ### INTERNAL API ###
    * The index for the latest focus item in the array
@@ -16,15 +16,15 @@ interface Instance {
 const linearTraversal =
   <T>({ traverseInput, items = [] }: LinearTraversalProps<T>): Traversal<T> =>
   ({ focusItem, setFocusItem, isItemDisabled }) => {
-    const [instance] = useState<Instance>({ a: -1 });
+    const mutable = useMutableState<MutableState>({ a: -1 });
     return {
       traverse: (isForward) => {
-        if (!focusItem) instance.a = -1;
-        else if (focusItem !== items[instance.a]) instance.a = items.indexOf(focusItem);
+        if (!focusItem) mutable.a = -1;
+        else if (focusItem !== items[mutable.a]) mutable.a = items.indexOf(focusItem);
 
         const baseIndex = traverseInput ? -1 : 0;
         let newItem: T | undefined,
-          nextIndex = instance.a,
+          nextIndex = mutable.a,
           itemCounter = 0;
         const itemLength = items.length;
         for (;;) {
@@ -38,7 +38,7 @@ const linearTraversal =
           if (++itemCounter >= itemLength) return focusItem;
         }
 
-        instance.a = nextIndex;
+        mutable.a = nextIndex;
         setFocusItem(newItem);
         return newItem;
       }

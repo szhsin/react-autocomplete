@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMutableState } from '../hooks/useMutableState.js';
 
 const linearTraversal = ({
   traverseInput,
@@ -8,15 +8,15 @@ const linearTraversal = ({
   setFocusItem,
   isItemDisabled
 }) => {
-  const [instance] = useState({
+  const mutable = useMutableState({
     a: -1
   });
   return {
     traverse: isForward => {
-      if (!focusItem) instance.a = -1;else if (focusItem !== items[instance.a]) instance.a = items.indexOf(focusItem);
+      if (!focusItem) mutable.a = -1;else if (focusItem !== items[mutable.a]) mutable.a = items.indexOf(focusItem);
       const baseIndex = traverseInput ? -1 : 0;
       let newItem,
-        nextIndex = instance.a,
+        nextIndex = mutable.a,
         itemCounter = 0;
       const itemLength = items.length;
       for (;;) {
@@ -29,7 +29,7 @@ const linearTraversal = ({
         if (!newItem || !isItemDisabled(newItem)) break;
         if (++itemCounter >= itemLength) return focusItem;
       }
-      instance.a = nextIndex;
+      mutable.a = nextIndex;
       setFocusItem(newItem);
       return newItem;
     }
