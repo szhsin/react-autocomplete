@@ -21,6 +21,8 @@ const getGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
+  const [constricted, setConstricted] = useState(false);
+  const [rovingText, setRovingText] = useState(false);
   const [value, setValue] = useState('');
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
   // const [myinput, setmyinput] = useState('');
@@ -36,26 +38,26 @@ export default function Home() {
     setInputValue,
     open,
     focusItem,
-    inlineComplete
+    selectedItem
+    // inlineComplete
   } = useAutocomplete({
     // traversal: linearTraversal({
     //   items,
     //   traverseInput: true
     // }),
-
     getItemValue,
     isItemDisabled,
-    onChange: (value, meta) => {
-      console.log('onChange', meta);
+    onChange: (value) => {
+      console.log('onChange', value);
       setValue(value);
       // const item = US_STATES.filter((item) =>
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
       const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      item && inlineComplete({ item });
+      // item && inlineComplete({ item });
     },
-    feature: supercomplete(),
+    feature: autocomplete({ constricted, rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -70,7 +72,28 @@ export default function Home() {
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
+      <div>Current item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
+      <div>
+        <label>
+          Constricted
+          <input
+            type="checkbox"
+            checked={constricted}
+            onChange={(e) => setConstricted(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          rovingText
+          <input
+            type="checkbox"
+            checked={rovingText}
+            onChange={(e) => setRovingText(e.target.checked)}
+          />
+        </label>
+      </div>
       <input className={styles.input} {...getInputProps()} />
 
       <button
@@ -113,7 +136,10 @@ export default function Home() {
               <li
                 className={isItemDisabled(item) ? styles.disabled : styles.option}
                 key={item.abbr}
-                style={{ background: focusItem === item ? '#0a0' : 'none' }}
+                style={{
+                  background: focusItem === item ? '#0a0' : 'none',
+                  textDecoration: item === selectedItem ? 'underline' : 'none'
+                }}
                 {...getItemProps({ item })}
               >
                 {item.name}
