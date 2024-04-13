@@ -20,11 +20,12 @@ const useAutocomplete = <T, FeatureActions>({
 }: AutocompleteProps<T, FeatureActions>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [focusItem, setFocusItem] = useState<T | null | undefined>();
+  const [focusItem, setFocusItem] = useState<T | undefined>();
+  const [selectedItem, setSelectedItem] = useState<T | undefined>();
   const mutable = useMutableState<MutableState>({ b: '', c: [] });
 
   const getItemValue: Contextual<T>['getItemValue'] = useCallback(
-    (item) => (item == null ? null : _getItemValue ? _getItemValue(item) : item.toString()),
+    (item) => (item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString()),
     [_getItemValue]
   );
 
@@ -37,12 +38,14 @@ const useAutocomplete = <T, FeatureActions>({
     setInputValue,
     focusItem,
     setFocusItem,
+    selectedItem,
+    setSelectedItem,
     open,
     setOpen
   };
 
   const contextual = {
-    _: mutable,
+    $: mutable,
     getItemValue,
     isItemDisabled,
     onChange,

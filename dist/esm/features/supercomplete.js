@@ -3,8 +3,9 @@ import { mergeEvents } from '../utils/mergeEvents.js';
 import { useMutableState } from '../hooks/useMutableState.js';
 import { autocomplete } from './autocomplete.js';
 
-const supercomplete = () => {
+const supercomplete = props => {
   const useAutocomplete = autocomplete({
+    ...props,
     rovingText: true
   });
   return cx => {
@@ -18,7 +19,7 @@ const supercomplete = () => {
       getItemValue,
       setInputValue,
       setFocusItem,
-      _: cxInstance
+      $: cxMutable
     } = cx;
     return {
       ...rest,
@@ -35,13 +36,13 @@ const supercomplete = () => {
           mutable.c = 0;
           setFocusItem(item);
           const value = getItemValue(item);
-          const start = cxInstance.b.length;
+          const start = cxMutable.b.length;
           const end = value.length;
-          setInputValue(cxInstance.b + value.slice(start));
-          cxInstance.c = [start, end];
+          setInputValue(cxMutable.b + value.slice(start));
+          cxMutable.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
-      }, [cxInstance, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+      }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
     };
   };
 };

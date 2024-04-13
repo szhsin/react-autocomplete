@@ -14,17 +14,17 @@ export interface GetProps<T> {
 
 export interface AutocompleteState<T> {
   setInputValue: (value: string) => void;
-  focusItem: T | null | undefined;
-  setFocusItem: (item?: T | null | undefined) => void;
+  focusItem: T | undefined;
+  setFocusItem: (item?: T | undefined) => void;
+  selectedItem: T | undefined;
+  setSelectedItem: (item?: T | undefined) => void;
   open: boolean;
   setOpen: (value: boolean) => void;
 }
 
-export type ChangeType = 'submit' | 'input' | 'blur' | 'esc';
-
 export interface ContextualProps<T> {
   isItemDisabled: (item: T) => boolean;
-  onChange: (value: string, meta: { type: ChangeType; item: T | null | undefined }) => void;
+  onChange: (value: string) => void;
 }
 
 export interface MutableState {
@@ -47,11 +47,11 @@ export interface MutableState {
 
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
   inputRef: React.RefObject<HTMLInputElement>;
-  getItemValue: (item: T | undefined | null) => string | undefined | null;
+  getItemValue: (item: T | undefined | null) => string;
   /**
    * ### INTERNAL API ###
    */
-  _: MutableState;
+  $: MutableState;
 }
 
 export interface TraversalProps {
