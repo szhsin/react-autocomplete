@@ -12,17 +12,19 @@ interface MutableState {
   c?: boolean | 0 | 1;
 }
 
-const supercomplete = <T>(): Feature<
+const supercomplete = <T>(props?: {
+  constricted?: boolean;
+}): Feature<
   T,
   {
     inlineComplete: (props: { item: T }) => void;
   }
 > => {
-  const useAutocomplete = autocomplete<T>({ rovingText: true });
+  const useAutocomplete = autocomplete<T>({ ...props, rovingText: true });
   return (cx) => {
     const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
     const mutable = useMutableState<MutableState>({});
-    const { inputRef, getItemValue, setInputValue, setFocusItem, _: cxInstance } = cx;
+    const { inputRef, getItemValue, setInputValue, setFocusItem, $: cxMutable } = cx;
 
     return {
       ...rest,
@@ -43,15 +45,15 @@ const supercomplete = <T>(): Feature<
           if (mutable.c) {
             mutable.c = 0;
             setFocusItem(item);
-            const value = getItemValue(item)!;
-            const start = cxInstance.b.length;
+            const value = getItemValue(item);
+            const start = cxMutable.b.length;
             const end = value.length;
-            setInputValue(cxInstance.b + value.slice(start));
-            cxInstance.c = [start, end];
+            setInputValue(cxMutable.b + value.slice(start));
+            cxMutable.c = [start, end];
             inputRef.current?.setSelectionRange(start, end);
           }
         },
-        [cxInstance, mutable, inputRef, getItemValue, setFocusItem, setInputValue]
+        [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue]
       )
     };
   };

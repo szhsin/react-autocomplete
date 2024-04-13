@@ -1,5 +1,7 @@
 import type { Feature } from '../common';
-declare const supercomplete: <T>() => Feature<T, {
+declare const supercomplete: <T>(props?: {
+    constricted?: boolean;
+}) => Feature<T, {
     inlineComplete: (props: {
         item: T;
     }) => void;

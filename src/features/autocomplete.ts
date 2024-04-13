@@ -1,51 +1,57 @@
-import type { Feature, ChangeType, GetProps } from '../common';
+import type { Feature, GetProps } from '../common';
 
 const scrollIntoView = (element: HTMLElement | null) =>
   element?.scrollIntoView({ block: 'nearest' });
 
 const autocomplete =
-  <T>({ rovingText }: { rovingText?: boolean } = {}): Feature<T> =>
+  <T>({
+    rovingText,
+    constricted
+  }: { rovingText?: boolean; constricted?: boolean } = {}): Feature<T> =>
   ({
-    _: cxInstance,
+    $: cxMutable,
     getItemValue,
     isItemDisabled,
     traverse,
     onChange,
     setInputValue,
+    selectedItem,
+    setSelectedItem,
     focusItem,
     setFocusItem,
     open,
     setOpen,
     inputRef
   }) => {
-    const updateValue = (type: ChangeType, value: string, item?: T | null | undefined) => {
-      cxInstance.b = value;
+    const updateValue = (value: string, moveCaretToEnd: boolean = true) => {
       setInputValue(value);
       const endIndex = value.length;
-      type !== 'input' && inputRef.current!.setSelectionRange(endIndex, endIndex);
-      onChange(value, { type, item });
+      moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
+
+      if (cxMutable.b != value) {
+        cxMutable.b = value;
+        onChange(value);
+      }
     };
 
-    const updateAndCloseList = (
-      type: ChangeType,
-      value: string | null | undefined,
-      item?: T | null | undefined
-    ) => {
-      if (open) {
-        if (value != null) {
-          updateValue(type, value, item);
-        }
-        setOpen(false);
-        setFocusItem();
-      }
+    const updateItem = (item?: T) => item !== selectedItem && setSelectedItem(item);
+
+    const updateAll = (item?: T) => {
+      updateItem(item);
+      updateValue(getItemValue(item));
+    };
+
+    const closeList = () => {
+      setOpen(false);
+      setFocusItem();
     };
 
     const traverseItems = (isForward: boolean) => {
       const nextItem = traverse(isForward);
       if (rovingText) {
-        setInputValue(getItemValue(nextItem) ?? cxInstance.b);
+        setInputValue(getItemValue(nextItem) || cxMutable.b);
         const input = inputRef.current!;
-        cxInstance.c = [input.selectionStart, input.selectionEnd];
+        cxMutable.c = [input.selectionStart, input.selectionEnd];
       }
     };
 
@@ -53,21 +59,32 @@ const autocomplete =
       onChange: (e) => {
         setFocusItem();
         setOpen(true);
-        updateValue('input', e.target.value);
+        updateValue(e.target.value, false);
       },
 
       onSelect: (e) => {
         const { value, selectionStart, selectionEnd } = e.target as HTMLInputElement;
-        const [start, end] = cxInstance.c;
-        if (cxInstance.b !== value && (selectionStart !== start || selectionEnd !== end)) {
+        const [start, end] = cxMutable.c;
+        if (cxMutable.b != value && (selectionStart != start || selectionEnd != end)) {
           setFocusItem();
-          updateValue('input', value);
+          updateValue(value, false);
         }
       },
 
       onClick: () => setOpen(true),
 
-      onBlur: () => updateAndCloseList('blur', getItemValue(focusItem), focusItem),
+      onBlur: () => {
+        if (!open) return;
+        if (focusItem) {
+          updateAll(focusItem);
+        } else if (constricted) {
+          if (cxMutable.b) updateAll(selectedItem);
+          else updateItem();
+        } else if (getItemValue(selectedItem) != cxMutable.b) {
+          updateItem();
+        }
+        closeList();
+      },
 
       onKeyDown: (e) => {
         switch (e.key) {
@@ -75,16 +92,27 @@ const autocomplete =
           case 'ArrowDown':
             e.preventDefault();
             if (open) {
-              traverseItems(e.key === 'ArrowDown');
+              traverseItems(e.key != 'ArrowUp');
             } else {
               setOpen(true);
             }
             break;
           case 'Enter':
-            updateAndCloseList('submit', getItemValue(focusItem), focusItem);
+            if (open && focusItem) {
+              updateAll(focusItem);
+              closeList();
+            }
             break;
           case 'Escape':
-            updateAndCloseList('esc', cxInstance.b);
+            if (open) {
+              if (constricted) {
+                updateAll(selectedItem);
+              } else if (!cxMutable.b || getItemValue(selectedItem) != cxMutable.b) {
+                updateItem();
+                updateValue(cxMutable.b);
+              }
+              closeList();
+            }
             break;
         }
       }
@@ -92,7 +120,12 @@ const autocomplete =
 
     const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
       ref: focusItem === item ? scrollIntoView : null,
-      onClick: () => !isItemDisabled(item) && updateAndCloseList('submit', getItemValue(item), item)
+      onClick: () => {
+        if (!isItemDisabled(item)) {
+          updateAll(item);
+          closeList();
+        }
+      }
     });
 
     return {
