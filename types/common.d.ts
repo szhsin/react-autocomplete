@@ -33,11 +33,6 @@ export interface MutableState {
      * The most recent value
      */
     b: string;
-    /**
-     * ### INTERNAL API ###
-     * The last recorded selection position
-     */
-    c: [number | null, number | null] | [];
 }
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
     inputRef: React.RefObject<HTMLInputElement>;

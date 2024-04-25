@@ -46,29 +46,11 @@ const autocomplete =
       setFocusItem();
     };
 
-    const traverseItems = (isForward: boolean) => {
-      const nextItem = traverse(isForward);
-      if (rovingText) {
-        setInputValue(getItemValue(nextItem) || cxMutable.b);
-        const input = inputRef.current!;
-        cxMutable.c = [input.selectionStart, input.selectionEnd];
-      }
-    };
-
     const getInputProps: GetProps<T>['getInputProps'] = () => ({
       onChange: (e) => {
         setFocusItem();
         setOpen(true);
         updateValue(e.target.value, false);
-      },
-
-      onSelect: (e) => {
-        const { value, selectionStart, selectionEnd } = e.target as HTMLInputElement;
-        const [start, end] = cxMutable.c;
-        if (cxMutable.b != value && (selectionStart != start || selectionEnd != end)) {
-          setFocusItem();
-          updateValue(value, false);
-        }
       },
 
       onClick: () => setOpen(true),
@@ -92,7 +74,8 @@ const autocomplete =
           case 'ArrowDown':
             e.preventDefault();
             if (open) {
-              traverseItems(e.key != 'ArrowUp');
+              const nextItem = traverse(e.key != 'ArrowUp');
+              if (rovingText) setInputValue(getItemValue(nextItem) || cxMutable.b);
             } else {
               setOpen(true);
             }

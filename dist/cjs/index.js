@@ -33,8 +33,7 @@ const useAutocomplete = ({
   const [focusItem, setFocusItem] = react.useState();
   const [selectedItem, setSelectedItem] = react.useState();
   const mutable = useMutableState({
-    b: '',
-    c: []
+    b: ''
   });
   const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = react.useCallback(value => {
@@ -167,31 +166,11 @@ const autocomplete = ({
     setOpen(false);
     setFocusItem();
   };
-  const traverseItems = isForward => {
-    const nextItem = traverse(isForward);
-    if (rovingText) {
-      setInputValue(getItemValue(nextItem) || cxMutable.b);
-      const input = inputRef.current;
-      cxMutable.c = [input.selectionStart, input.selectionEnd];
-    }
-  };
   const getInputProps = () => ({
     onChange: e => {
       setFocusItem();
       setOpen(true);
       updateValue(e.target.value, false);
-    },
-    onSelect: e => {
-      const {
-        value,
-        selectionStart,
-        selectionEnd
-      } = e.target;
-      const [start, end] = cxMutable.c;
-      if (cxMutable.b != value && (selectionStart != start || selectionEnd != end)) {
-        setFocusItem();
-        updateValue(value, false);
-      }
     },
     onClick: () => setOpen(true),
     onBlur: () => {
@@ -211,7 +190,8 @@ const autocomplete = ({
         case 'ArrowDown':
           e.preventDefault();
           if (open) {
-            traverseItems(e.key != 'ArrowUp');
+            const nextItem = traverse(e.key != 'ArrowUp');
+            if (rovingText) setInputValue(getItemValue(nextItem) || cxMutable.b);
           } else {
             setOpen(true);
           }
@@ -290,7 +270,6 @@ const supercomplete = props => {
           const start = cxMutable.b.length;
           const end = value.length;
           setInputValue(cxMutable.b + value.slice(start));
-          cxMutable.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
       }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])

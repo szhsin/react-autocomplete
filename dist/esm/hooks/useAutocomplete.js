@@ -14,8 +14,7 @@ const useAutocomplete = ({
   const [focusItem, setFocusItem] = useState();
   const [selectedItem, setSelectedItem] = useState();
   const mutable = useMutableState({
-    b: '',
-    c: []
+    b: ''
   });
   const getItemValue = useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = useCallback(value => {

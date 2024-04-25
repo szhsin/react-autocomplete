@@ -49,7 +49,6 @@ const supercomplete = <T>(props?: {
             const start = cxMutable.b.length;
             const end = value.length;
             setInputValue(cxMutable.b + value.slice(start));
-            cxMutable.c = [start, end];
             inputRef.current?.setSelectionRange(start, end);
           }
         },

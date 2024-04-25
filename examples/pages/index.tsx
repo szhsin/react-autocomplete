@@ -38,8 +38,8 @@ export default function Home() {
     setInputValue,
     open,
     focusItem,
-    selectedItem
-    // inlineComplete
+    selectedItem,
+    inlineComplete
   } = useAutocomplete({
     // traversal: linearTraversal({
     //   items,
@@ -55,9 +55,10 @@ export default function Home() {
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
       const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      // item && inlineComplete({ item });
+      item && inlineComplete({ item });
     },
-    feature: autocomplete({ constricted, rovingText }),
+    // feature: autocomplete({ constricted, rovingText }),
+    feature: supercomplete({ constricted }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,

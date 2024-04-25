@@ -39,7 +39,6 @@ const supercomplete = props => {
           const start = cxMutable.b.length;
           const end = value.length;
           setInputValue(cxMutable.b + value.slice(start));
-          cxMutable.c = [start, end];
           (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
         }
       }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
