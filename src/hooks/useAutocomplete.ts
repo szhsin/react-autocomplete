@@ -11,13 +11,13 @@ import type {
 import { useMutableState } from './useMutableState';
 import { mergeEvents } from '../utils/mergeEvents';
 
-const useAutocomplete = <T, FeatureActions>({
+const useAutocomplete = <T, FeatureYield extends object>({
   onChange = () => {},
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
   getItemValue: _getItemValue
-}: AutocompleteProps<T, FeatureActions>) => {
+}: AutocompleteProps<T, FeatureYield>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState<T | undefined>();
@@ -53,37 +53,11 @@ const useAutocomplete = <T, FeatureActions>({
     ...state
   };
 
-  const {
-    getInputProps: _getInputProps,
-    getListProps: _getListProps,
-    ...restFeature
-  } = useFeature({ ...contextual, ...useTraversal(contextual) });
-
-  const getInputProps: () => PropsWithObjectRef<InputHTMLAttributes<HTMLInputElement>> = () => {
-    const { onBlur, ...rest } = _getInputProps();
-    return {
-      ...rest,
-      onBlur: (e) => !mutable.a && onBlur?.(e),
-      ref: inputRef
-    };
-  };
-
-  const getListProps: GetProps<T>['getListProps'] = () =>
-    mergeEvents(_getListProps(), {
-      onMouseDown: () => {
-        mutable.a = 1;
-      },
-      onClick: () => {
-        inputRef.current?.focus();
-        mutable.a = 0;
-      }
-    });
+  const featureYield = useFeature({ ...contextual, ...useTraversal(contextual) });
 
   return {
-    getInputProps,
-    getListProps,
     ...state,
-    ...restFeature
+    ...featureYield
   };
 };
 

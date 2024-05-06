@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { Feature } from '../common';
+import type { Feature, GetProps } from '../common';
 import { mergeEvents } from '../utils/mergeEvents';
 import { useMutableState } from '../hooks/useMutableState';
 import { autocomplete } from './autocomplete';
@@ -12,33 +12,23 @@ interface MutableState {
   c?: boolean | 0 | 1;
 }
 
-const supercomplete = <T>(props?: {
-  constricted?: boolean;
-}): Feature<
-  T,
-  {
-    inlineComplete: (props: { item: T }) => void;
-  }
-> => {
-  const useAutocomplete = autocomplete<T>({ ...props, rovingText: true });
-  return (cx) => {
-    const { getInputProps: _getInputProps, ...rest } = useAutocomplete(cx);
+const supercomplete =
+  <T>(): Feature<
+    T,
+    {
+      inlineComplete: (props: { item: T }) => void;
+    } & Pick<GetProps<T>, 'getInputProps'>
+  > =>
+  ({ inputRef, getItemValue, setInputValue, setFocusItem, $: cxMutable }) => {
     const mutable = useMutableState<MutableState>({});
-    const { inputRef, getItemValue, setInputValue, setFocusItem, $: cxMutable } = cx;
 
     return {
-      ...rest,
-
-      getInputProps: () =>
-        mergeEvents(
-          {
-            onChange: (e) => {
-              mutable.c =
-                (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
-            }
-          },
-          _getInputProps()
-        ),
+      getInputProps: (() => ({
+        onChange: (e) => {
+          mutable.c =
+            (e.nativeEvent as unknown as { inputType: string }).inputType === 'insertText';
+        }
+      })) as GetProps<T>['getInputProps'],
 
       inlineComplete: useCallback(
         ({ item }) => {
@@ -56,6 +46,5 @@ const supercomplete = <T>(props?: {
       )
     };
   };
-};
 
 export { supercomplete };

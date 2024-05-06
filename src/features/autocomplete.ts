@@ -1,13 +1,22 @@
 import type { Feature, GetProps } from '../common';
+import { useMutableState } from '../hooks/useMutableState';
+
+interface MutableState {
+  /**
+   * ### INTERNAL API ###
+   * Whether to bypass onblur event on input
+   */
+  a?: number;
+}
 
 const scrollIntoView = (element: HTMLElement | null) =>
   element?.scrollIntoView({ block: 'nearest' });
 
 const autocomplete =
-  <T>({
-    rovingText,
-    constricted
-  }: { rovingText?: boolean; constricted?: boolean } = {}): Feature<T> =>
+  <T>({ rovingText, constricted }: { rovingText?: boolean; constricted?: boolean } = {}): Feature<
+    T,
+    GetProps<T>
+  > =>
   ({
     $: cxMutable,
     getItemValue,
@@ -23,6 +32,8 @@ const autocomplete =
     setOpen,
     inputRef
   }) => {
+    const mutable = useMutableState<MutableState>({});
+
     const updateValue = (value: string, moveCaretToEnd: boolean = true) => {
       setInputValue(value);
       const endIndex = value.length;
@@ -46,7 +57,19 @@ const autocomplete =
       setFocusItem();
     };
 
+    const getListProps: GetProps<T>['getListProps'] = () => ({
+      onMouseDown: () => {
+        mutable.a = 1;
+      },
+      onClick: () => {
+        inputRef.current?.focus();
+        mutable.a = 0;
+      }
+    });
+
     const getInputProps: GetProps<T>['getInputProps'] = () => ({
+      ref: inputRef,
+
       onChange: (e) => {
         setFocusItem();
         setOpen(true);
@@ -56,7 +79,7 @@ const autocomplete =
       onClick: () => setOpen(true),
 
       onBlur: () => {
-        if (!open) return;
+        if (mutable.a || !open) return;
         if (focusItem) {
           updateAll(focusItem);
         } else if (constricted) {
@@ -114,7 +137,7 @@ const autocomplete =
     return {
       getInputProps,
       getItemProps,
-      getListProps: () => ({})
+      getListProps
     };
   };
 

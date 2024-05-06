@@ -1,9 +1,7 @@
-import type { Feature } from '../common';
-declare const supercomplete: <T>(props?: {
-    constricted?: boolean;
-}) => Feature<T, {
+import type { Feature, GetProps } from '../common';
+declare const supercomplete: <T>() => Feature<T, {
     inlineComplete: (props: {
         item: T;
     }) => void;
-}>;
+} & Pick<GetProps<T>, "getInputProps">>;
 export { supercomplete };

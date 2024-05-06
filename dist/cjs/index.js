@@ -4,23 +4,6 @@ var react = require('react');
 
 const useMutableState = stateContainer => react.useState(stateContainer)[0];
 
-const mergeEvents = (events1, events2) => {
-  const result = {
-    ...events1
-  };
-  Object.keys(events2).forEach(key => {
-    const e2 = events2[key];
-    if (e2) {
-      const e1 = events1[key];
-      result[key] = e1 ? e => {
-        e1(e);
-        e2(e);
-      } : e2;
-    }
-  });
-  return result;
-};
-
 const useAutocomplete = ({
   onChange = () => {},
   isItemDisabled = () => false,
@@ -57,40 +40,13 @@ const useAutocomplete = ({
     inputRef,
     ...state
   };
-  const {
-    getInputProps: _getInputProps,
-    getListProps: _getListProps,
-    ...restFeature
-  } = useFeature({
+  const featureYield = useFeature({
     ...contextual,
     ...useTraversal(contextual)
   });
-  const getInputProps = () => {
-    const {
-      onBlur,
-      ...rest
-    } = _getInputProps();
-    return {
-      ...rest,
-      onBlur: e => !mutable.a && (onBlur == null ? void 0 : onBlur(e)),
-      ref: inputRef
-    };
-  };
-  const getListProps = () => mergeEvents(_getListProps(), {
-    onMouseDown: () => {
-      mutable.a = 1;
-    },
-    onClick: () => {
-      var _inputRef$current;
-      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-      mutable.a = 0;
-    }
-  });
   return {
-    getInputProps,
-    getListProps,
     ...state,
-    ...restFeature
+    ...featureYield
   };
 };
 
@@ -148,6 +104,7 @@ const autocomplete = ({
   setOpen,
   inputRef
 }) => {
+  const mutable = useMutableState({});
   const updateValue = (value, moveCaretToEnd = true) => {
     setInputValue(value);
     const endIndex = value.length;
@@ -166,7 +123,18 @@ const autocomplete = ({
     setOpen(false);
     setFocusItem();
   };
+  const getListProps = () => ({
+    onMouseDown: () => {
+      mutable.a = 1;
+    },
+    onClick: () => {
+      var _inputRef$current;
+      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+      mutable.a = 0;
+    }
+  });
   const getInputProps = () => ({
+    ref: inputRef,
     onChange: e => {
       setFocusItem();
       setOpen(true);
@@ -174,7 +142,7 @@ const autocomplete = ({
     },
     onClick: () => setOpen(true),
     onBlur: () => {
-      if (!open) return;
+      if (mutable.a || !open) return;
       if (focusItem) {
         updateAll(focusItem);
       } else if (constricted) {
@@ -230,50 +198,38 @@ const autocomplete = ({
   return {
     getInputProps,
     getItemProps,
-    getListProps: () => ({})
+    getListProps
   };
 };
 
-const supercomplete = props => {
-  const useAutocomplete = autocomplete({
-    ...props,
-    rovingText: true
-  });
-  return cx => {
-    const {
-      getInputProps: _getInputProps,
-      ...rest
-    } = useAutocomplete(cx);
-    const mutable = useMutableState({});
-    const {
-      inputRef,
-      getItemValue,
-      setInputValue,
-      setFocusItem,
-      $: cxMutable
-    } = cx;
-    return {
-      ...rest,
-      getInputProps: () => mergeEvents({
-        onChange: e => {
-          mutable.c = e.nativeEvent.inputType === 'insertText';
-        }
-      }, _getInputProps()),
-      inlineComplete: react.useCallback(({
-        item
-      }) => {
-        if (mutable.c) {
-          var _inputRef$current;
-          mutable.c = 0;
-          setFocusItem(item);
-          const value = getItemValue(item);
-          const start = cxMutable.b.length;
-          const end = value.length;
-          setInputValue(cxMutable.b + value.slice(start));
-          (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
-        }
-      }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
-    };
+const supercomplete = () => ({
+  inputRef,
+  getItemValue,
+  setInputValue,
+  setFocusItem,
+  $: cxMutable
+}) => {
+  const mutable = useMutableState({});
+  return {
+    getInputProps: () => ({
+      onChange: e => {
+        mutable.c = e.nativeEvent.inputType === 'insertText';
+      }
+    }),
+    inlineComplete: react.useCallback(({
+      item
+    }) => {
+      if (mutable.c) {
+        var _inputRef$current;
+        mutable.c = 0;
+        setFocusItem(item);
+        const value = getItemValue(item);
+        const start = cxMutable.b.length;
+        const end = value.length;
+        setInputValue(cxMutable.b + value.slice(start));
+        (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
+      }
+    }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
   };
 };
 
