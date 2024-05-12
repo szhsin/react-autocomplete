@@ -1,15 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
-import type { InputHTMLAttributes } from 'react';
-import type {
-  GetProps,
-  AutocompleteProps,
-  AutocompleteState,
-  MutableState,
-  Contextual,
-  PropsWithObjectRef
-} from '../common';
+import type { AutocompleteProps, AutocompleteState, MutableState, Contextual } from '../common';
 import { useMutableState } from './useMutableState';
-import { mergeEvents } from '../utils/mergeEvents';
 
 const useAutocomplete = <T, FeatureYield extends object>({
   onChange = () => {},

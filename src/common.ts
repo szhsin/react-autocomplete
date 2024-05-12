@@ -2,12 +2,6 @@ import type { HTMLAttributes, InputHTMLAttributes } from 'react';
 
 /// types
 
-export type IntersectTuple<E> = E extends readonly [infer S]
-  ? S
-  : E extends readonly [infer F, ...infer R]
-  ? F & IntersectTuple<R>
-  : never;
-
 export type PropsWithObjectRef<T> = T extends HTMLAttributes<infer E>
   ? T & { ref: React.RefObject<E> }
   : never;
@@ -61,6 +55,14 @@ export type Traversal<T> = (cx: Contextual<T>) => {
 export type Feature<T, Yield extends object> = (
   cx: Contextual<T> & ReturnType<Traversal<T>>
 ) => Yield;
+
+export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>]
+  ? S
+  : Features extends readonly [Feature<T, infer F>, ...infer R]
+  ? F & MergedFeatureYield<T, R>
+  : never;
+
+export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 
 interface GetItemValue<T> {
   getItemValue: (item: T) => string;

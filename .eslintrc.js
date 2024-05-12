@@ -44,7 +44,8 @@ module.exports = {
         'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       rules: {
-        '@typescript-eslint/no-non-null-assertion': 0
+        '@typescript-eslint/no-non-null-assertion': 0,
+        '@typescript-eslint/ban-ts-comment': 0
       }
     }
   ]

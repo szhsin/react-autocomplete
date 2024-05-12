@@ -1,6 +1,8 @@
 import type { Feature, GetProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
+type AutocompleteFeature<T> = Feature<T, GetProps<T>>;
+
 interface MutableState {
   /**
    * ### INTERNAL API ###
@@ -13,10 +15,10 @@ const scrollIntoView = (element: HTMLElement | null) =>
   element?.scrollIntoView({ block: 'nearest' });
 
 const autocomplete =
-  <T>({ rovingText, constricted }: { rovingText?: boolean; constricted?: boolean } = {}): Feature<
-    T,
-    GetProps<T>
-  > =>
+  <T>({
+    rovingText,
+    constricted
+  }: { rovingText?: boolean; constricted?: boolean } = {}): AutocompleteFeature<T> =>
   ({
     $: cxMutable,
     getItemValue,
@@ -141,4 +143,4 @@ const autocomplete =
     };
   };
 
-export { autocomplete };
+export { type AutocompleteFeature, autocomplete };
