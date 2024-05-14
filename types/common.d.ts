@@ -1,9 +1,10 @@
-import type { HTMLAttributes, InputHTMLAttributes } from 'react';
+import type { HTMLAttributes, InputHTMLAttributes, ButtonHTMLAttributes } from 'react';
 export type PropsWithObjectRef<T> = T extends HTMLAttributes<infer E> ? T & {
     ref: React.RefObject<E>;
 } : never;
 export interface GetProps<T> {
     getInputProps: () => PropsWithObjectRef<InputHTMLAttributes<HTMLInputElement>>;
+    getToggleProps: () => PropsWithObjectRef<ButtonHTMLAttributes<HTMLButtonElement>>;
     getListProps: () => HTMLAttributes<HTMLElement>;
     getItemProps: (option: {
         item: T;

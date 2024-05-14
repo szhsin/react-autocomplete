@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   useAutocomplete,
   autocomplete,
+  dropdownSupercomplete,
   Feature,
   supercomplete,
   linearTraversal,
@@ -36,6 +37,7 @@ export default function Dropdown() {
     getInputProps,
     getListProps,
     getItemProps,
+    getToggleProps,
     open,
     setOpen,
     focusItem,
@@ -59,7 +61,7 @@ export default function Dropdown() {
       item && inlineComplete({ item });
     },
     // feature: autocomplete({ constricted, rovingText }),
-    feature: supercomplete({ constricted }),
+    feature: dropdownSupercomplete({ constricted }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -73,12 +75,12 @@ export default function Dropdown() {
 
   const inputProps = getInputProps();
 
-  useEffect(() => {
-    if (open) {
-      console.log('inputProps.ref.current useEffect', inputProps.ref.current);
-      inputProps.ref.current?.focus();
-    }
-  }, [open]);
+  // useEffect(() => {
+  //   if (open) {
+  //     console.log('inputProps.ref.current useEffect', inputProps.ref.current);
+  //     inputProps.ref.current?.focus();
+  //   }
+  // }, [open]);
 
   const [maxHeight] = useAutoHeight({ anchorRef: inputProps.ref, show: open, margin: 30 });
 
@@ -87,6 +89,7 @@ export default function Dropdown() {
       <div>Current value: {value}</div>
       <div>Current item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
+      <input placeholder="test" />
       <div>
         <label>
           Constricted
@@ -108,16 +111,7 @@ export default function Dropdown() {
         </label>
       </div>
 
-      <button
-        onClick={() => {
-          if (!open) {
-            setOpen(true);
-            setValue('');
-          }
-        }}
-      >
-        Select
-      </button>
+      <button {...getToggleProps()}>Select</button>
       <div
         {...getListProps()}
         style={{

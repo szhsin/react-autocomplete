@@ -7,6 +7,6 @@ import { mergeObjects } from './mergeObjects';
 const mergeFeatures =
   <T, Features>(...features): MergedFeature<T, Features> =>
   (cx) =>
-    features.reduce((accu, curr) => mergeObjects(accu(cx), curr(cx)));
+    features.reduce((accu, curr) => mergeObjects(accu, curr(cx)), {});
 
 export { mergeFeatures };

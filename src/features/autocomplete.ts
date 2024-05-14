@@ -1,7 +1,10 @@
 import type { Feature, GetProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
-type AutocompleteFeature<T> = Feature<T, GetProps<T>>;
+type AutocompleteFeature<T> = Feature<
+  T,
+  Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps'>
+>;
 
 interface MutableState {
   /**
