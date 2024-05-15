@@ -1,9 +1,10 @@
-import type { HTMLAttributes, InputHTMLAttributes } from 'react';
+import type { HTMLAttributes, InputHTMLAttributes, ButtonHTMLAttributes } from 'react';
 export type PropsWithObjectRef<T> = T extends HTMLAttributes<infer E> ? T & {
     ref: React.RefObject<E>;
 } : never;
 export interface GetProps<T> {
-    getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
+    getInputProps: () => PropsWithObjectRef<InputHTMLAttributes<HTMLInputElement>>;
+    getToggleProps: () => PropsWithObjectRef<ButtonHTMLAttributes<HTMLButtonElement>>;
     getListProps: () => HTMLAttributes<HTMLElement>;
     getItemProps: (option: {
         item: T;
@@ -25,19 +26,9 @@ export interface ContextualProps<T> {
 export interface MutableState {
     /**
      * ### INTERNAL API ###
-     * Whether to bypass onblur event on input
-     */
-    a?: number;
-    /**
-     * ### INTERNAL API ###
      * The most recent value
      */
     b: string;
-    /**
-     * ### INTERNAL API ###
-     * The last recorded selection position
-     */
-    c: [number | null, number | null] | [];
 }
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
     inputRef: React.RefObject<HTMLInputElement>;
@@ -53,12 +44,14 @@ export interface TraversalProps {
 export type Traversal<T> = (cx: Contextual<T>) => {
     traverse: (isForward: boolean) => T | null | undefined;
 };
-export type Feature<T, Actions = object> = (cx: Contextual<T> & ReturnType<Traversal<T>>) => GetProps<T> & Actions;
+export type Feature<T, Yield extends object> = (cx: Contextual<T> & ReturnType<Traversal<T>>) => Yield;
+export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>] ? S : Features extends readonly [Feature<T, infer F>, ...infer R] ? F & MergedFeatureYield<T, R> : never;
+export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 interface GetItemValue<T> {
     getItemValue: (item: T) => string;
 }
-export type AutocompleteProps<T, FeatureActions = object> = Partial<ContextualProps<T>> & {
-    feature: Feature<T, FeatureActions>;
+export type AutocompleteProps<T, FeatureYield extends object = object> = Partial<ContextualProps<T>> & {
+    feature: Feature<T, FeatureYield>;
     traversal: Traversal<T>;
 } & (T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>);
 export {};

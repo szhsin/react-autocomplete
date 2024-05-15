@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   useAutocomplete,
   autocomplete,
+  dropdown,
   Feature,
   supercomplete,
   linearTraversal,
-  groupedTraversal
+  groupedTraversal,
+  useAutoHeight
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
@@ -20,7 +22,7 @@ const getGroupedItems = (value: string) =>
     states: group.states.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
   })).filter((group) => !!group.states.length);
 
-export default function Home() {
+export default function Dropdown() {
   const [constricted, setConstricted] = useState(false);
   const [rovingText, setRovingText] = useState(false);
   const [value, setValue] = useState('');
@@ -35,11 +37,11 @@ export default function Home() {
     getInputProps,
     getListProps,
     getItemProps,
-    setInputValue,
+    getToggleProps,
     open,
     focusItem,
-    selectedItem,
-    inlineComplete
+    selectedItem
+    // inlineComplete
   } = useAutocomplete({
     // traversal: linearTraversal({
     //   items,
@@ -54,11 +56,11 @@ export default function Home() {
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
-      const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      item && inlineComplete({ item });
+      // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
+      // item && inlineComplete({ item });
     },
     // feature: autocomplete({ constricted, rovingText }),
-    feature: supercomplete({ constricted }),
+    feature: dropdown({ rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -70,11 +72,23 @@ export default function Home() {
   //   items.length && inlineComplete({ index: 0, value: items[0] });
   // }, [items, inlineComplete]);
 
+  const inputProps = getInputProps();
+
+  // useEffect(() => {
+  //   if (open) {
+  //     console.log('inputProps.ref.current useEffect', inputProps.ref.current);
+  //     inputProps.ref.current?.focus();
+  //   }
+  // }, [open]);
+
+  const [maxHeight] = useAutoHeight({ anchorRef: inputProps.ref, show: open, margin: 30 });
+
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
       <div>Current item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
+      <input placeholder="test" />
       <div>
         <label>
           Constricted
@@ -95,20 +109,10 @@ export default function Home() {
           />
         </label>
       </div>
-      <input className={styles.input} {...getInputProps()} />
 
-      <button
-        onClick={() => {
-          setInputValue('');
-          // setItems(US_STATES);
-          setValue('');
-        }}
-      >
-        Clear
-      </button>
-      <ul
+      <button {...getToggleProps()}>{selectedItem?.name || 'Select'}</button>
+      <div
         {...getListProps()}
-        className={styles.list}
         style={{
           position: 'absolute',
           border: '1px solid',
@@ -116,7 +120,10 @@ export default function Home() {
           display: open ? 'block' : 'none'
         }}
       >
-        <h3>US STATES</h3>
+        <div style={{ padding: 20 }}>
+          <input className={styles.input} {...inputProps} />
+        </div>
+
         {/* {items.map((item) => (
           <li
             className={isItemDisabled(item) ? styles.disabled : styles.option}
@@ -128,27 +135,32 @@ export default function Home() {
           </li>
         ))} */}
 
-        {groupedItems.map(({ groupKey: key, states: group }) => (
-          <React.Fragment key={key}>
-            <li>
-              <h4 style={{ color: 'lightskyblue', margin: '10px 0' }}>{key}</h4>
-            </li>
-            {group.map((item) => (
-              <li
-                className={isItemDisabled(item) ? styles.disabled : styles.option}
-                key={item.abbr}
-                style={{
-                  background: focusItem === item ? '#0a0' : 'none',
-                  textDecoration: item === selectedItem ? 'underline' : 'none'
-                }}
-                {...getItemProps({ item })}
-              >
-                {item.name}
+        <ul style={{ overflow: 'auto', maxHeight }}>
+          <li>
+            <h3>US STATES</h3>
+          </li>
+          {groupedItems.map(({ groupKey: key, states: group }) => (
+            <React.Fragment key={key}>
+              <li>
+                <h4 style={{ color: 'lightskyblue', margin: '10px 0' }}>{key}</h4>
               </li>
-            ))}
-          </React.Fragment>
-        ))}
-      </ul>
+              {group.map((item) => (
+                <li
+                  className={isItemDisabled(item) ? styles.disabled : styles.option}
+                  key={item.abbr}
+                  style={{
+                    background: focusItem === item ? '#0a0' : 'none',
+                    textDecoration: item === selectedItem ? 'underline' : 'none'
+                  }}
+                  {...getItemProps({ item })}
+                >
+                  {item.name}
+                </li>
+              ))}
+            </React.Fragment>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

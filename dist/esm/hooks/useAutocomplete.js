@@ -1,6 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
 import { useMutableState } from './useMutableState.js';
-import { mergeEvents } from '../utils/mergeEvents.js';
 
 const useAutocomplete = ({
   onChange = () => {},
@@ -14,8 +13,7 @@ const useAutocomplete = ({
   const [focusItem, setFocusItem] = useState();
   const [selectedItem, setSelectedItem] = useState();
   const mutable = useMutableState({
-    b: '',
-    c: []
+    b: ''
   });
   const getItemValue = useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = useCallback(value => {
@@ -39,40 +37,13 @@ const useAutocomplete = ({
     inputRef,
     ...state
   };
-  const {
-    getInputProps: _getInputProps,
-    getListProps: _getListProps,
-    ...restFeature
-  } = useFeature({
+  const featureYield = useFeature({
     ...contextual,
     ...useTraversal(contextual)
   });
-  const getInputProps = () => {
-    const {
-      onBlur,
-      ...rest
-    } = _getInputProps();
-    return {
-      ...rest,
-      onBlur: e => !mutable.a && (onBlur == null ? void 0 : onBlur(e)),
-      ref: inputRef
-    };
-  };
-  const getListProps = () => mergeEvents(_getListProps(), {
-    onMouseDown: () => {
-      mutable.a = 1;
-    },
-    onClick: () => {
-      var _inputRef$current;
-      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-      mutable.a = 0;
-    }
-  });
   return {
-    getInputProps,
-    getListProps,
     ...state,
-    ...restFeature
+    ...featureYield
   };
 };
 

@@ -1,9 +1,8 @@
-import type { Feature } from '../common';
+import type { MergedFeature } from '../common';
+import { type AutocompleteFeature } from './autocomplete';
+import { type InlineFeature } from './inline';
+type SupercompleteFeature<T> = MergedFeature<T, [InlineFeature<T>, AutocompleteFeature<T>]>;
 declare const supercomplete: <T>(props?: {
     constricted?: boolean;
-}) => Feature<T, {
-    inlineComplete: (props: {
-        item: T;
-    }) => void;
-}>;
-export { supercomplete };
+}) => SupercompleteFeature<T>;
+export { type SupercompleteFeature, supercomplete };

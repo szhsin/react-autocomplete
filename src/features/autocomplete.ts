@@ -1,4 +1,18 @@
 import type { Feature, GetProps } from '../common';
+import { useMutableState } from '../hooks/useMutableState';
+
+type AutocompleteFeature<T> = Feature<
+  T,
+  Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps'>
+>;
+
+interface MutableState {
+  /**
+   * ### INTERNAL API ###
+   * Whether to bypass onblur event on input
+   */
+  a?: number;
+}
 
 const scrollIntoView = (element: HTMLElement | null) =>
   element?.scrollIntoView({ block: 'nearest' });
@@ -7,7 +21,7 @@ const autocomplete =
   <T>({
     rovingText,
     constricted
-  }: { rovingText?: boolean; constricted?: boolean } = {}): Feature<T> =>
+  }: { rovingText?: boolean; constricted?: boolean } = {}): AutocompleteFeature<T> =>
   ({
     $: cxMutable,
     getItemValue,
@@ -23,6 +37,8 @@ const autocomplete =
     setOpen,
     inputRef
   }) => {
+    const mutable = useMutableState<MutableState>({});
+
     const updateValue = (value: string, moveCaretToEnd: boolean = true) => {
       setInputValue(value);
       const endIndex = value.length;
@@ -46,35 +62,29 @@ const autocomplete =
       setFocusItem();
     };
 
-    const traverseItems = (isForward: boolean) => {
-      const nextItem = traverse(isForward);
-      if (rovingText) {
-        setInputValue(getItemValue(nextItem) || cxMutable.b);
-        const input = inputRef.current!;
-        cxMutable.c = [input.selectionStart, input.selectionEnd];
+    const getListProps: GetProps<T>['getListProps'] = () => ({
+      onMouseDown: () => {
+        mutable.a = 1;
+      },
+      onClick: () => {
+        inputRef.current?.focus();
+        mutable.a = 0;
       }
-    };
+    });
 
     const getInputProps: GetProps<T>['getInputProps'] = () => ({
+      ref: inputRef,
+
       onChange: (e) => {
         setFocusItem();
         setOpen(true);
         updateValue(e.target.value, false);
       },
 
-      onSelect: (e) => {
-        const { value, selectionStart, selectionEnd } = e.target as HTMLInputElement;
-        const [start, end] = cxMutable.c;
-        if (cxMutable.b != value && (selectionStart != start || selectionEnd != end)) {
-          setFocusItem();
-          updateValue(value, false);
-        }
-      },
-
       onClick: () => setOpen(true),
 
       onBlur: () => {
-        if (!open) return;
+        if (mutable.a || !open) return;
         if (focusItem) {
           updateAll(focusItem);
         } else if (constricted) {
@@ -92,7 +102,8 @@ const autocomplete =
           case 'ArrowDown':
             e.preventDefault();
             if (open) {
-              traverseItems(e.key != 'ArrowUp');
+              const nextItem = traverse(e.key != 'ArrowUp');
+              if (rovingText) setInputValue(getItemValue(nextItem) || cxMutable.b);
             } else {
               setOpen(true);
             }
@@ -131,8 +142,8 @@ const autocomplete =
     return {
       getInputProps,
       getItemProps,
-      getListProps: () => ({})
+      getListProps
     };
   };
 
-export { autocomplete };
+export { type AutocompleteFeature, autocomplete };

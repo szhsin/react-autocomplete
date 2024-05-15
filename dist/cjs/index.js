@@ -4,23 +4,6 @@ var react = require('react');
 
 const useMutableState = stateContainer => react.useState(stateContainer)[0];
 
-const mergeEvents = (events1, events2) => {
-  const result = {
-    ...events1
-  };
-  Object.keys(events2).forEach(key => {
-    const e2 = events2[key];
-    if (e2) {
-      const e1 = events1[key];
-      result[key] = e1 ? e => {
-        e1(e);
-        e2(e);
-      } : e2;
-    }
-  });
-  return result;
-};
-
 const useAutocomplete = ({
   onChange = () => {},
   isItemDisabled = () => false,
@@ -33,8 +16,7 @@ const useAutocomplete = ({
   const [focusItem, setFocusItem] = react.useState();
   const [selectedItem, setSelectedItem] = react.useState();
   const mutable = useMutableState({
-    b: '',
-    c: []
+    b: ''
   });
   const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = react.useCallback(value => {
@@ -58,40 +40,13 @@ const useAutocomplete = ({
     inputRef,
     ...state
   };
-  const {
-    getInputProps: _getInputProps,
-    getListProps: _getListProps,
-    ...restFeature
-  } = useFeature({
+  const featureYield = useFeature({
     ...contextual,
     ...useTraversal(contextual)
   });
-  const getInputProps = () => {
-    const {
-      onBlur,
-      ...rest
-    } = _getInputProps();
-    return {
-      ...rest,
-      onBlur: e => !mutable.a && (onBlur == null ? void 0 : onBlur(e)),
-      ref: inputRef
-    };
-  };
-  const getListProps = () => mergeEvents(_getListProps(), {
-    onMouseDown: () => {
-      mutable.a = 1;
-    },
-    onClick: () => {
-      var _inputRef$current;
-      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-      mutable.a = 0;
-    }
-  });
   return {
-    getInputProps,
-    getListProps,
     ...state,
-    ...restFeature
+    ...featureYield
   };
 };
 
@@ -149,6 +104,7 @@ const autocomplete = ({
   setOpen,
   inputRef
 }) => {
+  const mutable = useMutableState({});
   const updateValue = (value, moveCaretToEnd = true) => {
     setInputValue(value);
     const endIndex = value.length;
@@ -167,35 +123,26 @@ const autocomplete = ({
     setOpen(false);
     setFocusItem();
   };
-  const traverseItems = isForward => {
-    const nextItem = traverse(isForward);
-    if (rovingText) {
-      setInputValue(getItemValue(nextItem) || cxMutable.b);
-      const input = inputRef.current;
-      cxMutable.c = [input.selectionStart, input.selectionEnd];
+  const getListProps = () => ({
+    onMouseDown: () => {
+      mutable.a = 1;
+    },
+    onClick: () => {
+      var _inputRef$current;
+      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+      mutable.a = 0;
     }
-  };
+  });
   const getInputProps = () => ({
+    ref: inputRef,
     onChange: e => {
       setFocusItem();
       setOpen(true);
       updateValue(e.target.value, false);
     },
-    onSelect: e => {
-      const {
-        value,
-        selectionStart,
-        selectionEnd
-      } = e.target;
-      const [start, end] = cxMutable.c;
-      if (cxMutable.b != value && (selectionStart != start || selectionEnd != end)) {
-        setFocusItem();
-        updateValue(value, false);
-      }
-    },
     onClick: () => setOpen(true),
     onBlur: () => {
-      if (!open) return;
+      if (mutable.a || !open) return;
       if (focusItem) {
         updateAll(focusItem);
       } else if (constricted) {
@@ -211,7 +158,8 @@ const autocomplete = ({
         case 'ArrowDown':
           e.preventDefault();
           if (open) {
-            traverseItems(e.key != 'ArrowUp');
+            const nextItem = traverse(e.key != 'ArrowUp');
+            if (rovingText) setInputValue(getItemValue(nextItem) || cxMutable.b);
           } else {
             setOpen(true);
           }
@@ -250,53 +198,125 @@ const autocomplete = ({
   return {
     getInputProps,
     getItemProps,
-    getListProps: () => ({})
+    getListProps
   };
 };
 
-const supercomplete = props => {
-  const useAutocomplete = autocomplete({
-    ...props,
-    rovingText: true
+const mergeObjects = (obj1, obj2) => {
+  const merged = {
+    ...obj1
+  };
+  Object.entries(obj2).forEach(([key, prop2]) => {
+    if (typeof prop2 === 'function') {
+      const prop1 = obj1[key];
+      merged[key] = prop1 ? (...args) => {
+        const result1 = prop1(...args);
+        const result2 = prop2(...args);
+        if (typeof result1 === 'object') {
+          return mergeObjects(result1, result2);
+        }
+      } : prop2;
+    } else {
+      merged[key] = prop2;
+    }
   });
-  return cx => {
-    const {
-      getInputProps: _getInputProps,
-      ...rest
-    } = useAutocomplete(cx);
-    const mutable = useMutableState({});
-    const {
-      inputRef,
-      getItemValue,
-      setInputValue,
-      setFocusItem,
-      $: cxMutable
-    } = cx;
-    return {
-      ...rest,
-      getInputProps: () => mergeEvents({
-        onChange: e => {
-          mutable.c = e.nativeEvent.inputType === 'insertText';
-        }
-      }, _getInputProps()),
-      inlineComplete: react.useCallback(({
-        item
-      }) => {
-        if (mutable.c) {
-          var _inputRef$current;
-          mutable.c = 0;
-          setFocusItem(item);
-          const value = getItemValue(item);
-          const start = cxMutable.b.length;
-          const end = value.length;
-          setInputValue(cxMutable.b + value.slice(start));
-          cxMutable.c = [start, end];
-          (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
-        }
-      }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
-    };
+  return merged;
+};
+
+const mergeFeatures = (...features) => cx => features.reduce((accu, curr) => mergeObjects(accu, curr(cx)), {});
+
+const inline = () => ({
+  inputRef,
+  getItemValue,
+  setInputValue,
+  setFocusItem,
+  $: cxMutable
+}) => {
+  const mutable = useMutableState({});
+  return {
+    getInputProps: () => ({
+      onChange: e => {
+        mutable.c = e.nativeEvent.inputType === 'insertText';
+      }
+    }),
+    inlineComplete: react.useCallback(({
+      item
+    }) => {
+      if (mutable.c) {
+        var _inputRef$current;
+        mutable.c = 0;
+        setFocusItem(item);
+        const value = getItemValue(item);
+        const start = cxMutable.b.length;
+        const end = value.length;
+        setInputValue(cxMutable.b + value.slice(start));
+        (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
+      }
+    }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
   };
 };
+
+const supercomplete = props => mergeFeatures(inline(), autocomplete({
+  ...props,
+  rovingText: true
+}));
+
+const toggle = () => ({
+  inputRef,
+  open,
+  setOpen,
+  focusItem
+}) => {
+  const mutable = useMutableState({});
+  const toggleRef = react.useRef(null);
+  react.useEffect(() => {
+    var _inputRef$current;
+    if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+  }, [open, inputRef]);
+  return {
+    getToggleProps: () => ({
+      ref: toggleRef,
+      onMouseDown: () => {
+        mutable.a = open;
+      },
+      onClick: () => {
+        if (mutable.a) {
+          mutable.a = 0;
+        } else {
+          setOpen(true);
+        }
+      },
+      onKeyDown: e => {
+        const {
+          key
+        } = e;
+        if (key === 'ArrowUp' || key === 'ArrowDown') {
+          e.preventDefault();
+          setOpen(true);
+        }
+      }
+    }),
+    getInputProps: () => ({
+      onKeyDown: e => {
+        var _toggleRef$current;
+        const {
+          key
+        } = e;
+        if (key === 'Escape') (_toggleRef$current = toggleRef.current) == null || _toggleRef$current.focus();
+        if (key === 'Enter' && focusItem) {
+          var _toggleRef$current2;
+          e.preventDefault();
+          (_toggleRef$current2 = toggleRef.current) == null || _toggleRef$current2.focus();
+        }
+      }
+    })
+  };
+};
+
+const dropdown = props => mergeFeatures(autocomplete({
+  ...props,
+  constricted: true
+}), toggle());
 
 const linearTraversal = ({
   traverseInput,
@@ -353,6 +373,7 @@ const groupedTraversal = ({
 };
 
 exports.autocomplete = autocomplete;
+exports.dropdown = dropdown;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
 exports.supercomplete = supercomplete;
