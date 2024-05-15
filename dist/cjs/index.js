@@ -261,7 +261,7 @@ const supercomplete = props => mergeFeatures(inline(), autocomplete({
   rovingText: true
 }));
 
-const dropdown = () => ({
+const toggle = () => ({
   inputRef,
   open,
   setOpen,
@@ -313,7 +313,10 @@ const dropdown = () => ({
   };
 };
 
-const dropdownSupercomplete = props => mergeFeatures(supercomplete(props), dropdown());
+const dropdown = props => mergeFeatures(autocomplete({
+  ...props,
+  constricted: true
+}), toggle());
 
 const linearTraversal = ({
   traverseInput,
@@ -370,7 +373,7 @@ const groupedTraversal = ({
 };
 
 exports.autocomplete = autocomplete;
-exports.dropdownSupercomplete = dropdownSupercomplete;
+exports.dropdown = dropdown;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
 exports.supercomplete = supercomplete;

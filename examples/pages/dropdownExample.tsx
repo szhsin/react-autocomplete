@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   useAutocomplete,
   autocomplete,
-  dropdownSupercomplete,
+  dropdown,
   Feature,
   supercomplete,
   linearTraversal,
@@ -39,10 +39,9 @@ export default function Dropdown() {
     getItemProps,
     getToggleProps,
     open,
-    setOpen,
     focusItem,
-    selectedItem,
-    inlineComplete
+    selectedItem
+    // inlineComplete
   } = useAutocomplete({
     // traversal: linearTraversal({
     //   items,
@@ -57,11 +56,11 @@ export default function Dropdown() {
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
-      const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      item && inlineComplete({ item });
+      // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
+      // item && inlineComplete({ item });
     },
     // feature: autocomplete({ constricted, rovingText }),
-    feature: dropdownSupercomplete({ constricted }),
+    feature: dropdown({ rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -111,7 +110,7 @@ export default function Dropdown() {
         </label>
       </div>
 
-      <button {...getToggleProps()}>Select</button>
+      <button {...getToggleProps()}>{selectedItem?.name || 'Select'}</button>
       <div
         {...getListProps()}
         style={{

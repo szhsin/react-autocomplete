@@ -1,60 +1,11 @@
-import { useEffect, useRef } from 'react';
-import type { Feature, GetProps } from '../common';
-import { useMutableState } from '../hooks/useMutableState';
+import type { MergedFeature } from '../common';
+import { type AutocompleteFeature, autocomplete } from './autocomplete';
+import { type ToggleFeature, toggle } from './toggle';
+import { mergeFeatures } from '../utils/mergeFeatures';
 
-type DropdownFeature<T> = Feature<T, Pick<GetProps<T>, 'getToggleProps' | 'getInputProps'>>;
+type DropdownFeature<T> = MergedFeature<T, [AutocompleteFeature<T>, ToggleFeature<T>]>;
 
-interface MutableState {
-  /**
-   * ### INTERNAL API ###
-   * Whether to skip opening drowdown in onClick
-   */
-  a?: boolean | 0 | 1;
-}
-
-const dropdown =
-  <T>(): DropdownFeature<T> =>
-  ({ inputRef, open, setOpen, focusItem }) => {
-    const mutable = useMutableState<MutableState>({});
-    const toggleRef = useRef<HTMLButtonElement>(null);
-
-    useEffect(() => {
-      if (open) inputRef.current?.focus();
-    }, [open, inputRef]);
-
-    return {
-      getToggleProps: () => ({
-        ref: toggleRef,
-        onMouseDown: () => {
-          mutable.a = open;
-        },
-        onClick: () => {
-          if (mutable.a) {
-            mutable.a = 0;
-          } else {
-            setOpen(true);
-          }
-        },
-        onKeyDown: (e) => {
-          const { key } = e;
-          if (key === 'ArrowUp' || key === 'ArrowDown') {
-            e.preventDefault();
-            setOpen(true);
-          }
-        }
-      }),
-
-      getInputProps: (() => ({
-        onKeyDown: (e) => {
-          const { key } = e;
-          if (key === 'Escape') toggleRef.current?.focus();
-          if (key === 'Enter' && focusItem) {
-            e.preventDefault();
-            toggleRef.current?.focus();
-          }
-        }
-      })) as GetProps<T>['getInputProps']
-    };
-  };
+const dropdown = <T>(props?: { rovingText?: boolean }): DropdownFeature<T> =>
+  mergeFeatures(autocomplete<T>({ ...props, constricted: true }), toggle<T>());
 
 export { type DropdownFeature, dropdown };
