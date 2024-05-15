@@ -1,3 +1,2 @@
-import type { MergedFeature } from '../common';
-declare const mergeFeatures: <T, Features>(...features: any[]) => MergedFeature<T, Features>;
+declare const mergeFeatures: (...features: any[]) => (cx: any) => any;
 export { mergeFeatures };

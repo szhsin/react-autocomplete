@@ -1,7 +1,7 @@
-import { type AutocompleteFeature } from './autocomplete';
+import type { MergedFeature } from '../common';
+import { type SupercompleteFeature } from './supercomplete';
 import { type DropdownFeature } from './dropdown';
-import { type InlineFeature } from './inline';
 declare const dropdownSupercomplete: <T>(props?: {
     constricted?: boolean;
-}) => import("../common").MergedFeature<T, [InlineFeature<T>, DropdownFeature<T>, AutocompleteFeature<T>]>;
+}) => MergedFeature<T, [SupercompleteFeature<T>, DropdownFeature<T>]>;
 export { dropdownSupercomplete };

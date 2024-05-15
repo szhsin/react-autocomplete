@@ -1,11 +1,7 @@
-import { autocomplete } from './autocomplete.js';
+import { supercomplete } from './supercomplete.js';
 import { dropdown } from './dropdown.js';
-import { inline } from './inline.js';
 import { mergeFeatures } from '../utils/mergeFeatures.js';
 
-const dropdownSupercomplete = props => mergeFeatures(inline(), autocomplete({
-  ...props,
-  rovingText: true
-}), dropdown());
+const dropdownSupercomplete = props => mergeFeatures(supercomplete(props), dropdown());
 
 export { dropdownSupercomplete };
