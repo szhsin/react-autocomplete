@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   useAutocomplete,
   autocomplete,
@@ -24,6 +24,8 @@ export default function Home() {
   const [constricted, setConstricted] = useState(false);
   const [rovingText, setRovingText] = useState(false);
   const [value, setValue] = useState('');
+  const [anotherValue, setAnotherValue] = useState('');
+  const anotherRef = useRef(null);
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
   // const [myinput, setmyinput] = useState('');
   // const [items, setItems] = useState(US_STATES);
@@ -47,6 +49,7 @@ export default function Home() {
     // }),
     getItemValue,
     isItemDisabled,
+    value,
     onChange: (value) => {
       console.log('onChange', value);
       setValue(value);
@@ -67,8 +70,9 @@ export default function Home() {
   });
 
   // useEffect(() => {
-  //   items.length && inlineComplete({ index: 0, value: items[0] });
-  // }, [items, inlineComplete]);
+  //   const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
+  //   item && inlineComplete({ item });
+  // }, [value, inlineComplete]);
 
   return (
     <div className={styles.wrapper}>
@@ -94,6 +98,22 @@ export default function Home() {
             onChange={(e) => setRovingText(e.target.checked)}
           />
         </label>
+      </div>
+      <div>
+        <input
+          ref={anotherRef}
+          value={anotherValue}
+          onChange={(e) => {
+            setAnotherValue(e.target.value);
+          }}
+        />
+        <button
+          onClick={() => {
+            setValue(anotherValue);
+          }}
+        >
+          Sync value
+        </button>
       </div>
       <input className={styles.input} {...getInputProps()} />
 

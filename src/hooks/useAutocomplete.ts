@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
-import type { AutocompleteProps, AutocompleteState, MutableState, Contextual } from '../common';
-import { useMutableState } from './useMutableState';
+import type { AutocompleteProps, AutocompleteState, Contextual } from '../common';
 
 const useAutocomplete = <T, FeatureYield extends object>({
+  value = '',
   onChange = () => {},
   isItemDisabled = () => false,
   feature: useFeature,
@@ -13,7 +13,6 @@ const useAutocomplete = <T, FeatureYield extends object>({
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState<T | undefined>();
   const [selectedItem, setSelectedItem] = useState<T | undefined>();
-  const mutable = useMutableState<MutableState>({ b: '' });
 
   const getItemValue: Contextual<T>['getItemValue'] = useCallback(
     (item) => (item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString()),
@@ -36,9 +35,9 @@ const useAutocomplete = <T, FeatureYield extends object>({
   };
 
   const contextual = {
-    $: mutable,
     getItemValue,
     isItemDisabled,
+    value,
     onChange,
     inputRef,
     ...state

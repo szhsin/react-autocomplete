@@ -49,6 +49,7 @@ export default function Dropdown() {
     // }),
     getItemValue,
     isItemDisabled,
+    value,
     onChange: (value) => {
       console.log('onChange', value);
       setValue(value);
