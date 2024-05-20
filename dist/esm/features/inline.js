@@ -5,8 +5,7 @@ const inline = () => ({
   inputRef,
   getItemValue,
   setInputValue,
-  setFocusItem,
-  $: cxMutable
+  setFocusItem
 }) => {
   const mutable = useMutableState({});
   return {
@@ -19,16 +18,19 @@ const inline = () => ({
       item
     }) => {
       if (mutable.c) {
-        var _inputRef$current;
         mutable.c = 0;
         setFocusItem(item);
-        const value = getItemValue(item);
-        const start = cxMutable.b.length;
-        const end = value.length;
-        setInputValue(cxMutable.b + value.slice(start));
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
+        const itemValue = getItemValue(item);
+        const input = inputRef.current;
+        const {
+          value
+        } = input;
+        const start = value.length;
+        const end = itemValue.length;
+        setInputValue(value + itemValue.slice(start));
+        input.setSelectionRange(start, end);
       }
-    }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+    }, [mutable, inputRef, getItemValue, setFocusItem, setInputValue])
   };
 };
 

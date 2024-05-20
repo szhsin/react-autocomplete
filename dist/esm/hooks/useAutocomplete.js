@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
-import { useMutableState } from './useMutableState.js';
 
 const useAutocomplete = ({
+  value = '',
   onChange = () => {},
   isItemDisabled = () => false,
   feature: useFeature,
@@ -12,9 +12,6 @@ const useAutocomplete = ({
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState();
   const [selectedItem, setSelectedItem] = useState();
-  const mutable = useMutableState({
-    b: ''
-  });
   const getItemValue = useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = useCallback(value => {
     const input = inputRef.current;
@@ -30,9 +27,9 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
-    $: mutable,
     getItemValue,
     isItemDisabled,
+    value,
     onChange,
     inputRef,
     ...state

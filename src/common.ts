@@ -25,24 +25,13 @@ export interface AutocompleteState<T> {
 
 export interface ContextualProps<T> {
   isItemDisabled: (item: T) => boolean;
+  value: string;
   onChange: (value: string) => void;
-}
-
-export interface MutableState {
-  /**
-   * ### INTERNAL API ###
-   * The most recent value
-   */
-  b: string;
 }
 
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
   inputRef: React.RefObject<HTMLInputElement>;
   getItemValue: (item: T | undefined | null) => string;
-  /**
-   * ### INTERNAL API ###
-   */
-  $: MutableState;
 }
 
 export interface TraversalProps {

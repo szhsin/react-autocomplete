@@ -19,7 +19,7 @@ interface MutableState {
 
 const inline =
   <T>(): InlineFeature<T> =>
-  ({ inputRef, getItemValue, setInputValue, setFocusItem, $: cxMutable }) => {
+  ({ inputRef, getItemValue, setInputValue, setFocusItem }) => {
     const mutable = useMutableState<MutableState>({});
 
     return {
@@ -35,14 +35,16 @@ const inline =
           if (mutable.c) {
             mutable.c = 0;
             setFocusItem(item);
-            const value = getItemValue(item);
-            const start = cxMutable.b.length;
-            const end = value.length;
-            setInputValue(cxMutable.b + value.slice(start));
-            inputRef.current?.setSelectionRange(start, end);
+            const itemValue = getItemValue(item);
+            const input = inputRef.current!;
+            const { value } = input;
+            const start = value.length;
+            const end = itemValue.length;
+            setInputValue(value + itemValue.slice(start));
+            input.setSelectionRange(start, end);
           }
         },
-        [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue]
+        [mutable, inputRef, getItemValue, setFocusItem, setInputValue]
       )
     };
   };

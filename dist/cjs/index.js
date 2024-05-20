@@ -2,9 +2,8 @@
 
 var react = require('react');
 
-const useMutableState = stateContainer => react.useState(stateContainer)[0];
-
 const useAutocomplete = ({
+  value = '',
   onChange = () => {},
   isItemDisabled = () => false,
   feature: useFeature,
@@ -15,9 +14,6 @@ const useAutocomplete = ({
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
   const [selectedItem, setSelectedItem] = react.useState();
-  const mutable = useMutableState({
-    b: ''
-  });
   const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
   const setInputValue = react.useCallback(value => {
     const input = inputRef.current;
@@ -33,9 +29,9 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
-    $: mutable,
     getItemValue,
     isItemDisabled,
+    value,
     onChange,
     inputRef,
     ...state
@@ -83,6 +79,8 @@ const useAutoHeight = ({
   return [height, computeHeight];
 };
 
+const useMutableState = stateContainer => react.useState(stateContainer)[0];
+
 const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
   block: 'nearest'
 });
@@ -90,10 +88,10 @@ const autocomplete = ({
   rovingText,
   constricted
 } = {}) => ({
-  $: cxMutable,
   getItemValue,
   isItemDisabled,
   traverse,
+  value,
   onChange,
   setInputValue,
   selectedItem,
@@ -105,13 +103,12 @@ const autocomplete = ({
   inputRef
 }) => {
   const mutable = useMutableState({});
-  const updateValue = (value, moveCaretToEnd = true) => {
-    setInputValue(value);
-    const endIndex = value.length;
+  const updateValue = (newValue, moveCaretToEnd = true) => {
+    setInputValue(newValue);
+    const endIndex = newValue.length;
     moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (cxMutable.b != value) {
-      cxMutable.b = value;
-      onChange(value);
+    if (value != newValue) {
+      onChange(newValue);
     }
   };
   const updateItem = item => item !== selectedItem && setSelectedItem(item);
@@ -146,8 +143,8 @@ const autocomplete = ({
       if (focusItem) {
         updateAll(focusItem);
       } else if (constricted) {
-        if (cxMutable.b) updateAll(selectedItem);else updateItem();
-      } else if (getItemValue(selectedItem) != cxMutable.b) {
+        if (value) updateAll(selectedItem);else updateItem();
+      } else if (getItemValue(selectedItem) != value) {
         updateItem();
       }
       closeList();
@@ -159,7 +156,7 @@ const autocomplete = ({
           e.preventDefault();
           if (open) {
             const nextItem = traverse(e.key != 'ArrowUp');
-            if (rovingText) setInputValue(getItemValue(nextItem) || cxMutable.b);
+            if (rovingText) setInputValue(getItemValue(nextItem) || value);
           } else {
             setOpen(true);
           }
@@ -174,9 +171,9 @@ const autocomplete = ({
           if (open) {
             if (constricted) {
               updateAll(selectedItem);
-            } else if (!cxMutable.b || getItemValue(selectedItem) != cxMutable.b) {
+            } else if (!value || getItemValue(selectedItem) != value) {
               updateItem();
-              updateValue(cxMutable.b);
+              updateValue(value);
             }
             closeList();
           }
@@ -229,8 +226,7 @@ const inline = () => ({
   inputRef,
   getItemValue,
   setInputValue,
-  setFocusItem,
-  $: cxMutable
+  setFocusItem
 }) => {
   const mutable = useMutableState({});
   return {
@@ -243,16 +239,19 @@ const inline = () => ({
       item
     }) => {
       if (mutable.c) {
-        var _inputRef$current;
         mutable.c = 0;
         setFocusItem(item);
-        const value = getItemValue(item);
-        const start = cxMutable.b.length;
-        const end = value.length;
-        setInputValue(cxMutable.b + value.slice(start));
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.setSelectionRange(start, end);
+        const itemValue = getItemValue(item);
+        const input = inputRef.current;
+        const {
+          value
+        } = input;
+        const start = value.length;
+        const end = itemValue.length;
+        setInputValue(value + itemValue.slice(start));
+        input.setSelectionRange(start, end);
       }
-    }, [cxMutable, mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+    }, [mutable, inputRef, getItemValue, setFocusItem, setInputValue])
   };
 };
 

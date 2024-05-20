@@ -23,10 +23,10 @@ const autocomplete =
     constricted
   }: { rovingText?: boolean; constricted?: boolean } = {}): AutocompleteFeature<T> =>
   ({
-    $: cxMutable,
     getItemValue,
     isItemDisabled,
     traverse,
+    value,
     onChange,
     setInputValue,
     selectedItem,
@@ -39,14 +39,13 @@ const autocomplete =
   }) => {
     const mutable = useMutableState<MutableState>({});
 
-    const updateValue = (value: string, moveCaretToEnd: boolean = true) => {
-      setInputValue(value);
-      const endIndex = value.length;
+    const updateValue = (newValue: string, moveCaretToEnd: boolean = true) => {
+      setInputValue(newValue);
+      const endIndex = newValue.length;
       moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
 
-      if (cxMutable.b != value) {
-        cxMutable.b = value;
-        onChange(value);
+      if (value != newValue) {
+        onChange(newValue);
       }
     };
 
@@ -88,9 +87,9 @@ const autocomplete =
         if (focusItem) {
           updateAll(focusItem);
         } else if (constricted) {
-          if (cxMutable.b) updateAll(selectedItem);
+          if (value) updateAll(selectedItem);
           else updateItem();
-        } else if (getItemValue(selectedItem) != cxMutable.b) {
+        } else if (getItemValue(selectedItem) != value) {
           updateItem();
         }
         closeList();
@@ -103,7 +102,7 @@ const autocomplete =
             e.preventDefault();
             if (open) {
               const nextItem = traverse(e.key != 'ArrowUp');
-              if (rovingText) setInputValue(getItemValue(nextItem) || cxMutable.b);
+              if (rovingText) setInputValue(getItemValue(nextItem) || value);
             } else {
               setOpen(true);
             }
@@ -118,9 +117,9 @@ const autocomplete =
             if (open) {
               if (constricted) {
                 updateAll(selectedItem);
-              } else if (!cxMutable.b || getItemValue(selectedItem) != cxMutable.b) {
+              } else if (!value || getItemValue(selectedItem) != value) {
                 updateItem();
-                updateValue(cxMutable.b);
+                updateValue(value);
               }
               closeList();
             }
