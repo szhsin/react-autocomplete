@@ -9,16 +9,12 @@ const useAutocomplete = ({
   getItemValue: _getItemValue
 }) => {
   const inputRef = useRef(null);
+  const [tmpValue, setTmpValue] = useState();
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState();
   const [selectedItem, setSelectedItem] = useState();
   const getItemValue = useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
-  const setInputValue = useCallback(value => {
-    const input = inputRef.current;
-    if (input) input.value = value;
-  }, []);
   const state = {
-    setInputValue,
     focusItem,
     setFocusItem,
     selectedItem,
@@ -27,6 +23,8 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    tmpValue,
+    setTmpValue,
     getItemValue,
     isItemDisabled,
     value,

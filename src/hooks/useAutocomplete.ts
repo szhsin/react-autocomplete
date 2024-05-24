@@ -10,6 +10,7 @@ const useAutocomplete = <T, FeatureYield extends object>({
   getItemValue: _getItemValue
 }: AutocompleteProps<T, FeatureYield>) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [tmpValue, setTmpValue] = useState<string | undefined>();
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState<T | undefined>();
   const [selectedItem, setSelectedItem] = useState<T | undefined>();
@@ -19,13 +20,7 @@ const useAutocomplete = <T, FeatureYield extends object>({
     [_getItemValue]
   );
 
-  const setInputValue = useCallback((value: string) => {
-    const input = inputRef.current;
-    if (input) input.value = value;
-  }, []);
-
   const state: AutocompleteState<T> = {
-    setInputValue,
     focusItem,
     setFocusItem,
     selectedItem,
@@ -35,6 +30,8 @@ const useAutocomplete = <T, FeatureYield extends object>({
   };
 
   const contextual = {
+    tmpValue,
+    setTmpValue,
     getItemValue,
     isItemDisabled,
     value,

@@ -19,7 +19,7 @@ interface MutableState {
 
 const inline =
   <T>(): InlineFeature<T> =>
-  ({ inputRef, getItemValue, setInputValue, setFocusItem }) => {
+  ({ inputRef, getItemValue, setTmpValue, setFocusItem }) => {
     const mutable = useMutableState<MutableState>({});
 
     return {
@@ -40,11 +40,11 @@ const inline =
             const { value } = input;
             const start = value.length;
             const end = itemValue.length;
-            setInputValue(value + itemValue.slice(start));
+            setTmpValue(value + itemValue.slice(start));
             input.setSelectionRange(start, end);
           }
         },
-        [mutable, inputRef, getItemValue, setFocusItem, setInputValue]
+        [mutable, inputRef, getItemValue, setFocusItem, setTmpValue]
       )
     };
   };

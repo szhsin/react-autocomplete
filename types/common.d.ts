@@ -11,7 +11,6 @@ export interface GetProps<T> {
     }) => HTMLAttributes<HTMLElement>;
 }
 export interface AutocompleteState<T> {
-    setInputValue: (value: string) => void;
     focusItem: T | undefined;
     setFocusItem: (item?: T | undefined) => void;
     selectedItem: T | undefined;
@@ -25,6 +24,8 @@ export interface ContextualProps<T> {
     onChange: (value: string) => void;
 }
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
+    tmpValue?: string;
+    setTmpValue: (value?: string | undefined) => void;
     inputRef: React.RefObject<HTMLInputElement>;
     getItemValue: (item: T | undefined | null) => string;
 }

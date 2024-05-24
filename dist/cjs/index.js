@@ -11,16 +11,12 @@ const useAutocomplete = ({
   getItemValue: _getItemValue
 }) => {
   const inputRef = react.useRef(null);
+  const [tmpValue, setTmpValue] = react.useState();
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
   const [selectedItem, setSelectedItem] = react.useState();
   const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
-  const setInputValue = react.useCallback(value => {
-    const input = inputRef.current;
-    if (input) input.value = value;
-  }, []);
   const state = {
-    setInputValue,
     focusItem,
     setFocusItem,
     selectedItem,
@@ -29,6 +25,8 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    tmpValue,
+    setTmpValue,
     getItemValue,
     isItemDisabled,
     value,
@@ -93,7 +91,8 @@ const autocomplete = ({
   traverse,
   value,
   onChange,
-  setInputValue,
+  tmpValue,
+  setTmpValue,
   selectedItem,
   setSelectedItem,
   focusItem,
@@ -104,9 +103,7 @@ const autocomplete = ({
 }) => {
   const mutable = useMutableState({});
   const updateValue = (newValue, moveCaretToEnd = true) => {
-    setInputValue(newValue);
-    const endIndex = newValue.length;
-    moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
+    setTmpValue();
     if (value != newValue) {
       onChange(newValue);
     }
@@ -132,6 +129,7 @@ const autocomplete = ({
   });
   const getInputProps = () => ({
     ref: inputRef,
+    value: tmpValue || value,
     onChange: e => {
       setFocusItem();
       setOpen(true);
@@ -156,7 +154,7 @@ const autocomplete = ({
           e.preventDefault();
           if (open) {
             const nextItem = traverse(e.key != 'ArrowUp');
-            if (rovingText) setInputValue(getItemValue(nextItem) || value);
+            if (rovingText) setTmpValue(getItemValue(nextItem));
           } else {
             setOpen(true);
           }
@@ -225,7 +223,7 @@ const mergeFeatures = (...features) => cx => features.reduce((accu, curr) => mer
 const inline = () => ({
   inputRef,
   getItemValue,
-  setInputValue,
+  setTmpValue,
   setFocusItem
 }) => {
   const mutable = useMutableState({});
@@ -248,10 +246,10 @@ const inline = () => ({
         } = input;
         const start = value.length;
         const end = itemValue.length;
-        setInputValue(value + itemValue.slice(start));
+        setTmpValue(value + itemValue.slice(start));
         input.setSelectionRange(start, end);
       }
-    }, [mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+    }, [mutable, inputRef, getItemValue, setFocusItem, setTmpValue])
   };
 };
 

@@ -4,7 +4,7 @@ import { useMutableState } from '../hooks/useMutableState.js';
 const inline = () => ({
   inputRef,
   getItemValue,
-  setInputValue,
+  setTmpValue,
   setFocusItem
 }) => {
   const mutable = useMutableState({});
@@ -27,10 +27,10 @@ const inline = () => ({
         } = input;
         const start = value.length;
         const end = itemValue.length;
-        setInputValue(value + itemValue.slice(start));
+        setTmpValue(value + itemValue.slice(start));
         input.setSelectionRange(start, end);
       }
-    }, [mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+    }, [mutable, inputRef, getItemValue, setFocusItem, setTmpValue])
   };
 };
 

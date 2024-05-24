@@ -37,7 +37,7 @@ export default function Home() {
     getInputProps,
     getListProps,
     getItemProps,
-    setInputValue,
+    // setInputValue,
     open,
     focusItem,
     selectedItem,
@@ -57,8 +57,8 @@ export default function Home() {
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
-      const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      item && inlineComplete({ item });
+      // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
+      // item && inlineComplete({ item });
     },
     // feature: autocomplete({ constricted, rovingText }),
     feature: supercomplete({ constricted }),
@@ -119,7 +119,7 @@ export default function Home() {
 
       <button
         onClick={() => {
-          setInputValue('');
+          // setInputValue('');
           // setItems(US_STATES);
           setValue('');
         }}
