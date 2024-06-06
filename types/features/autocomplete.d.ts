@@ -1,7 +1,4 @@
-import type { Feature, GetProps } from '../common';
-type AutocompleteFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps'>>;
-declare const autocomplete: <T>({ rovingText, constricted }?: {
-    rovingText?: boolean | undefined;
-    constricted?: boolean | undefined;
-}) => AutocompleteFeature<T>;
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, FeatureProps } from '../common';
+type AutocompleteFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps'> & Pick<GetPropsWithRefFunctions<T>, 'getInputProps'>>;
+declare const autocomplete: <T>({ rovingText, constricted }?: Pick<FeatureProps<T>, "rovingText" | "constricted">) => AutocompleteFeature<T>;
 export { type AutocompleteFeature, autocomplete };

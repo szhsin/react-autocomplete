@@ -25,6 +25,8 @@ const autocomplete = ({
   const mutable = useMutableState({});
   const updateValue = (newValue, moveCaretToEnd = true) => {
     setTmpValue();
+    const endIndex = newValue.length;
+    moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
     if (value != newValue) {
       onChange(newValue);
     }
