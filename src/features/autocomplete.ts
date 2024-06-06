@@ -1,9 +1,10 @@
-import type { Feature, GetProps } from '../common';
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
 type AutocompleteFeature<T> = Feature<
   T,
-  Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps'>
+  Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps'> &
+    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'>
 >;
 
 interface MutableState {
@@ -42,8 +43,8 @@ const autocomplete =
 
     const updateValue = (newValue: string, moveCaretToEnd: boolean = true) => {
       setTmpValue();
-      // const endIndex = newValue.length;
-      // moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
+      const endIndex = newValue.length;
+      moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
 
       if (value != newValue) {
         onChange(newValue);
@@ -62,7 +63,7 @@ const autocomplete =
       setFocusItem();
     };
 
-    const getListProps: GetProps<T>['getListProps'] = () => ({
+    const getListProps: GetPropsFunctions<T>['getListProps'] = () => ({
       onMouseDown: () => {
         mutable.a = 1;
       },
@@ -72,7 +73,7 @@ const autocomplete =
       }
     });
 
-    const getInputProps: GetProps<T>['getInputProps'] = () => ({
+    const getInputProps: GetPropsWithRefFunctions<T>['getInputProps'] = () => ({
       ref: inputRef,
 
       value: tmpValue || value,
@@ -131,7 +132,7 @@ const autocomplete =
       }
     });
 
-    const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
+    const getItemProps: GetPropsFunctions<T>['getItemProps'] = ({ item }) => ({
       ref: focusItem === item ? scrollIntoView : null,
       onClick: () => {
         if (!isItemDisabled(item)) {

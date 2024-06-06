@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
-import type { Feature, GetProps } from '../common';
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
-type ToggleFeature<T> = Feature<T, Pick<GetProps<T>, 'getToggleProps' | 'getInputProps'>>;
+type ToggleFeature<T> = Feature<
+  T,
+  Pick<GetPropsWithRefFunctions<T>, 'getToggleProps'> & Pick<GetPropsFunctions<T>, 'getInputProps'>
+>;
 
 interface MutableState {
   /**
@@ -44,7 +47,7 @@ const toggle =
         }
       }),
 
-      getInputProps: (() => ({
+      getInputProps: () => ({
         onKeyDown: (e) => {
           const { key } = e;
           if (key === 'Escape') toggleRef.current?.focus();
@@ -53,7 +56,7 @@ const toggle =
             toggleRef.current?.focus();
           }
         }
-      })) as GetProps<T>['getInputProps']
+      })
     };
   };
 

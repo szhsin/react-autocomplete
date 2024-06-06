@@ -2,16 +2,22 @@ import type { HTMLAttributes, InputHTMLAttributes, ButtonHTMLAttributes } from '
 
 /// types
 
-export type PropsWithObjectRef<T> = T extends HTMLAttributes<infer E>
-  ? T & { ref: React.RefObject<E> }
+export type GetPropsWithRef<T> = T extends (...args: infer P) => infer R
+  ? R extends HTMLAttributes<infer E>
+    ? (...args: P) => R & { ref: React.RefObject<E> }
+    : never
   : never;
 
-export interface GetProps<T> {
-  getInputProps: () => PropsWithObjectRef<InputHTMLAttributes<HTMLInputElement>>;
-  getToggleProps: () => PropsWithObjectRef<ButtonHTMLAttributes<HTMLButtonElement>>;
+export interface GetPropsFunctions<T> {
+  getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
+  getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getListProps: () => HTMLAttributes<HTMLElement>;
   getItemProps: (option: { item: T }) => HTMLAttributes<HTMLElement>;
 }
+
+export type GetPropsWithRefFunctions<T> = {
+  [P in keyof GetPropsFunctions<T>]: GetPropsWithRef<GetPropsFunctions<T>[P]>;
+};
 
 export interface AutocompleteState<T> {
   focusItem: T | undefined;
