@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions } from '../common';
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, FeatureProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
 type AutocompleteFeature<T> = Feature<
@@ -22,7 +22,7 @@ const autocomplete =
   <T>({
     rovingText,
     constricted
-  }: { rovingText?: boolean; constricted?: boolean } = {}): AutocompleteFeature<T> =>
+  }: Pick<FeatureProps<T>, 'rovingText' | 'constricted'> = {}): AutocompleteFeature<T> =>
   ({
     getItemValue,
     isItemDisabled,
