@@ -12,7 +12,8 @@ const autocomplete = ({
   traverse,
   value,
   onChange,
-  setInputValue,
+  tmpValue,
+  setTmpValue,
   selectedItem,
   setSelectedItem,
   focusItem,
@@ -23,7 +24,7 @@ const autocomplete = ({
 }) => {
   const mutable = useMutableState({});
   const updateValue = (newValue, moveCaretToEnd = true) => {
-    setInputValue(newValue);
+    setTmpValue();
     const endIndex = newValue.length;
     moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
     if (value != newValue) {
@@ -51,6 +52,7 @@ const autocomplete = ({
   });
   const getInputProps = () => ({
     ref: inputRef,
+    value: tmpValue || value,
     onChange: e => {
       setFocusItem();
       setOpen(true);
@@ -75,7 +77,7 @@ const autocomplete = ({
           e.preventDefault();
           if (open) {
             const nextItem = traverse(e.key != 'ArrowUp');
-            if (rovingText) setInputValue(getItemValue(nextItem) || value);
+            if (rovingText) setTmpValue(getItemValue(nextItem));
           } else {
             setOpen(true);
           }

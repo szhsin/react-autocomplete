@@ -1,36 +1,30 @@
-import { useCallback } from 'react';
-import { useMutableState } from '../hooks/useMutableState.js';
-
-const inline = () => ({
-  inputRef,
+const inline = ({
+  getInlineItem
+}) => ({
   getItemValue,
-  setInputValue,
+  setTmpValue,
   setFocusItem
 }) => {
-  const mutable = useMutableState({});
   return {
     getInputProps: () => ({
-      onChange: e => {
-        mutable.c = e.nativeEvent.inputType === 'insertText';
-      }
-    }),
-    inlineComplete: useCallback(({
-      item
-    }) => {
-      if (mutable.c) {
-        mutable.c = 0;
+      onChange: async ({
+        target,
+        nativeEvent
+      }) => {
+        if (nativeEvent.inputType !== 'insertText') {
+          return;
+        }
+        const nextValue = target.value;
+        const item = await getInlineItem(nextValue);
+        if (!item) return;
         setFocusItem(item);
         const itemValue = getItemValue(item);
-        const input = inputRef.current;
-        const {
-          value
-        } = input;
-        const start = value.length;
+        const start = nextValue.length;
         const end = itemValue.length;
-        setInputValue(value + itemValue.slice(start));
-        input.setSelectionRange(start, end);
+        setTmpValue(nextValue + itemValue.slice(start));
+        setTimeout(() => target.setSelectionRange(start, end), 0);
       }
-    }, [mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+    })
   };
 };
 

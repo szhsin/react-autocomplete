@@ -33,46 +33,40 @@ export default function Home() {
 
   const groupedItems = getGroupedItems(value);
 
-  const {
-    getInputProps,
-    getListProps,
-    getItemProps,
-    setInputValue,
-    open,
-    focusItem,
-    selectedItem,
-    inlineComplete
-  } = useAutocomplete({
-    // traversal: linearTraversal({
-    //   items,
-    //   traverseInput: true
-    // }),
-    getItemValue,
-    isItemDisabled,
-    value,
-    onChange: (value) => {
-      console.log('onChange', value);
-      setValue(value);
-      // const item = US_STATES.filter((item) =>
-      //   item.name.toLowerCase().startsWith(value.toLowerCase())
-      // ).find((item) => !isItemDisabled(item));
-      // // setItems(items);
-      const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      item && inlineComplete({ item });
-    },
-    // feature: autocomplete({ constricted, rovingText }),
-    feature: supercomplete({ constricted }),
-    traversal: groupedTraversal({
-      traverseInput: true,
-      groupedItems,
-      getItemsInGroup: (gp) => gp.states
-    })
-  });
+  const { getInputProps, getListProps, getItemProps, open, focusItem, selectedItem } =
+    useAutocomplete({
+      // traversal: linearTraversal({
+      //   items,
+      //   traverseInput: true
+      // }),
+      getItemValue,
+      isItemDisabled,
+      value,
+      onChange: (value) => {
+        console.log('onChange', value);
+        setValue(value);
+      },
+      // feature: autocomplete({ constricted, rovingText }),
+      feature: supercomplete({
+        constricted,
+        getInlineItem: (newValue) =>
+          getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+        // getInlineItem: (newValue) =>
+        //   new Promise((res) =>
+        //     setTimeout(
+        //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+        //       1000
+        //     )
+        //   )
+      }),
+      traversal: groupedTraversal({
+        traverseInput: true,
+        groupedItems,
+        getItemsInGroup: (gp) => gp.states
+      })
+    });
 
-  // useEffect(() => {
-  //   const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-  //   item && inlineComplete({ item });
-  // }, [value, inlineComplete]);
+  // getInputProps().ref.current
 
   return (
     <div className={styles.wrapper}>
@@ -119,7 +113,7 @@ export default function Home() {
 
       <button
         onClick={() => {
-          setInputValue('');
+          // setInputValue('');
           // setItems(US_STATES);
           setValue('');
         }}

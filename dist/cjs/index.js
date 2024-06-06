@@ -11,16 +11,12 @@ const useAutocomplete = ({
   getItemValue: _getItemValue
 }) => {
   const inputRef = react.useRef(null);
+  const [tmpValue, setTmpValue] = react.useState();
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
   const [selectedItem, setSelectedItem] = react.useState();
   const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
-  const setInputValue = react.useCallback(value => {
-    const input = inputRef.current;
-    if (input) input.value = value;
-  }, []);
   const state = {
-    setInputValue,
     focusItem,
     setFocusItem,
     selectedItem,
@@ -29,6 +25,8 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    tmpValue,
+    setTmpValue,
     getItemValue,
     isItemDisabled,
     value,
@@ -93,7 +91,8 @@ const autocomplete = ({
   traverse,
   value,
   onChange,
-  setInputValue,
+  tmpValue,
+  setTmpValue,
   selectedItem,
   setSelectedItem,
   focusItem,
@@ -104,7 +103,7 @@ const autocomplete = ({
 }) => {
   const mutable = useMutableState({});
   const updateValue = (newValue, moveCaretToEnd = true) => {
-    setInputValue(newValue);
+    setTmpValue();
     const endIndex = newValue.length;
     moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
     if (value != newValue) {
@@ -132,6 +131,7 @@ const autocomplete = ({
   });
   const getInputProps = () => ({
     ref: inputRef,
+    value: tmpValue || value,
     onChange: e => {
       setFocusItem();
       setOpen(true);
@@ -156,7 +156,7 @@ const autocomplete = ({
           e.preventDefault();
           if (open) {
             const nextItem = traverse(e.key != 'ArrowUp');
-            if (rovingText) setInputValue(getItemValue(nextItem) || value);
+            if (rovingText) setTmpValue(getItemValue(nextItem));
           } else {
             setOpen(true);
           }
@@ -222,42 +222,44 @@ const mergeObjects = (obj1, obj2) => {
 
 const mergeFeatures = (...features) => cx => features.reduce((accu, curr) => mergeObjects(accu, curr(cx)), {});
 
-const inline = () => ({
-  inputRef,
+const inline = ({
+  getInlineItem
+}) => ({
   getItemValue,
-  setInputValue,
+  setTmpValue,
   setFocusItem
 }) => {
-  const mutable = useMutableState({});
   return {
     getInputProps: () => ({
-      onChange: e => {
-        mutable.c = e.nativeEvent.inputType === 'insertText';
-      }
-    }),
-    inlineComplete: react.useCallback(({
-      item
-    }) => {
-      if (mutable.c) {
-        mutable.c = 0;
+      onChange: async ({
+        target,
+        nativeEvent
+      }) => {
+        if (nativeEvent.inputType !== 'insertText') {
+          return;
+        }
+        const nextValue = target.value;
+        const item = await getInlineItem(nextValue);
+        if (!item) return;
         setFocusItem(item);
         const itemValue = getItemValue(item);
-        const input = inputRef.current;
-        const {
-          value
-        } = input;
-        const start = value.length;
+        const start = nextValue.length;
         const end = itemValue.length;
-        setInputValue(value + itemValue.slice(start));
-        input.setSelectionRange(start, end);
+        setTmpValue(nextValue + itemValue.slice(start));
+        setTimeout(() => target.setSelectionRange(start, end), 0);
       }
-    }, [mutable, inputRef, getItemValue, setFocusItem, setInputValue])
+    })
   };
 };
 
-const supercomplete = props => mergeFeatures(inline(), autocomplete({
-  ...props,
+const supercomplete = ({
+  constricted,
+  getInlineItem
+}) => mergeFeatures(autocomplete({
+  constricted,
   rovingText: true
+}), inline({
+  getInlineItem
 }));
 
 const toggle = () => ({

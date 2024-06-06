@@ -1,9 +1,10 @@
-import type { Feature, GetProps } from '../common';
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, FeatureProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
 type AutocompleteFeature<T> = Feature<
   T,
-  Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps'>
+  Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps'> &
+    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'>
 >;
 
 interface MutableState {
@@ -21,14 +22,15 @@ const autocomplete =
   <T>({
     rovingText,
     constricted
-  }: { rovingText?: boolean; constricted?: boolean } = {}): AutocompleteFeature<T> =>
+  }: Pick<FeatureProps<T>, 'rovingText' | 'constricted'> = {}): AutocompleteFeature<T> =>
   ({
     getItemValue,
     isItemDisabled,
     traverse,
     value,
     onChange,
-    setInputValue,
+    tmpValue,
+    setTmpValue,
     selectedItem,
     setSelectedItem,
     focusItem,
@@ -40,7 +42,7 @@ const autocomplete =
     const mutable = useMutableState<MutableState>({});
 
     const updateValue = (newValue: string, moveCaretToEnd: boolean = true) => {
-      setInputValue(newValue);
+      setTmpValue();
       const endIndex = newValue.length;
       moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
 
@@ -61,7 +63,7 @@ const autocomplete =
       setFocusItem();
     };
 
-    const getListProps: GetProps<T>['getListProps'] = () => ({
+    const getListProps: GetPropsFunctions<T>['getListProps'] = () => ({
       onMouseDown: () => {
         mutable.a = 1;
       },
@@ -71,8 +73,10 @@ const autocomplete =
       }
     });
 
-    const getInputProps: GetProps<T>['getInputProps'] = () => ({
+    const getInputProps: GetPropsWithRefFunctions<T>['getInputProps'] = () => ({
       ref: inputRef,
+
+      value: tmpValue || value,
 
       onChange: (e) => {
         setFocusItem();
@@ -102,7 +106,7 @@ const autocomplete =
             e.preventDefault();
             if (open) {
               const nextItem = traverse(e.key != 'ArrowUp');
-              if (rovingText) setInputValue(getItemValue(nextItem) || value);
+              if (rovingText) setTmpValue(getItemValue(nextItem));
             } else {
               setOpen(true);
             }
@@ -128,7 +132,7 @@ const autocomplete =
       }
     });
 
-    const getItemProps: GetProps<T>['getItemProps'] = ({ item }) => ({
+    const getItemProps: GetPropsFunctions<T>['getItemProps'] = ({ item }) => ({
       ref: focusItem === item ? scrollIntoView : null,
       onClick: () => {
         if (!isItemDisabled(item)) {
