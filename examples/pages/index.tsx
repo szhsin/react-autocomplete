@@ -22,7 +22,9 @@ const getGroupedItems = (value: string) =>
 
 export default function Home() {
   const [constricted, setConstricted] = useState(false);
-  const [rovingText, setRovingText] = useState(false);
+  const [rovingText, setRovingText] = useState(true);
+  const [selectOnBlur, setSelectOnBlur] = useState(true);
+  const [deselectOnBlur, setDeselectOnBlur] = useState(false);
   const [value, setValue] = useState('');
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
@@ -46,19 +48,19 @@ export default function Home() {
         console.log('onChange', value);
         setValue(value);
       },
-      // feature: autocomplete({ constricted, rovingText }),
-      feature: supercomplete({
-        constricted,
-        getInlineItem: (newValue) =>
-          getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-        // getInlineItem: (newValue) =>
-        //   new Promise((res) =>
-        //     setTimeout(
-        //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-        //       1000
-        //     )
-        //   )
-      }),
+      feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
+      // feature: supercomplete({
+      //   constricted,
+      //   getInlineItem: (newValue) =>
+      //     getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+      //   // getInlineItem: (newValue) =>
+      //   //   new Promise((res) =>
+      //   //     setTimeout(
+      //   //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+      //   //       1000
+      //   //     )
+      //   //   )
+      // }),
       traversal: groupedTraversal({
         traverseInput: true,
         groupedItems,
@@ -70,8 +72,8 @@ export default function Home() {
 
   return (
     <div className={styles.wrapper}>
-      <div>Current value: {value}</div>
-      <div>Current item: {selectedItem?.name}</div>
+      <div>value: {value}</div>
+      <div>Selected item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
       <div>
         <label>
@@ -90,6 +92,26 @@ export default function Home() {
             type="checkbox"
             checked={rovingText}
             onChange={(e) => setRovingText(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          selectOnBlur
+          <input
+            type="checkbox"
+            checked={selectOnBlur}
+            onChange={(e) => setSelectOnBlur(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          deselectOnBlur
+          <input
+            type="checkbox"
+            checked={deselectOnBlur}
+            onChange={(e) => setDeselectOnBlur(e.target.checked)}
           />
         </label>
       </div>

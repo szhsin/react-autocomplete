@@ -5,7 +5,9 @@ const scrollIntoView = element => element == null ? void 0 : element.scrollIntoV
 });
 const autocomplete = ({
   rovingText,
-  constricted
+  constricted,
+  selectOnBlur = true,
+  deselectOnBlur = true
 } = {}) => ({
   getItemValue,
   isItemDisabled,
@@ -27,9 +29,7 @@ const autocomplete = ({
     setTmpValue();
     const endIndex = newValue.length;
     moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (value != newValue) {
-      onChange(newValue);
-    }
+    if (value != newValue) onChange(newValue);
   };
   const updateItem = item => item !== selectedItem && setSelectedItem(item);
   const updateAll = item => {
@@ -61,13 +61,14 @@ const autocomplete = ({
     onClick: () => setOpen(true),
     onBlur: () => {
       if (mutable.a || !open) return;
-      if (focusItem) {
+      if (selectOnBlur && focusItem) {
         updateAll(focusItem);
       } else if (constricted) {
-        if (value) updateAll(selectedItem);else updateItem();
+        if (value || !deselectOnBlur) updateAll(selectedItem);else updateItem();
       } else if (getItemValue(selectedItem) != value) {
         updateItem();
       }
+      setTmpValue();
       closeList();
     },
     onKeyDown: e => {

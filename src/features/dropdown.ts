@@ -6,6 +6,9 @@ import { mergeFeatures } from '../utils/mergeFeatures';
 type DropdownFeature<T> = MergedFeature<T, [AutocompleteFeature<T>, ToggleFeature<T>]>;
 
 const dropdown = <T>(props?: Pick<FeatureProps<T>, 'rovingText'>): DropdownFeature<T> =>
-  mergeFeatures(autocomplete<T>({ ...props, constricted: true }), toggle<T>());
+  mergeFeatures(
+    autocomplete<T>({ ...props, constricted: true, selectOnBlur: false, deselectOnBlur: false }),
+    toggle<T>()
+  );
 
 export { type DropdownFeature, dropdown };

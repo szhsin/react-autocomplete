@@ -41,6 +41,8 @@ export type Traversal<T> = (cx: Contextual<T>) => {
 export interface FeatureProps<T> {
     rovingText?: boolean;
     constricted?: boolean;
+    selectOnBlur?: boolean;
+    deselectOnBlur?: boolean;
     getInlineItem: (value: string) => T | undefined | null | void | Promise<T | undefined | null | void>;
 }
 export type Feature<T, Yield extends object> = (cx: Contextual<T> & ReturnType<Traversal<T>>) => Yield;
