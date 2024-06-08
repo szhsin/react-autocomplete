@@ -23,7 +23,6 @@ const getGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Dropdown() {
-  const [constricted, setConstricted] = useState(false);
   const [rovingText, setRovingText] = useState(false);
   const [value, setValue] = useState('');
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
@@ -87,19 +86,9 @@ export default function Dropdown() {
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
-      <div>Current item: {selectedItem?.name}</div>
+      <div>Selected item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
       <input placeholder="test" />
-      <div>
-        <label>
-          Constricted
-          <input
-            type="checkbox"
-            checked={constricted}
-            onChange={(e) => setConstricted(e.target.checked)}
-          />
-        </label>
-      </div>
       <div>
         <label>
           rovingText

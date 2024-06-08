@@ -17,13 +17,20 @@ interface MutableState {
 
 const toggle =
   <T>(): ToggleFeature<T> =>
-  ({ inputRef, open, setOpen, focusItem }) => {
+  ({ inputRef, open, setOpen, focusItem, onChange }) => {
     const mutable = useMutableState<MutableState>({});
     const toggleRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
       if (open) inputRef.current?.focus();
     }, [open, inputRef]);
+
+    const openList = () => {
+      onChange('');
+      setOpen(true);
+    };
+
+    const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
 
     return {
       getToggleProps: () => ({
@@ -35,14 +42,14 @@ const toggle =
           if (mutable.a) {
             mutable.a = 0;
           } else {
-            setOpen(true);
+            openList();
           }
         },
         onKeyDown: (e) => {
           const { key } = e;
-          if (key === 'ArrowUp' || key === 'ArrowDown') {
+          if (key === 'ArrowDown') {
             e.preventDefault();
-            setOpen(true);
+            openList();
           }
         }
       }),
@@ -50,10 +57,10 @@ const toggle =
       getInputProps: () => ({
         onKeyDown: (e) => {
           const { key } = e;
-          if (key === 'Escape') toggleRef.current?.focus();
+          if (key === 'Escape') focusToggle();
           if (key === 'Enter' && focusItem) {
             e.preventDefault();
-            toggleRef.current?.focus();
+            focusToggle();
           }
         }
       })

@@ -21,8 +21,13 @@ const scrollIntoView = (element: HTMLElement | null) =>
 const autocomplete =
   <T>({
     rovingText,
-    constricted
-  }: Pick<FeatureProps<T>, 'rovingText' | 'constricted'> = {}): AutocompleteFeature<T> =>
+    constricted,
+    selectOnBlur = true,
+    deselectOnBlur = true
+  }: Pick<
+    FeatureProps<T>,
+    'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnBlur'
+  > = {}): AutocompleteFeature<T> =>
   ({
     getItemValue,
     isItemDisabled,
@@ -46,9 +51,7 @@ const autocomplete =
       const endIndex = newValue.length;
       moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
 
-      if (value != newValue) {
-        onChange(newValue);
-      }
+      if (value != newValue) onChange(newValue);
     };
 
     const updateItem = (item?: T) => item !== selectedItem && setSelectedItem(item);
@@ -88,14 +91,16 @@ const autocomplete =
 
       onBlur: () => {
         if (mutable.a || !open) return;
-        if (focusItem) {
+        if (selectOnBlur && focusItem) {
           updateAll(focusItem);
         } else if (constricted) {
-          if (value) updateAll(selectedItem);
+          if (value || !deselectOnBlur) updateAll(selectedItem);
           else updateItem();
         } else if (getItemValue(selectedItem) != value) {
           updateItem();
         }
+
+        setTmpValue();
         closeList();
       },
 

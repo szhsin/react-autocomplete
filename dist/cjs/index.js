@@ -84,7 +84,9 @@ const scrollIntoView = element => element == null ? void 0 : element.scrollIntoV
 });
 const autocomplete = ({
   rovingText,
-  constricted
+  constricted,
+  selectOnBlur = true,
+  deselectOnBlur = true
 } = {}) => ({
   getItemValue,
   isItemDisabled,
@@ -106,9 +108,7 @@ const autocomplete = ({
     setTmpValue();
     const endIndex = newValue.length;
     moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (value != newValue) {
-      onChange(newValue);
-    }
+    if (value != newValue) onChange(newValue);
   };
   const updateItem = item => item !== selectedItem && setSelectedItem(item);
   const updateAll = item => {
@@ -140,13 +140,14 @@ const autocomplete = ({
     onClick: () => setOpen(true),
     onBlur: () => {
       if (mutable.a || !open) return;
-      if (focusItem) {
+      if (selectOnBlur && focusItem) {
         updateAll(focusItem);
       } else if (constricted) {
-        if (value) updateAll(selectedItem);else updateItem();
+        if (value || !deselectOnBlur) updateAll(selectedItem);else updateItem();
       } else if (getItemValue(selectedItem) != value) {
         updateItem();
       }
+      setTmpValue();
       closeList();
     },
     onKeyDown: e => {
@@ -266,7 +267,8 @@ const toggle = () => ({
   inputRef,
   open,
   setOpen,
-  focusItem
+  focusItem,
+  onChange
 }) => {
   const mutable = useMutableState({});
   const toggleRef = react.useRef(null);
@@ -274,6 +276,14 @@ const toggle = () => ({
     var _inputRef$current;
     if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
   }, [open, inputRef]);
+  const openList = () => {
+    onChange('');
+    setOpen(true);
+  };
+  const focusToggle = () => setTimeout(() => {
+    var _toggleRef$current;
+    return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
+  }, 0);
   return {
     getToggleProps: () => ({
       ref: toggleRef,
@@ -284,30 +294,28 @@ const toggle = () => ({
         if (mutable.a) {
           mutable.a = 0;
         } else {
-          setOpen(true);
+          openList();
         }
       },
       onKeyDown: e => {
         const {
           key
         } = e;
-        if (key === 'ArrowUp' || key === 'ArrowDown') {
+        if (key === 'ArrowDown') {
           e.preventDefault();
-          setOpen(true);
+          openList();
         }
       }
     }),
     getInputProps: () => ({
       onKeyDown: e => {
-        var _toggleRef$current;
         const {
           key
         } = e;
-        if (key === 'Escape') (_toggleRef$current = toggleRef.current) == null || _toggleRef$current.focus();
+        if (key === 'Escape') focusToggle();
         if (key === 'Enter' && focusItem) {
-          var _toggleRef$current2;
           e.preventDefault();
-          (_toggleRef$current2 = toggleRef.current) == null || _toggleRef$current2.focus();
+          focusToggle();
         }
       }
     })
@@ -316,7 +324,9 @@ const toggle = () => ({
 
 const dropdown = props => mergeFeatures(autocomplete({
   ...props,
-  constricted: true
+  constricted: true,
+  selectOnBlur: false,
+  deselectOnBlur: false
 }), toggle());
 
 const linearTraversal = ({
