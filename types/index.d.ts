@@ -1,8 +1,10 @@
 export { useAutocomplete } from './hooks/useAutocomplete';
 export { useAutoHeight } from './hooks/useAutoHeight';
-export { autocomplete } from './features/autocomplete';
-export { supercomplete } from './features/supercomplete';
-export { dropdown } from './features/dropdown';
+export { type ToggleFeature, toggle } from './features/atom/toggle';
+export { type AutocompleteFeature, autocomplete } from './features/atom/autocomplete';
+export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
+export { type DropdownFeature, dropdown } from './features/molecule/dropdown';
 export { linearTraversal } from './traversals/linearTraversal';
 export { groupedTraversal } from './traversals/groupedTraversal';
-export type { AutocompleteProps, AutocompleteState, Feature } from './common';
+export { mergeFeatures } from './utils/mergeFeatures';
+export type { AutocompleteProps, AutocompleteState, Feature, MergedFeature, FeatureProps } from './common';

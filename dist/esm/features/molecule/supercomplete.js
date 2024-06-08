@@ -1,6 +1,6 @@
-import { mergeFeatures } from '../utils/mergeFeatures.js';
-import { autocomplete } from './atom/autocomplete.js';
-import { inline } from './atom/inline.js';
+import { mergeFeatures } from '../../utils/mergeFeatures.js';
+import { autocomplete } from '../atom/autocomplete.js';
+import { inline } from '../atom/inline.js';
 
 const supercomplete = ({
   getInlineItem,

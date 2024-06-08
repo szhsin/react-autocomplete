@@ -1,7 +1,9 @@
 export { useAutocomplete } from './hooks/useAutocomplete.js';
 export { useAutoHeight } from './hooks/useAutoHeight.js';
-export { autocomplete } from './features/autocomplete.js';
-export { supercomplete } from './features/supercomplete.js';
-export { dropdown } from './features/dropdown.js';
+export { toggle } from './features/atom/toggle.js';
+export { autocomplete } from './features/atom/autocomplete.js';
+export { supercomplete } from './features/molecule/supercomplete.js';
+export { dropdown } from './features/molecule/dropdown.js';
 export { linearTraversal } from './traversals/linearTraversal.js';
 export { groupedTraversal } from './traversals/groupedTraversal.js';
+export { mergeFeatures } from './utils/mergeFeatures.js';

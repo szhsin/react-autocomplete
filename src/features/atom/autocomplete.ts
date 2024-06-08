@@ -1,5 +1,5 @@
-import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, FeatureProps } from '../common';
-import { useMutableState } from '../hooks/useMutableState';
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, FeatureProps } from '../../common';
+import { useMutableState } from '../../hooks/useMutableState';
 
 type AutocompleteFeature<T> = Feature<
   T,

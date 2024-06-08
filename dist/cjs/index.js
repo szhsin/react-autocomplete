@@ -79,6 +79,37 @@ const useAutoHeight = ({
 
 const useMutableState = stateContainer => react.useState(stateContainer)[0];
 
+const toggle = () => ({
+  inputRef,
+  open,
+  setOpen,
+  focusItem,
+  onChange
+}) => {
+  const mutable = useMutableState({});
+  const openList = () => {
+    setOpen(true);
+  };
+  return {
+    getToggleProps: () => ({
+      onMouseDown: () => {
+        mutable.a = open;
+      },
+      onClick: () => {
+        if (mutable.a) {
+          var _inputRef$current;
+          mutable.a = 0;
+          (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+        } else {
+          var _inputRef$current2;
+          openList();
+          (_inputRef$current2 = inputRef.current) == null || _inputRef$current2.focus();
+        }
+      }
+    })
+  };
+};
+
 const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
   block: 'nearest'
 });
@@ -263,49 +294,17 @@ const supercomplete = ({
   getInlineItem
 }));
 
-const toggle = () => ({
-  inputRef,
-  open,
-  setOpen,
-  focusItem,
-  onChange
+const dropdownToggle = () => ({
+  focusItem
 }) => {
-  const mutable = useMutableState({});
   const toggleRef = react.useRef(null);
-  react.useEffect(() => {
-    var _inputRef$current;
-    if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-  }, [open, inputRef]);
-  const openList = () => {
-    onChange('');
-    setOpen(true);
-  };
   const focusToggle = () => setTimeout(() => {
     var _toggleRef$current;
     return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
   }, 0);
   return {
     getToggleProps: () => ({
-      ref: toggleRef,
-      onMouseDown: () => {
-        mutable.a = open;
-      },
-      onClick: () => {
-        if (mutable.a) {
-          mutable.a = 0;
-        } else {
-          openList();
-        }
-      },
-      onKeyDown: e => {
-        const {
-          key
-        } = e;
-        if (key === 'ArrowDown') {
-          e.preventDefault();
-          openList();
-        }
-      }
+      ref: toggleRef
     }),
     getInputProps: () => ({
       onKeyDown: e => {
@@ -327,7 +326,7 @@ const dropdown = props => mergeFeatures(autocomplete({
   constricted: true,
   selectOnBlur: false,
   deselectOnBlur: false
-}), toggle());
+}), dropdownToggle(), toggle());
 
 const linearTraversal = ({
   traverseInput,
@@ -387,6 +386,8 @@ exports.autocomplete = autocomplete;
 exports.dropdown = dropdown;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
+exports.mergeFeatures = mergeFeatures;
 exports.supercomplete = supercomplete;
+exports.toggle = toggle;
 exports.useAutoHeight = useAutoHeight;
 exports.useAutocomplete = useAutocomplete;
