@@ -6,9 +6,12 @@ import { type InlineFeature, inline } from './inline';
 type SupercompleteFeature<T> = MergedFeature<T, [AutocompleteFeature<T>, InlineFeature<T>]>;
 
 const supercomplete = <T>({
-  constricted,
-  getInlineItem
-}: Pick<FeatureProps<T>, 'constricted' | 'getInlineItem'>): SupercompleteFeature<T> =>
-  mergeFeatures(autocomplete<T>({ constricted, rovingText: true }), inline<T>({ getInlineItem }));
+  getInlineItem,
+  ...rest
+}: Pick<
+  FeatureProps<T>,
+  'getInlineItem' | 'constricted' | 'selectOnBlur' | 'deselectOnBlur'
+>): SupercompleteFeature<T> =>
+  mergeFeatures(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getInlineItem }));
 
 export { type SupercompleteFeature, supercomplete };

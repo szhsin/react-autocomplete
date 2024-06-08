@@ -254,10 +254,10 @@ const inline = ({
 };
 
 const supercomplete = ({
-  constricted,
-  getInlineItem
+  getInlineItem,
+  ...rest
 }) => mergeFeatures(autocomplete({
-  constricted,
+  ...rest,
   rovingText: true
 }), inline({
   getInlineItem
