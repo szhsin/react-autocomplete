@@ -48,19 +48,21 @@ export default function Home() {
         console.log('onChange', value);
         setValue(value);
       },
-      feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
-      // feature: supercomplete({
-      //   constricted,
-      //   getInlineItem: (newValue) =>
-      //     getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-      //   // getInlineItem: (newValue) =>
-      //   //   new Promise((res) =>
-      //   //     setTimeout(
-      //   //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-      //   //       1000
-      //   //     )
-      //   //   )
-      // }),
+      // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
+      feature: supercomplete({
+        constricted,
+        selectOnBlur,
+        deselectOnBlur,
+        getInlineItem: (newValue) =>
+          getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+        // getInlineItem: (newValue) =>
+        //   new Promise((res) =>
+        //     setTimeout(
+        //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+        //       1000
+        //     )
+        //   )
+      }),
       traversal: groupedTraversal({
         traverseInput: true,
         groupedItems,

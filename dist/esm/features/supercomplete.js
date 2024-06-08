@@ -3,10 +3,10 @@ import { autocomplete } from './autocomplete.js';
 import { inline } from './inline.js';
 
 const supercomplete = ({
-  constricted,
-  getInlineItem
+  getInlineItem,
+  ...rest
 }) => mergeFeatures(autocomplete({
-  constricted,
+  ...rest,
   rovingText: true
 }), inline({
   getInlineItem
