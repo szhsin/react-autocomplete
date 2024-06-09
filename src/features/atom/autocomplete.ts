@@ -1,4 +1,9 @@
-import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, FeatureProps } from '../../common';
+import type {
+  Feature,
+  GetPropsFunctions,
+  GetPropsWithRefFunctions,
+  FeatureProps
+} from '../../common';
 import { useMutableState } from '../../hooks/useMutableState';
 
 type AutocompleteFeature<T> = Feature<
@@ -89,8 +94,12 @@ const autocomplete =
 
       onClick: () => setOpen(true),
 
-      onBlur: () => {
-        if (mutable.a || !open) return;
+      onBlur: (e) => {
+        if (mutable.a || !open) {
+          if (open) e.target.focus();
+          return;
+        }
+
         if (selectOnBlur && focusItem) {
           updateAll(focusItem);
         } else if (constricted) {
