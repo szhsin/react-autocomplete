@@ -1,6 +1,6 @@
 import type { MergedFeature, FeatureProps } from '../../common';
 import { mergeFeatures } from '../../utils/mergeFeatures';
-import { type AutocompleteFeature, autocomplete } from '../atom/autocomplete';
+import { type AutocompleteFeature, autocomplete } from './autocomplete';
 import { type InlineFeature, inline } from '../atom/inline';
 
 type SupercompleteFeature<T> = MergedFeature<T, [AutocompleteFeature<T>, InlineFeature<T>]>;
