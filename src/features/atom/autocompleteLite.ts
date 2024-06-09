@@ -68,106 +68,101 @@ const autocompleteLite =
       setFocusItem();
     };
 
-    const getListProps: GetPropsFunctions<T>['getListProps'] = () => ({
-      onMouseDown: () => {
-        mutable.a = 1;
-      }
-    });
-
-    const getClearProps: GetPropsFunctions<T>['getClearProps'] = () => ({
-      onMouseDown: () => {
-        mutable.a = 1;
-      },
-      onClick: () => {
-        inputRef.current?.focus();
-        updateValue('');
-        setFocusItem();
-      }
-    });
-
-    const getInputProps: GetPropsWithRefFunctions<T>['getInputProps'] = () => ({
-      ref: inputRef,
-
-      value: tmpValue || value,
-
-      onChange: (e) => {
-        setFocusItem();
-        setOpen(true);
-        updateValue(e.target.value, false);
-      },
-
-      onClick: () => setOpen(true),
-
-      onBlur: ({ target }) => {
-        if (mutable.a) {
-          mutable.a = 0;
-          target.focus();
-          return;
-        }
-
-        if (!open) return;
-
-        if (selectOnBlur && focusItem) {
-          updateAll(focusItem);
-        } else if (constricted) {
-          if (value || !deselectOnBlur) updateAll(selectedItem);
-          else updateItem();
-        } else if (getItemValue(selectedItem) != value) {
-          updateItem();
-        }
-
-        setTmpValue();
-        closeList();
-      },
-
-      onKeyDown: (e) => {
-        switch (e.key) {
-          case 'ArrowUp':
-          case 'ArrowDown':
-            e.preventDefault();
-            if (open) {
-              const nextItem = traverse(e.key != 'ArrowUp');
-              if (rovingText) setTmpValue(getItemValue(nextItem));
-            } else {
-              setOpen(true);
-            }
-            break;
-          case 'Enter':
-            if (open && focusItem) {
-              updateAll(focusItem);
-              closeList();
-            }
-            break;
-          case 'Escape':
-            if (open) {
-              if (constricted) {
-                updateAll(selectedItem);
-              } else if (!value || getItemValue(selectedItem) != value) {
-                updateItem();
-                updateValue(value);
-              }
-              closeList();
-            }
-            break;
-        }
-      }
-    });
-
-    const getItemProps: GetPropsFunctions<T>['getItemProps'] = ({ item }) => ({
-      ref: focusItem === item ? scrollIntoView : null,
-      onClick: () => {
-        if (!isItemDisabled(item)) {
-          updateAll(item);
-          closeList();
-        }
-      }
-    });
-
     return {
-      getInputProps,
-      getItemProps,
-      getListProps,
-      getClearProps
+      getClearProps: () => ({
+        onMouseDown: () => {
+          mutable.a = 1;
+        },
+        onClick: () => {
+          inputRef.current?.focus();
+          updateValue('');
+          setFocusItem();
+        }
+      }),
+
+      getListProps: () => ({
+        onMouseDown: () => {
+          mutable.a = 1;
+        }
+      }),
+
+      getItemProps: ({ item }) => ({
+        ref: focusItem === item ? scrollIntoView : null,
+        onClick: () => {
+          if (!isItemDisabled(item)) {
+            updateAll(item);
+            closeList();
+          }
+        }
+      }),
+
+      getInputProps: () => ({
+        ref: inputRef,
+
+        value: tmpValue || value,
+
+        onChange: (e) => {
+          setFocusItem();
+          setOpen(true);
+          updateValue(e.target.value, false);
+        },
+
+        onBlur: ({ target }) => {
+          if (mutable.a) {
+            mutable.a = 0;
+            target.focus();
+            return;
+          }
+
+          if (!open) return;
+
+          if (selectOnBlur && focusItem) {
+            updateAll(focusItem);
+          } else if (constricted) {
+            if (value || !deselectOnBlur) updateAll(selectedItem);
+            else updateItem();
+          } else if (getItemValue(selectedItem) != value) {
+            updateItem();
+          }
+
+          setTmpValue();
+          closeList();
+        },
+
+        onKeyDown: (e) => {
+          switch (e.key) {
+            case 'ArrowUp':
+            case 'ArrowDown':
+              e.preventDefault();
+              if (open) {
+                const nextItem = traverse(e.key != 'ArrowUp');
+                if (rovingText) setTmpValue(getItemValue(nextItem));
+              } else {
+                setOpen(true);
+              }
+              break;
+            case 'Enter':
+              if (open && focusItem) {
+                updateAll(focusItem);
+                closeList();
+              }
+              break;
+            case 'Escape':
+              if (open) {
+                if (constricted) {
+                  updateAll(selectedItem);
+                } else if (!value || getItemValue(selectedItem) != value) {
+                  updateItem();
+                  updateValue(value);
+                }
+                closeList();
+              }
+              break;
+          }
+        },
+
+        onClick: () => setOpen(true)
+      })
     };
   };
 
