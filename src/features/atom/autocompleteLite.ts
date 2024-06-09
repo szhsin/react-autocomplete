@@ -2,13 +2,13 @@ import type {
   Feature,
   GetPropsFunctions,
   GetPropsWithRefFunctions,
-  FeatureProps
+  AutocompleteFeatureProps
 } from '../../common';
 import { useMutableState } from '../../hooks/useMutableState';
 
-type AutocompleteFeature<T> = Feature<
+type AutocompleteLiteFeature<T> = Feature<
   T,
-  Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps'> &
+  Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps' | 'getClearProps'> &
     Pick<GetPropsWithRefFunctions<T>, 'getInputProps'>
 >;
 
@@ -17,22 +17,19 @@ interface MutableState {
    * ### INTERNAL API ###
    * Whether to bypass onblur event on input
    */
-  a?: number;
+  a?: boolean | 0 | 1;
 }
 
 const scrollIntoView = (element: HTMLElement | null) =>
   element?.scrollIntoView({ block: 'nearest' });
 
-const autocomplete =
+const autocompleteLite =
   <T>({
     rovingText,
     constricted,
     selectOnBlur = true,
     deselectOnBlur = true
-  }: Pick<
-    FeatureProps<T>,
-    'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnBlur'
-  > = {}): AutocompleteFeature<T> =>
+  }: AutocompleteFeatureProps<T> = {}): AutocompleteLiteFeature<T> =>
   ({
     getItemValue,
     isItemDisabled,
@@ -74,10 +71,17 @@ const autocomplete =
     const getListProps: GetPropsFunctions<T>['getListProps'] = () => ({
       onMouseDown: () => {
         mutable.a = 1;
+      }
+    });
+
+    const getClearProps: GetPropsFunctions<T>['getClearProps'] = () => ({
+      onMouseDown: () => {
+        mutable.a = 1;
       },
       onClick: () => {
         inputRef.current?.focus();
-        mutable.a = 0;
+        updateValue('');
+        setFocusItem();
       }
     });
 
@@ -94,11 +98,14 @@ const autocomplete =
 
       onClick: () => setOpen(true),
 
-      onBlur: (e) => {
-        if (mutable.a || !open) {
-          if (open) e.target.focus();
+      onBlur: ({ target }) => {
+        if (mutable.a) {
+          mutable.a = 0;
+          target.focus();
           return;
         }
+
+        if (!open) return;
 
         if (selectOnBlur && focusItem) {
           updateAll(focusItem);
@@ -159,8 +166,9 @@ const autocomplete =
     return {
       getInputProps,
       getItemProps,
-      getListProps
+      getListProps,
+      getClearProps
     };
   };
 
-export { type AutocompleteFeature, autocomplete };
+export { type AutocompleteLiteFeature, autocompleteLite };
