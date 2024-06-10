@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions } from '../common';
-import { useMutableState } from '../hooks/useMutableState';
+import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions } from '../../common';
+import { useMutableState } from '../../hooks/useMutableState';
 
-type ToggleFeature<T> = Feature<
+type DropdownToggleFeature<T> = Feature<
   T,
   Pick<GetPropsWithRefFunctions<T>, 'getToggleProps'> & Pick<GetPropsFunctions<T>, 'getInputProps'>
 >;
@@ -15,8 +15,8 @@ interface MutableState {
   a?: boolean | 0 | 1;
 }
 
-const toggle =
-  <T>(): ToggleFeature<T> =>
+const dropdownToggle =
+  <T>(): DropdownToggleFeature<T> =>
   ({ inputRef, open, setOpen, focusItem, onChange }) => {
     const mutable = useMutableState<MutableState>({});
     const toggleRef = useRef<HTMLButtonElement>(null);
@@ -35,9 +35,11 @@ const toggle =
     return {
       getToggleProps: () => ({
         ref: toggleRef,
+
         onMouseDown: () => {
           mutable.a = open;
         },
+
         onClick: () => {
           if (mutable.a) {
             mutable.a = 0;
@@ -45,6 +47,7 @@ const toggle =
             openList();
           }
         },
+
         onKeyDown: (e) => {
           const { key } = e;
           if (key === 'ArrowDown') {
@@ -67,4 +70,4 @@ const toggle =
     };
   };
 
-export { type ToggleFeature, toggle };
+export { type DropdownToggleFeature, dropdownToggle };

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
-import { useMutableState } from '../hooks/useMutableState.js';
+import { useMutableState } from '../../hooks/useMutableState.js';
 
-const toggle = () => ({
+const dropdownToggle = () => ({
   inputRef,
   open,
   setOpen,
@@ -60,4 +60,4 @@ const toggle = () => ({
   };
 };
 
-export { toggle };
+export { dropdownToggle };

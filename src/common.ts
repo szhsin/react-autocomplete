@@ -11,6 +11,7 @@ export type GetPropsWithRef<T> = T extends (...args: infer P) => infer R
 export interface GetPropsFunctions<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
   getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
+  getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getListProps: () => HTMLAttributes<HTMLElement>;
   getItemProps: (option: { item: T }) => HTMLAttributes<HTMLElement>;
 }
@@ -58,6 +59,11 @@ export interface FeatureProps<T> {
     value: string
   ) => T | undefined | null | void | Promise<T | undefined | null | void>;
 }
+
+export type AutocompleteFeatureProps<T> = Pick<
+  FeatureProps<T>,
+  'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnBlur'
+>;
 
 export type Feature<T, Yield extends object> = (
   cx: Contextual<T> & ReturnType<Traversal<T>>
