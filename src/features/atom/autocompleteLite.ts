@@ -70,13 +70,17 @@ const autocompleteLite =
 
     return {
       getClearProps: () => ({
+        tabIndex: -1,
+
         onMouseDown: () => {
-          mutable.a = 1;
+          if (document.activeElement === inputRef.current) mutable.a = 1;
         },
+
         onClick: () => {
           inputRef.current?.focus();
           updateValue('');
           setFocusItem();
+          setOpen(true);
         }
       }),
 
