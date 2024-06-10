@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   useAutocomplete,
   autocomplete,
-  Feature,
   supercomplete,
   linearTraversal,
   groupedTraversal
@@ -35,40 +34,51 @@ export default function Home() {
 
   const groupedItems = getGroupedItems(value);
 
-  const { getInputProps, getListProps, getItemProps, open, focusItem, selectedItem } =
-    useAutocomplete({
-      // traversal: linearTraversal({
-      //   items,
-      //   traverseInput: true
-      // }),
-      getItemValue,
-      isItemDisabled,
-      value,
-      onChange: (value) => {
-        console.log('onChange', value);
-        setValue(value);
-      },
-      // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
-      feature: supercomplete({
-        constricted,
-        selectOnBlur,
-        deselectOnBlur,
-        getInlineItem: (newValue) =>
-          getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-        // getInlineItem: (newValue) =>
-        //   new Promise((res) =>
-        //     setTimeout(
-        //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-        //       1000
-        //     )
-        //   )
-      }),
-      traversal: groupedTraversal({
-        traverseInput: true,
-        groupedItems,
-        getItemsInGroup: (gp) => gp.states
-      })
-    });
+  const {
+    getInputProps,
+    getListProps,
+    getItemProps,
+    getToggleProps,
+    getClearProps,
+    open,
+    setOpen,
+    focusItem,
+    selectedItem,
+    setSelectedItem,
+    clearable
+  } = useAutocomplete({
+    // traversal: linearTraversal({
+    //   items,
+    //   traverseInput: true
+    // }),
+    getItemValue,
+    isItemDisabled,
+    value,
+    onChange: (value) => {
+      console.log('onChange', value);
+      setValue(value);
+    },
+    // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
+    feature: supercomplete({
+      constricted,
+      selectOnBlur,
+      deselectOnBlur,
+      getInlineItem: (newValue) =>
+        getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+      // getInlineItem: (newValue) =>
+      //   new Promise((res) =>
+      //     setTimeout(
+      //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+      //       1000
+      //     )
+      //   )
+    }),
+    traversal: groupedTraversal({
+      traverseInput: true,
+      groupedItems,
+      getItemsInGroup: (gp) => gp.states
+    })
+  });
 
   // getInputProps().ref.current
 
@@ -134,16 +144,17 @@ export default function Home() {
         </button>
       </div>
       <input className={styles.input} {...getInputProps()} />
-
-      <button
-        onClick={() => {
-          // setInputValue('');
-          // setItems(US_STATES);
-          setValue('');
-        }}
-      >
-        Clear
-      </button>
+      {clearable && (
+        <button
+          style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
+          {...getClearProps()}
+        >
+          ❎
+        </button>
+      )}
+      <button {...getToggleProps()}>{open ? '⬆️' : '⬇️'}</button>
+      <button>next</button>
+      <input type="search" />
       <ul
         {...getListProps()}
         className={styles.list}

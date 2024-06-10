@@ -1,11 +1,6 @@
 import type { MergedFeature, FeatureProps } from '../../common';
-import { type AutocompleteFeature } from '../atom/autocomplete';
-import { type ToggleFeature } from '../atom/toggle';
-import { DropdownToggleFeature } from '../atom/dropdownToggle';
-type DropdownFeature<T> = MergedFeature<T, [
-    AutocompleteFeature<T>,
-    DropdownToggleFeature<T>,
-    ToggleFeature<T>
-]>;
+import { type AutocompleteLiteFeature } from '../atom/autocompleteLite';
+import { type DropdownToggleFeature } from '../atom/dropdownToggle';
+type DropdownFeature<T> = MergedFeature<T, [AutocompleteLiteFeature<T>, DropdownToggleFeature<T>]>;
 declare const dropdown: <T>(props?: Pick<FeatureProps<T>, "rovingText"> | undefined) => DropdownFeature<T>;
 export { type DropdownFeature, dropdown };

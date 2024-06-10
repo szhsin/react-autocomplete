@@ -1,13 +1,12 @@
 import { mergeFeatures } from '../../utils/mergeFeatures.js';
-import { autocomplete } from '../atom/autocomplete.js';
-import { toggle } from '../atom/toggle.js';
+import { autocompleteLite } from '../atom/autocompleteLite.js';
 import { dropdownToggle } from '../atom/dropdownToggle.js';
 
-const dropdown = props => mergeFeatures(autocomplete({
+const dropdown = props => mergeFeatures(autocompleteLite({
   ...props,
   constricted: true,
   selectOnBlur: false,
   deselectOnBlur: false
-}), dropdownToggle(), toggle());
+}), dropdownToggle());
 
 export { dropdown };

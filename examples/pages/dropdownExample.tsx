@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   useAutocomplete,
-  autocomplete,
   dropdown,
-  Feature,
-  supercomplete,
-  linearTraversal,
   groupedTraversal,
   useAutoHeight
 } from '@szhsin/react-autocomplete';
@@ -37,6 +33,8 @@ export default function Dropdown() {
     getListProps,
     getItemProps,
     getToggleProps,
+    getClearProps,
+    clearable,
     open,
     focusItem,
     selectedItem
@@ -112,6 +110,14 @@ export default function Dropdown() {
       >
         <div style={{ padding: 20 }}>
           <input className={styles.input} {...inputProps} />
+          {clearable && (
+            <button
+              style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
+              {...getClearProps()}
+            >
+              ❎
+            </button>
+          )}
         </div>
 
         {/* {items.map((item) => (
@@ -151,6 +157,7 @@ export default function Dropdown() {
           ))}
         </ul>
       </div>
+      <button>next</button>
     </div>
   );
 }

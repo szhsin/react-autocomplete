@@ -79,41 +79,10 @@ const useAutoHeight = ({
 
 const useMutableState = stateContainer => react.useState(stateContainer)[0];
 
-const toggle = () => ({
-  inputRef,
-  open,
-  setOpen,
-  focusItem,
-  onChange
-}) => {
-  const mutable = useMutableState({});
-  const openList = () => {
-    setOpen(true);
-  };
-  return {
-    getToggleProps: () => ({
-      onMouseDown: () => {
-        mutable.a = open;
-      },
-      onClick: () => {
-        if (mutable.a) {
-          var _inputRef$current;
-          mutable.a = 0;
-          (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-        } else {
-          var _inputRef$current2;
-          openList();
-          (_inputRef$current2 = inputRef.current) == null || _inputRef$current2.focus();
-        }
-      }
-    })
-  };
-};
-
 const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
   block: 'nearest'
 });
-const autocomplete = ({
+const autocompleteLite = ({
   rovingText,
   constricted,
   selectOnBlur = true,
@@ -135,6 +104,7 @@ const autocomplete = ({
   inputRef
 }) => {
   const mutable = useMutableState({});
+  const inputValue = tmpValue || value;
   const updateValue = (newValue, moveCaretToEnd = true) => {
     setTmpValue();
     const endIndex = newValue.length;
@@ -150,84 +120,97 @@ const autocomplete = ({
     setOpen(false);
     setFocusItem();
   };
-  const getListProps = () => ({
-    onMouseDown: () => {
-      mutable.a = 1;
-    },
-    onClick: () => {
-      var _inputRef$current;
-      (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-      mutable.a = 0;
-    }
-  });
-  const getInputProps = () => ({
-    ref: inputRef,
-    value: tmpValue || value,
-    onChange: e => {
-      setFocusItem();
-      setOpen(true);
-      updateValue(e.target.value, false);
-    },
-    onClick: () => setOpen(true),
-    onBlur: () => {
-      if (mutable.a || !open) return;
-      if (selectOnBlur && focusItem) {
-        updateAll(focusItem);
-      } else if (constricted) {
-        if (value || !deselectOnBlur) updateAll(selectedItem);else updateItem();
-      } else if (getItemValue(selectedItem) != value) {
-        updateItem();
-      }
-      setTmpValue();
-      closeList();
-    },
-    onKeyDown: e => {
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'ArrowDown':
-          e.preventDefault();
-          if (open) {
-            const nextItem = traverse(e.key != 'ArrowUp');
-            if (rovingText) setTmpValue(getItemValue(nextItem));
-          } else {
-            setOpen(true);
-          }
-          break;
-        case 'Enter':
-          if (open && focusItem) {
-            updateAll(focusItem);
-            closeList();
-          }
-          break;
-        case 'Escape':
-          if (open) {
-            if (constricted) {
-              updateAll(selectedItem);
-            } else if (!value || getItemValue(selectedItem) != value) {
-              updateItem();
-              updateValue(value);
-            }
-            closeList();
-          }
-          break;
-      }
-    }
-  });
-  const getItemProps = ({
-    item
-  }) => ({
-    ref: focusItem === item ? scrollIntoView : null,
-    onClick: () => {
-      if (!isItemDisabled(item)) {
-        updateAll(item);
-        closeList();
-      }
-    }
-  });
   return {
-    getInputProps,
-    getItemProps,
-    getListProps
+    clearable: !!inputValue,
+    getClearProps: () => ({
+      tabIndex: -1,
+      onMouseDown: () => {
+        if (document.activeElement === inputRef.current) mutable.a = 1;
+      },
+      onClick: () => {
+        var _inputRef$current;
+        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+        updateValue('');
+        setFocusItem();
+        setOpen(true);
+      }
+    }),
+    getListProps: () => ({
+      onMouseDown: () => {
+        mutable.a = 1;
+      }
+    }),
+    getItemProps: ({
+      item
+    }) => ({
+      ref: focusItem === item ? scrollIntoView : null,
+      onClick: () => {
+        if (!isItemDisabled(item)) {
+          updateAll(item);
+          closeList();
+        }
+      }
+    }),
+    getInputProps: () => ({
+      ref: inputRef,
+      value: inputValue,
+      onChange: e => {
+        setFocusItem();
+        setOpen(true);
+        updateValue(e.target.value, false);
+      },
+      onBlur: ({
+        target
+      }) => {
+        if (mutable.a) {
+          mutable.a = 0;
+          target.focus();
+          return;
+        }
+        if (!open) return;
+        if (selectOnBlur && focusItem) {
+          updateAll(focusItem);
+        } else if (constricted) {
+          if (value || !deselectOnBlur) updateAll(selectedItem);else updateItem();
+        } else if (getItemValue(selectedItem) != value) {
+          updateItem();
+        }
+        setTmpValue();
+        closeList();
+      },
+      onKeyDown: e => {
+        switch (e.key) {
+          case 'ArrowUp':
+          case 'ArrowDown':
+            e.preventDefault();
+            if (open) {
+              const nextItem = traverse(e.key != 'ArrowUp');
+              if (rovingText) setTmpValue(getItemValue(nextItem));
+            } else {
+              setOpen(true);
+            }
+            break;
+          case 'Enter':
+            if (open && focusItem) {
+              updateAll(focusItem);
+              closeList();
+            }
+            break;
+          case 'Escape':
+            if (open) {
+              if (constricted) {
+                updateAll(selectedItem);
+              } else if (!value || getItemValue(selectedItem) != value) {
+                updateItem();
+                updateValue(value);
+              }
+              closeList();
+            }
+            break;
+        }
+      },
+      onClick: () => setOpen(true)
+    })
   };
 };
 
@@ -253,6 +236,110 @@ const mergeObjects = (obj1, obj2) => {
 };
 
 const mergeFeatures = (...features) => cx => features.reduce((accu, curr) => mergeObjects(accu, curr(cx)), {});
+
+const inputToggle = () => ({
+  inputRef,
+  open,
+  setOpen
+}) => {
+  const mutable = useMutableState({});
+  return {
+    getToggleProps: () => ({
+      tabIndex: -1,
+      onMouseDown: () => {
+        mutable.b = open;
+        mutable.c = 1;
+      },
+      onClick: () => {
+        var _inputRef$current;
+        if (mutable.b) {
+          mutable.b = 0;
+        } else {
+          setOpen(true);
+        }
+        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+      }
+    }),
+    getInputProps: () => ({
+      onBlur: ({
+        target
+      }) => {
+        if (mutable.c) {
+          mutable.c = 0;
+          target.focus();
+        }
+      }
+    })
+  };
+};
+
+const autocomplete = props => mergeFeatures(autocompleteLite(props), inputToggle());
+
+const dropdownToggle = () => ({
+  inputRef,
+  open,
+  setOpen,
+  focusItem,
+  onChange
+}) => {
+  const mutable = useMutableState({});
+  const toggleRef = react.useRef(null);
+  react.useEffect(() => {
+    var _inputRef$current;
+    if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+  }, [open, inputRef]);
+  const openList = () => {
+    onChange('');
+    setOpen(true);
+  };
+  const focusToggle = () => setTimeout(() => {
+    var _toggleRef$current;
+    return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
+  }, 0);
+  return {
+    getToggleProps: () => ({
+      ref: toggleRef,
+      onMouseDown: () => {
+        mutable.a = open;
+      },
+      onClick: () => {
+        if (mutable.a) {
+          mutable.a = 0;
+        } else {
+          openList();
+        }
+      },
+      onKeyDown: e => {
+        const {
+          key
+        } = e;
+        if (key === 'ArrowDown') {
+          e.preventDefault();
+          openList();
+        }
+      }
+    }),
+    getInputProps: () => ({
+      onKeyDown: e => {
+        const {
+          key
+        } = e;
+        if (key === 'Escape') focusToggle();
+        if (key === 'Enter' && focusItem) {
+          e.preventDefault();
+          focusToggle();
+        }
+      }
+    })
+  };
+};
+
+const dropdown = props => mergeFeatures(autocompleteLite({
+  ...props,
+  constricted: true,
+  selectOnBlur: false,
+  deselectOnBlur: false
+}), dropdownToggle());
 
 const inline = ({
   getInlineItem
@@ -293,40 +380,6 @@ const supercomplete = ({
 }), inline({
   getInlineItem
 }));
-
-const dropdownToggle = () => ({
-  focusItem
-}) => {
-  const toggleRef = react.useRef(null);
-  const focusToggle = () => setTimeout(() => {
-    var _toggleRef$current;
-    return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
-  }, 0);
-  return {
-    getToggleProps: () => ({
-      ref: toggleRef
-    }),
-    getInputProps: () => ({
-      onKeyDown: e => {
-        const {
-          key
-        } = e;
-        if (key === 'Escape') focusToggle();
-        if (key === 'Enter' && focusItem) {
-          e.preventDefault();
-          focusToggle();
-        }
-      }
-    })
-  };
-};
-
-const dropdown = props => mergeFeatures(autocomplete({
-  ...props,
-  constricted: true,
-  selectOnBlur: false,
-  deselectOnBlur: false
-}), dropdownToggle(), toggle());
 
 const linearTraversal = ({
   traverseInput,
@@ -383,11 +436,11 @@ const groupedTraversal = ({
 };
 
 exports.autocomplete = autocomplete;
+exports.autocompleteLite = autocompleteLite;
 exports.dropdown = dropdown;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
 exports.mergeFeatures = mergeFeatures;
 exports.supercomplete = supercomplete;
-exports.toggle = toggle;
 exports.useAutoHeight = useAutoHeight;
 exports.useAutocomplete = useAutocomplete;
