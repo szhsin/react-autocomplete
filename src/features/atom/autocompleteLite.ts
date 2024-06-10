@@ -9,7 +9,7 @@ import { useMutableState } from '../../hooks/useMutableState';
 type AutocompleteLiteFeature<T> = Feature<
   T,
   Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps' | 'getClearProps'> &
-    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'>
+    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> & { clearable: boolean }
 >;
 
 interface MutableState {
@@ -48,6 +48,8 @@ const autocompleteLite =
   }) => {
     const mutable = useMutableState<MutableState>({});
 
+    const inputValue = tmpValue || value;
+
     const updateValue = (newValue: string, moveCaretToEnd: boolean = true) => {
       setTmpValue();
       const endIndex = newValue.length;
@@ -69,6 +71,8 @@ const autocompleteLite =
     };
 
     return {
+      clearable: !!inputValue,
+
       getClearProps: () => ({
         tabIndex: -1,
 
@@ -103,7 +107,7 @@ const autocompleteLite =
       getInputProps: () => ({
         ref: inputRef,
 
-        value: tmpValue || value,
+        value: inputValue,
 
         onChange: (e) => {
           setFocusItem();
