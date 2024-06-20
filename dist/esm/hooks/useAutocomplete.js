@@ -1,8 +1,8 @@
 import { useRef, useState, useCallback } from 'react';
 
 const useAutocomplete = ({
-  value = '',
-  onChange = () => {},
+  value,
+  onChange,
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
@@ -28,7 +28,9 @@ const useAutocomplete = ({
     getItemValue,
     isItemDisabled,
     value,
-    onChange,
+    onChange: newValue => {
+      if (value != newValue) onChange == null || onChange(newValue);
+    },
     inputRef,
     ...state
   };

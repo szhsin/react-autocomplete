@@ -23,8 +23,8 @@ export default function Home() {
   const [constricted, setConstricted] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [selectOnBlur, setSelectOnBlur] = useState(true);
-  const [deselectOnBlur, setDeselectOnBlur] = useState(false);
-  const [value, setValue] = useState('');
+  const [deselectOnClear, setDeselectOnClear] = useState(false);
+  const [value, setValue] = useState<string | undefined>();
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
@@ -32,7 +32,7 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   // const feature = supercomplete<{ name: string; abbr: string }>();
 
-  const groupedItems = getGroupedItems(value);
+  const groupedItems = getGroupedItems(value || '');
 
   const {
     getInputProps,
@@ -58,11 +58,11 @@ export default function Home() {
       console.log('onChange', value);
       setValue(value);
     },
-    // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
+    // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnClear }),
     feature: supercomplete({
       constricted,
       selectOnBlur,
-      deselectOnBlur,
+      deselectOnClear,
       getInlineItem: (newValue) =>
         getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
       // getInlineItem: (newValue) =>
@@ -119,11 +119,11 @@ export default function Home() {
       </div>
       <div>
         <label>
-          deselectOnBlur
+          deselectOnClear
           <input
             type="checkbox"
-            checked={deselectOnBlur}
-            onChange={(e) => setDeselectOnBlur(e.target.checked)}
+            checked={deselectOnClear}
+            onChange={(e) => setDeselectOnClear(e.target.checked)}
           />
         </label>
       </div>

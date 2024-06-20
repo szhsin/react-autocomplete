@@ -2,8 +2,8 @@ import { useState, useRef, useCallback } from 'react';
 import type { AutocompleteProps, AutocompleteState, Contextual } from '../common';
 
 const useAutocomplete = <T, FeatureYield extends object>({
-  value = '',
-  onChange = () => {},
+  value,
+  onChange,
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
@@ -35,7 +35,9 @@ const useAutocomplete = <T, FeatureYield extends object>({
     getItemValue,
     isItemDisabled,
     value,
-    onChange,
+    onChange: (newValue?: string | undefined) => {
+      if (value != newValue) onChange?.(newValue);
+    },
     inputRef,
     ...state
   };

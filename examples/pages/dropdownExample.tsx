@@ -12,7 +12,7 @@ type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
 const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
 
-const getGroupedItems = (value: string) =>
+const getGroupedItems = (value: string = '') =>
   LIST_GROUP.map((group) => ({
     ...group,
     states: group.states.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
@@ -20,7 +20,7 @@ const getGroupedItems = (value: string) =>
 
 export default function Dropdown() {
   const [rovingText, setRovingText] = useState(false);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string | undefined>('');
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
   // const [myinput, setmyinput] = useState('');
   // const [items, setItems] = useState(US_STATES);
@@ -109,7 +109,7 @@ export default function Dropdown() {
         }}
       >
         <div style={{ padding: 20 }}>
-          <input className={styles.input} {...inputProps} />
+          <input className={styles.input} {...inputProps} placeholder='Search a state...' />
           {clearable && (
             <button
               style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}

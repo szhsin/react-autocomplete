@@ -31,8 +31,8 @@ export interface AutocompleteState<T> {
 
 export interface ContextualProps<T> {
   isItemDisabled: (item: T) => boolean;
-  value: string;
-  onChange: (value: string) => void;
+  value: string | undefined;
+  onChange: (value?: string | undefined) => void;
 }
 
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
@@ -40,6 +40,10 @@ export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> 
   setTmpValue: (value?: string | undefined) => void;
   inputRef: React.RefObject<HTMLInputElement>;
   getItemValue: (item: T | undefined | null) => string;
+}
+
+export interface Clearable {
+  clearable: boolean;
 }
 
 export interface TraversalProps {
@@ -54,7 +58,7 @@ export interface FeatureProps<T> {
   rovingText?: boolean;
   constricted?: boolean;
   selectOnBlur?: boolean;
-  deselectOnBlur?: boolean;
+  deselectOnClear?: boolean;
   getInlineItem: (
     value: string
   ) => T | undefined | null | void | Promise<T | undefined | null | void>;
@@ -62,7 +66,7 @@ export interface FeatureProps<T> {
 
 export type AutocompleteFeatureProps<T> = Pick<
   FeatureProps<T>,
-  'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnBlur'
+  'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnClear'
 >;
 
 export type Feature<T, Yield extends object> = (

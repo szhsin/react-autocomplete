@@ -6,7 +6,7 @@ const dropdown = props => mergeFeatures(autocompleteLite({
   ...props,
   constricted: true,
   selectOnBlur: false,
-  deselectOnBlur: false
+  deselectOnClear: false
 }), dropdownToggle());
 
 export { dropdown };

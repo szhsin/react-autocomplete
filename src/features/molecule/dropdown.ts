@@ -11,7 +11,7 @@ const dropdown = <T>(props?: Pick<FeatureProps<T>, 'rovingText'>): DropdownFeatu
       ...props,
       constricted: true,
       selectOnBlur: false,
-      deselectOnBlur: false
+      deselectOnClear: false
     }),
     dropdownToggle<T>()
   );
