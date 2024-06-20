@@ -168,7 +168,7 @@ const autocompleteLite = ({
         onChange(newValue);
         if (constricted) {
           if (deselectOnClear && !newValue) setSelectedItem();
-        } else if (newValue !== getItemValue(selectedItem)) {
+        } else {
           setSelectedItem();
         }
       },
