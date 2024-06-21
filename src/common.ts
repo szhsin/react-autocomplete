@@ -59,6 +59,7 @@ export interface FeatureProps<T> {
   constricted?: boolean;
   selectOnBlur?: boolean;
   deselectOnClear?: boolean;
+  deselectOnChange?: boolean;
   getInlineItem: (
     value: string
   ) => T | undefined | null | void | Promise<T | undefined | null | void>;
@@ -66,7 +67,7 @@ export interface FeatureProps<T> {
 
 export type AutocompleteFeatureProps<T> = Pick<
   FeatureProps<T>,
-  'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnClear'
+  'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'
 >;
 
 export type Feature<T, Yield extends object> = (

@@ -55,7 +55,7 @@ export default function Home() {
     isItemDisabled,
     value,
     onChange: (value) => {
-      console.log('onChange', value);
+      // console.log('onChange', value);
       setValue(value);
     },
     // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnClear }),

@@ -6,8 +6,9 @@ const scrollIntoView = element => element == null ? void 0 : element.scrollIntoV
 const autocompleteLite = ({
   rovingText,
   constricted,
-  selectOnBlur = true,
-  deselectOnClear = true
+  selectOnBlur = rovingText,
+  deselectOnClear = true,
+  deselectOnChange = true
 } = {}) => ({
   getItemValue,
   isItemDisabled,
@@ -57,7 +58,7 @@ const autocompleteLite = ({
         onChange('');
         setTmpValue();
         setFocusItem();
-        if (deselectOnClear) setSelectedItem();
+        if (deselectOnClear) updateItem();
       }
     }),
     getListProps: () => ({
@@ -85,11 +86,7 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (constricted) {
-          if (deselectOnClear && !newValue) setSelectedItem();
-        } else {
-          setSelectedItem();
-        }
+        if (!constricted && deselectOnChange || deselectOnClear && !newValue) updateItem();
       },
       onBlur: ({
         target

@@ -10,7 +10,7 @@ const supercomplete = <T>({
   ...rest
 }: Pick<
   FeatureProps<T>,
-  'getInlineItem' | 'constricted' | 'selectOnBlur' | 'deselectOnClear'
+  'getInlineItem' | 'constricted' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'
 >): SupercompleteFeature<T> =>
   mergeFeatures(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getInlineItem }));
 

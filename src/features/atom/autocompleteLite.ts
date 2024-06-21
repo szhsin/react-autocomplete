@@ -29,8 +29,9 @@ const autocompleteLite =
   <T>({
     rovingText,
     constricted,
-    selectOnBlur = true,
-    deselectOnClear = true
+    selectOnBlur = rovingText,
+    deselectOnClear = true,
+    deselectOnChange = true
   }: AutocompleteFeatureProps<T> = {}): AutocompleteLiteFeature<T> =>
   ({
     getItemValue,
@@ -88,7 +89,7 @@ const autocompleteLite =
           onChange('');
           setTmpValue();
           setFocusItem();
-          if (deselectOnClear) setSelectedItem();
+          if (deselectOnClear) updateItem();
         }
       }),
 
@@ -120,11 +121,7 @@ const autocompleteLite =
 
           const newValue = e.target.value;
           onChange(newValue);
-          if (constricted) {
-            if (deselectOnClear && !newValue) setSelectedItem();
-          } else {
-            setSelectedItem();
-          }
+          if ((!constricted && deselectOnChange) || (deselectOnClear && !newValue)) updateItem();
         },
 
         onBlur: ({ target }) => {

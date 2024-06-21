@@ -47,9 +47,10 @@ export interface FeatureProps<T> {
     constricted?: boolean;
     selectOnBlur?: boolean;
     deselectOnClear?: boolean;
+    deselectOnChange?: boolean;
     getInlineItem: (value: string) => T | undefined | null | void | Promise<T | undefined | null | void>;
 }
-export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnClear'>;
+export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'>;
 export type Feature<T, Yield extends object> = (cx: Contextual<T> & ReturnType<Traversal<T>>) => Yield;
 export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>] ? S : Features extends readonly [Feature<T, infer F>, ...infer R] ? F & MergedFeatureYield<T, R> : never;
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;

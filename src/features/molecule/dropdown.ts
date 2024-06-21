@@ -5,12 +5,13 @@ import { type DropdownToggleFeature, dropdownToggle } from '../atom/dropdownTogg
 
 type DropdownFeature<T> = MergedFeature<T, [AutocompleteLiteFeature<T>, DropdownToggleFeature<T>]>;
 
-const dropdown = <T>(props?: Pick<FeatureProps<T>, 'rovingText'>): DropdownFeature<T> =>
+const dropdown = <T>(
+  props?: Pick<FeatureProps<T>, 'rovingText' | 'selectOnBlur'>
+): DropdownFeature<T> =>
   mergeFeatures(
     autocompleteLite<T>({
       ...props,
       constricted: true,
-      selectOnBlur: false,
       deselectOnClear: false
     }),
     dropdownToggle<T>()
