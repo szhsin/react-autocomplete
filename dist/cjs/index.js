@@ -3,8 +3,10 @@
 var react = require('react');
 
 const useAutocomplete = ({
-  value = '',
-  onChange = () => {},
+  value,
+  onChange,
+  selectedItem,
+  onSelectedItemChange,
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
@@ -14,13 +16,10 @@ const useAutocomplete = ({
   const [tmpValue, setTmpValue] = react.useState();
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
-  const [selectedItem, setSelectedItem] = react.useState();
-  const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
+  const getItemValue = item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
   const state = {
     focusItem,
     setFocusItem,
-    selectedItem,
-    setSelectedItem,
     open,
     setOpen
   };
@@ -30,7 +29,9 @@ const useAutocomplete = ({
     getItemValue,
     isItemDisabled,
     value,
-    onChange,
+    onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
+    selectedItem,
+    onSelectedItemChange: newItem => newItem !== selectedItem && (onSelectedItemChange == null ? void 0 : onSelectedItemChange(newItem)),
     inputRef,
     ...state
   };
@@ -84,9 +85,10 @@ const scrollIntoView = element => element == null ? void 0 : element.scrollIntoV
 });
 const autocompleteLite = ({
   rovingText,
-  constricted,
-  selectOnBlur = true,
-  deselectOnBlur = true
+  select,
+  selectOnBlur = rovingText,
+  deselectOnClear = true,
+  deselectOnChange = true
 } = {}) => ({
   getItemValue,
   isItemDisabled,
@@ -96,29 +98,30 @@ const autocompleteLite = ({
   tmpValue,
   setTmpValue,
   selectedItem,
-  setSelectedItem,
+  onSelectedItemChange,
   focusItem,
   setFocusItem,
   open,
   setOpen,
   inputRef
 }) => {
+  var _ref;
   const mutable = useMutableState({});
-  const inputValue = tmpValue || value;
-  const updateValue = (newValue, moveCaretToEnd = true) => {
-    setTmpValue();
+  const inputValue = (_ref = tmpValue || value) != null ? _ref : getItemValue(selectedItem);
+  const updateValue = newValue => {
     const endIndex = newValue.length;
-    moveCaretToEnd && inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (value != newValue) onChange(newValue);
+    inputRef.current.setSelectionRange(endIndex, endIndex);
+    if (!select) onChange(newValue);
   };
-  const updateItem = item => item !== selectedItem && setSelectedItem(item);
   const updateAll = item => {
-    updateItem(item);
+    onSelectedItemChange(item);
     updateValue(getItemValue(item));
   };
   const closeList = () => {
     setOpen(false);
     setFocusItem();
+    setTmpValue();
+    if (select) onChange();
   };
   return {
     clearable: !!inputValue,
@@ -130,9 +133,11 @@ const autocompleteLite = ({
       onClick: () => {
         var _inputRef$current;
         (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
-        updateValue('');
-        setFocusItem();
         setOpen(true);
+        onChange('');
+        setTmpValue();
+        setFocusItem();
+        if (deselectOnClear) onSelectedItemChange();
       }
     }),
     getListProps: () => ({
@@ -155,9 +160,12 @@ const autocompleteLite = ({
       ref: inputRef,
       value: inputValue,
       onChange: e => {
-        setFocusItem();
         setOpen(true);
-        updateValue(e.target.value, false);
+        setFocusItem();
+        setTmpValue();
+        const newValue = e.target.value;
+        onChange(newValue);
+        if (!select && deselectOnChange || deselectOnClear && !newValue) onSelectedItemChange();
       },
       onBlur: ({
         target
@@ -170,12 +178,7 @@ const autocompleteLite = ({
         if (!open) return;
         if (selectOnBlur && focusItem) {
           updateAll(focusItem);
-        } else if (constricted) {
-          if (value || !deselectOnBlur) updateAll(selectedItem);else updateItem();
-        } else if (getItemValue(selectedItem) != value) {
-          updateItem();
         }
-        setTmpValue();
         closeList();
       },
       onKeyDown: e => {
@@ -197,15 +200,7 @@ const autocompleteLite = ({
             }
             break;
           case 'Escape':
-            if (open) {
-              if (constricted) {
-                updateAll(selectedItem);
-              } else if (!value || getItemValue(selectedItem) != value) {
-                updateItem();
-                updateValue(value);
-              }
-              closeList();
-            }
+            if (open) closeList();
             break;
         }
       },
@@ -280,23 +275,22 @@ const dropdownToggle = () => ({
   open,
   setOpen,
   focusItem,
-  onChange
+  value,
+  tmpValue
 }) => {
   const mutable = useMutableState({});
   const toggleRef = react.useRef(null);
+  const inputValue = tmpValue || value || '';
   react.useEffect(() => {
     var _inputRef$current;
     if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
   }, [open, inputRef]);
-  const openList = () => {
-    onChange('');
-    setOpen(true);
-  };
   const focusToggle = () => setTimeout(() => {
     var _toggleRef$current;
     return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
   }, 0);
   return {
+    clearable: !!inputValue,
     getToggleProps: () => ({
       ref: toggleRef,
       onMouseDown: () => {
@@ -306,7 +300,7 @@ const dropdownToggle = () => ({
         if (mutable.a) {
           mutable.a = 0;
         } else {
-          openList();
+          setOpen(true);
         }
       },
       onKeyDown: e => {
@@ -315,11 +309,12 @@ const dropdownToggle = () => ({
         } = e;
         if (key === 'ArrowDown') {
           e.preventDefault();
-          openList();
+          setOpen(true);
         }
       }
     }),
     getInputProps: () => ({
+      value: inputValue,
       onKeyDown: e => {
         const {
           key
@@ -336,9 +331,8 @@ const dropdownToggle = () => ({
 
 const dropdown = props => mergeFeatures(autocompleteLite({
   ...props,
-  constricted: true,
-  selectOnBlur: false,
-  deselectOnBlur: false
+  select: true,
+  deselectOnClear: false
 }), dropdownToggle());
 
 const inline = ({

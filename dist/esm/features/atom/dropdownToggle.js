@@ -6,23 +6,22 @@ const dropdownToggle = () => ({
   open,
   setOpen,
   focusItem,
-  onChange
+  value,
+  tmpValue
 }) => {
   const mutable = useMutableState({});
   const toggleRef = useRef(null);
+  const inputValue = tmpValue || value || '';
   useEffect(() => {
     var _inputRef$current;
     if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
   }, [open, inputRef]);
-  const openList = () => {
-    onChange('');
-    setOpen(true);
-  };
   const focusToggle = () => setTimeout(() => {
     var _toggleRef$current;
     return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
   }, 0);
   return {
+    clearable: !!inputValue,
     getToggleProps: () => ({
       ref: toggleRef,
       onMouseDown: () => {
@@ -32,7 +31,7 @@ const dropdownToggle = () => ({
         if (mutable.a) {
           mutable.a = 0;
         } else {
-          openList();
+          setOpen(true);
         }
       },
       onKeyDown: e => {
@@ -41,11 +40,12 @@ const dropdownToggle = () => ({
         } = e;
         if (key === 'ArrowDown') {
           e.preventDefault();
-          openList();
+          setOpen(true);
         }
       }
     }),
     getInputProps: () => ({
+      value: inputValue,
       onKeyDown: e => {
         const {
           key

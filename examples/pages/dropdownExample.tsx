@@ -12,7 +12,7 @@ type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
 const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
 
-const getGroupedItems = (value: string) =>
+const getGroupedItems = (value: string = '') =>
   LIST_GROUP.map((group) => ({
     ...group,
     states: group.states.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
@@ -20,11 +20,8 @@ const getGroupedItems = (value: string) =>
 
 export default function Dropdown() {
   const [rovingText, setRovingText] = useState(false);
-  const [value, setValue] = useState('');
-  // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
-  // const [myinput, setmyinput] = useState('');
-  // const [items, setItems] = useState(US_STATES);
-  // const feature = supercomplete<{ name: string; abbr: string }>();
+  const [value, setValue] = useState<string | undefined>('');
+  const [selectedItem, setSelectedItem] = useState<Item | undefined>();
 
   const groupedItems = getGroupedItems(value);
 
@@ -36,8 +33,7 @@ export default function Dropdown() {
     getClearProps,
     clearable,
     open,
-    focusItem,
-    selectedItem
+    focusItem
     // inlineComplete
   } = useAutocomplete({
     // traversal: linearTraversal({
@@ -57,6 +53,8 @@ export default function Dropdown() {
       // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
       // item && inlineComplete({ item });
     },
+    selectedItem,
+    onSelectedItemChange: setSelectedItem,
     // feature: autocomplete({ constricted, rovingText }),
     feature: dropdown({ rovingText }),
     traversal: groupedTraversal({
@@ -66,18 +64,7 @@ export default function Dropdown() {
     })
   });
 
-  // useEffect(() => {
-  //   items.length && inlineComplete({ index: 0, value: items[0] });
-  // }, [items, inlineComplete]);
-
   const inputProps = getInputProps();
-
-  // useEffect(() => {
-  //   if (open) {
-  //     console.log('inputProps.ref.current useEffect', inputProps.ref.current);
-  //     inputProps.ref.current?.focus();
-  //   }
-  // }, [open]);
 
   const [maxHeight] = useAutoHeight({ anchorRef: inputProps.ref, show: open, margin: 30 });
 
@@ -109,7 +96,7 @@ export default function Dropdown() {
         }}
       >
         <div style={{ padding: 20 }}>
-          <input className={styles.input} {...inputProps} />
+          <input className={styles.input} {...inputProps} placeholder="Search a state..." />
           {clearable && (
             <button
               style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}

@@ -1,9 +1,11 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import type { AutocompleteProps, AutocompleteState, Contextual } from '../common';
 
 const useAutocomplete = <T, FeatureYield extends object>({
-  value = '',
-  onChange = () => {},
+  value,
+  onChange,
+  selectedItem,
+  onSelectedItemChange,
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
@@ -13,18 +15,13 @@ const useAutocomplete = <T, FeatureYield extends object>({
   const [tmpValue, setTmpValue] = useState<string | undefined>();
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState<T | undefined>();
-  const [selectedItem, setSelectedItem] = useState<T | undefined>();
 
-  const getItemValue: Contextual<T>['getItemValue'] = useCallback(
-    (item) => (item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString()),
-    [_getItemValue]
-  );
+  const getItemValue: Contextual<T>['getItemValue'] = (item) =>
+    item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
 
   const state: AutocompleteState<T> = {
     focusItem,
     setFocusItem,
-    selectedItem,
-    setSelectedItem,
     open,
     setOpen
   };
@@ -35,7 +32,10 @@ const useAutocomplete = <T, FeatureYield extends object>({
     getItemValue,
     isItemDisabled,
     value,
-    onChange,
+    onChange: (newValue?: string | undefined) => value != newValue && onChange?.(newValue),
+    selectedItem,
+    onSelectedItemChange: (newItem?: T | undefined) =>
+      newItem !== selectedItem && onSelectedItemChange?.(newItem),
     inputRef,
     ...state
   };

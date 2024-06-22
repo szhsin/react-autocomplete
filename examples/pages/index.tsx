@@ -20,11 +20,16 @@ const getGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
-  const [constricted, setConstricted] = useState(false);
+  const [isSupercomplete, setSupercomplete] = useState(true);
+  const [select, setselect] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [selectOnBlur, setSelectOnBlur] = useState(true);
-  const [deselectOnBlur, setDeselectOnBlur] = useState(false);
-  const [value, setValue] = useState('');
+  const [deselectOnClear, setDeselectOnClear] = useState(true);
+  const [deselectOnChange, setDeselectOnChange] = useState(true);
+
+  const [value, setValue] = useState<string | undefined>();
+  const [selectedItem, setSelectedItem] = useState<Item | undefined>();
+
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
@@ -32,7 +37,7 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   // const feature = supercomplete<{ name: string; abbr: string }>();
 
-  const groupedItems = getGroupedItems(value);
+  const groupedItems = getGroupedItems(value || '');
 
   const {
     getInputProps,
@@ -41,10 +46,7 @@ export default function Home() {
     getToggleProps,
     getClearProps,
     open,
-    setOpen,
     focusItem,
-    selectedItem,
-    setSelectedItem,
     clearable
   } = useAutocomplete({
     // traversal: linearTraversal({
@@ -55,24 +57,32 @@ export default function Home() {
     isItemDisabled,
     value,
     onChange: (value) => {
-      console.log('onChange', value);
+      // console.log('onChange', value);
       setValue(value);
     },
-    // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnBlur }),
-    feature: supercomplete({
-      constricted,
-      selectOnBlur,
-      deselectOnBlur,
-      getInlineItem: (newValue) =>
-        getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-      // getInlineItem: (newValue) =>
-      //   new Promise((res) =>
-      //     setTimeout(
-      //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-      //       1000
-      //     )
-      //   )
-    }),
+    selectedItem,
+    onSelectedItemChange: (item) => {
+      // console.log('onSelectedItemChange', item);
+      setSelectedItem(item);
+    },
+
+    feature: isSupercomplete
+      ? supercomplete({
+          select,
+          selectOnBlur,
+          deselectOnClear,
+          deselectOnChange,
+          getInlineItem: (newValue) =>
+            getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+          // getInlineItem: (newValue) =>
+          //   new Promise((res) =>
+          //     setTimeout(
+          //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+          //       1000
+          //     )
+          //   )
+        })
+      : autocomplete({ select, selectOnBlur, deselectOnClear, deselectOnChange, rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -89,24 +99,32 @@ export default function Home() {
       <div>Focus item: {focusItem?.name}</div>
       <div>
         <label>
-          Constricted
+          Supercomplete
           <input
             type="checkbox"
-            checked={constricted}
-            onChange={(e) => setConstricted(e.target.checked)}
+            checked={isSupercomplete}
+            onChange={(e) => setSupercomplete(e.target.checked)}
           />
         </label>
       </div>
       <div>
         <label>
-          rovingText
-          <input
-            type="checkbox"
-            checked={rovingText}
-            onChange={(e) => setRovingText(e.target.checked)}
-          />
+          select
+          <input type="checkbox" checked={select} onChange={(e) => setselect(e.target.checked)} />
         </label>
       </div>
+      {!isSupercomplete && (
+        <div>
+          <label>
+            rovingText
+            <input
+              type="checkbox"
+              checked={rovingText}
+              onChange={(e) => setRovingText(e.target.checked)}
+            />
+          </label>
+        </div>
+      )}
       <div>
         <label>
           selectOnBlur
@@ -119,11 +137,21 @@ export default function Home() {
       </div>
       <div>
         <label>
-          deselectOnBlur
+          deselectOnClear
           <input
             type="checkbox"
-            checked={deselectOnBlur}
-            onChange={(e) => setDeselectOnBlur(e.target.checked)}
+            checked={deselectOnClear}
+            onChange={(e) => setDeselectOnClear(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          deselectOnChange
+          <input
+            type="checkbox"
+            checked={deselectOnChange}
+            onChange={(e) => setDeselectOnChange(e.target.checked)}
           />
         </label>
       </div>

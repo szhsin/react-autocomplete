@@ -2,14 +2,16 @@ import type {
   Feature,
   GetPropsFunctions,
   GetPropsWithRefFunctions,
-  AutocompleteFeatureProps
+  AutocompleteFeatureProps,
+  Clearable
 } from '../../common';
 import { useMutableState } from '../../hooks/useMutableState';
 
 type AutocompleteLiteFeature<T> = Feature<
   T,
   Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps' | 'getClearProps'> &
-    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> & { clearable: boolean }
+    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> &
+    Clearable
 >;
 
 interface MutableState {
@@ -26,9 +28,10 @@ const scrollIntoView = (element: HTMLElement | null) =>
 const autocompleteLite =
   <T>({
     rovingText,
-    constricted,
-    selectOnBlur = true,
-    deselectOnBlur = true
+    select,
+    selectOnBlur = rovingText,
+    deselectOnClear = true,
+    deselectOnChange = true
   }: AutocompleteFeatureProps<T> = {}): AutocompleteLiteFeature<T> =>
   ({
     getItemValue,
@@ -39,7 +42,7 @@ const autocompleteLite =
     tmpValue,
     setTmpValue,
     selectedItem,
-    setSelectedItem,
+    onSelectedItemChange,
     focusItem,
     setFocusItem,
     open,
@@ -48,26 +51,24 @@ const autocompleteLite =
   }) => {
     const mutable = useMutableState<MutableState>({});
 
-    const inputValue = tmpValue || value;
+    const inputValue = (tmpValue || value) ?? getItemValue(selectedItem);
 
-    const updateValue = (newValue: string, moveCaretToEnd: boolean = true) => {
-      setTmpValue();
+    const updateValue = (newValue: string) => {
       const endIndex = newValue.length;
-      moveCaretToEnd && inputRef.current!.setSelectionRange(endIndex, endIndex);
-
-      if (value != newValue) onChange(newValue);
+      inputRef.current!.setSelectionRange(endIndex, endIndex);
+      if (!select) onChange(newValue);
     };
 
-    const updateItem = (item?: T) => item !== selectedItem && setSelectedItem(item);
-
     const updateAll = (item?: T) => {
-      updateItem(item);
+      onSelectedItemChange(item);
       updateValue(getItemValue(item));
     };
 
     const closeList = () => {
       setOpen(false);
       setFocusItem();
+      setTmpValue();
+      if (select) onChange();
     };
 
     return {
@@ -82,9 +83,11 @@ const autocompleteLite =
 
         onClick: () => {
           inputRef.current?.focus();
-          updateValue('');
-          setFocusItem();
           setOpen(true);
+          onChange('');
+          setTmpValue();
+          setFocusItem();
+          if (deselectOnClear) onSelectedItemChange();
         }
       }),
 
@@ -110,9 +113,14 @@ const autocompleteLite =
         value: inputValue,
 
         onChange: (e) => {
-          setFocusItem();
           setOpen(true);
-          updateValue(e.target.value, false);
+          setFocusItem();
+          setTmpValue();
+
+          const newValue = e.target.value;
+          onChange(newValue);
+          if ((!select && deselectOnChange) || (deselectOnClear && !newValue))
+            onSelectedItemChange();
         },
 
         onBlur: ({ target }) => {
@@ -126,14 +134,8 @@ const autocompleteLite =
 
           if (selectOnBlur && focusItem) {
             updateAll(focusItem);
-          } else if (constricted) {
-            if (value || !deselectOnBlur) updateAll(selectedItem);
-            else updateItem();
-          } else if (getItemValue(selectedItem) != value) {
-            updateItem();
           }
 
-          setTmpValue();
           closeList();
         },
 
@@ -156,15 +158,7 @@ const autocompleteLite =
               }
               break;
             case 'Escape':
-              if (open) {
-                if (constricted) {
-                  updateAll(selectedItem);
-                } else if (!value || getItemValue(selectedItem) != value) {
-                  updateItem();
-                  updateValue(value);
-                }
-                closeList();
-              }
+              if (open) closeList();
               break;
           }
         },

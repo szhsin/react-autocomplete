@@ -580,6 +580,10 @@ const LIST_GROUP = [
         abbr: 'AK'
       },
       {
+        name: 'a',
+        abbr: 'A'
+      },
+      {
         name: 'American Samoa',
         abbr: 'AS'
       },
