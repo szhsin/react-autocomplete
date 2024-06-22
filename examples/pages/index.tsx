@@ -20,10 +20,12 @@ const getGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
+  const [isSupercomplete, setSupercomplete] = useState(true);
   const [constricted, setConstricted] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [selectOnBlur, setSelectOnBlur] = useState(true);
-  const [deselectOnClear, setDeselectOnClear] = useState(false);
+  const [deselectOnClear, setDeselectOnClear] = useState(true);
+  const [deselectOnChange, setDeselectOnChange] = useState(true);
   const [value, setValue] = useState<string | undefined>();
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
@@ -58,21 +60,24 @@ export default function Home() {
       // console.log('onChange', value);
       setValue(value);
     },
-    // feature: autocomplete({ constricted, rovingText, selectOnBlur, deselectOnClear }),
-    feature: supercomplete({
-      constricted,
-      selectOnBlur,
-      deselectOnClear,
-      getInlineItem: (newValue) =>
-        getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-      // getInlineItem: (newValue) =>
-      //   new Promise((res) =>
-      //     setTimeout(
-      //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-      //       1000
-      //     )
-      //   )
-    }),
+
+    feature: isSupercomplete
+      ? supercomplete({
+          constricted,
+          selectOnBlur,
+          deselectOnClear,
+          deselectOnChange,
+          getInlineItem: (newValue) =>
+            getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+          // getInlineItem: (newValue) =>
+          //   new Promise((res) =>
+          //     setTimeout(
+          //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+          //       1000
+          //     )
+          //   )
+        })
+      : autocomplete({ constricted, selectOnBlur, deselectOnClear, deselectOnChange, rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -89,6 +94,16 @@ export default function Home() {
       <div>Focus item: {focusItem?.name}</div>
       <div>
         <label>
+          Supercomplete
+          <input
+            type="checkbox"
+            checked={isSupercomplete}
+            onChange={(e) => setSupercomplete(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
           Constricted
           <input
             type="checkbox"
@@ -97,16 +112,18 @@ export default function Home() {
           />
         </label>
       </div>
-      <div>
-        <label>
-          rovingText
-          <input
-            type="checkbox"
-            checked={rovingText}
-            onChange={(e) => setRovingText(e.target.checked)}
-          />
-        </label>
-      </div>
+      {!isSupercomplete && (
+        <div>
+          <label>
+            rovingText
+            <input
+              type="checkbox"
+              checked={rovingText}
+              onChange={(e) => setRovingText(e.target.checked)}
+            />
+          </label>
+        </div>
+      )}
       <div>
         <label>
           selectOnBlur
@@ -124,6 +141,16 @@ export default function Home() {
             type="checkbox"
             checked={deselectOnClear}
             onChange={(e) => setDeselectOnClear(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          deselectOnChange
+          <input
+            type="checkbox"
+            checked={deselectOnChange}
+            onChange={(e) => setDeselectOnChange(e.target.checked)}
           />
         </label>
       </div>
