@@ -109,7 +109,7 @@ export default function Dropdown() {
         }}
       >
         <div style={{ padding: 20 }}>
-          <input className={styles.input} {...inputProps} placeholder='Search a state...' />
+          <input className={styles.input} {...inputProps} placeholder="Search a state..." />
           {clearable && (
             <button
               style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}

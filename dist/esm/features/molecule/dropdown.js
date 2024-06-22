@@ -4,7 +4,7 @@ import { dropdownToggle } from '../atom/dropdownToggle.js';
 
 const dropdown = props => mergeFeatures(autocompleteLite({
   ...props,
-  constricted: true,
+  select: true,
   deselectOnClear: false
 }), dropdownToggle());
 

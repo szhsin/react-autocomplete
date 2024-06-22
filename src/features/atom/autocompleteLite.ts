@@ -28,7 +28,7 @@ const scrollIntoView = (element: HTMLElement | null) =>
 const autocompleteLite =
   <T>({
     rovingText,
-    constricted,
+    select,
     selectOnBlur = rovingText,
     deselectOnClear = true,
     deselectOnChange = true
@@ -56,7 +56,7 @@ const autocompleteLite =
     const updateValue = (newValue: string) => {
       const endIndex = newValue.length;
       inputRef.current!.setSelectionRange(endIndex, endIndex);
-      if (!constricted) onChange(newValue);
+      if (!select) onChange(newValue);
     };
 
     const updateItem = (item?: T) => item !== selectedItem && setSelectedItem(item);
@@ -70,7 +70,7 @@ const autocompleteLite =
       setOpen(false);
       setFocusItem();
       setTmpValue();
-      if (constricted) onChange();
+      if (select) onChange();
     };
 
     return {
@@ -121,7 +121,7 @@ const autocompleteLite =
 
           const newValue = e.target.value;
           onChange(newValue);
-          if ((!constricted && deselectOnChange) || (deselectOnClear && !newValue)) updateItem();
+          if ((!select && deselectOnChange) || (deselectOnClear && !newValue)) updateItem();
         },
 
         onBlur: ({ target }) => {

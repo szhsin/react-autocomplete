@@ -11,7 +11,7 @@ const dropdown = <T>(
   mergeFeatures(
     autocompleteLite<T>({
       ...props,
-      constricted: true,
+      select: true,
       deselectOnClear: false
     }),
     dropdownToggle<T>()

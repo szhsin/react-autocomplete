@@ -21,7 +21,7 @@ const getGroupedItems = (value: string) =>
 
 export default function Home() {
   const [isSupercomplete, setSupercomplete] = useState(true);
-  const [constricted, setConstricted] = useState(false);
+  const [select, setselect] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [selectOnBlur, setSelectOnBlur] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
@@ -63,7 +63,7 @@ export default function Home() {
 
     feature: isSupercomplete
       ? supercomplete({
-          constricted,
+          select,
           selectOnBlur,
           deselectOnClear,
           deselectOnChange,
@@ -77,7 +77,7 @@ export default function Home() {
           //     )
           //   )
         })
-      : autocomplete({ constricted, selectOnBlur, deselectOnClear, deselectOnChange, rovingText }),
+      : autocomplete({ select, selectOnBlur, deselectOnClear, deselectOnChange, rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -104,12 +104,8 @@ export default function Home() {
       </div>
       <div>
         <label>
-          Constricted
-          <input
-            type="checkbox"
-            checked={constricted}
-            onChange={(e) => setConstricted(e.target.checked)}
-          />
+          select
+          <input type="checkbox" checked={select} onChange={(e) => setselect(e.target.checked)} />
         </label>
       </div>
       {!isSupercomplete && (

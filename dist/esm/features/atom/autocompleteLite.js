@@ -5,7 +5,7 @@ const scrollIntoView = element => element == null ? void 0 : element.scrollIntoV
 });
 const autocompleteLite = ({
   rovingText,
-  constricted,
+  select,
   selectOnBlur = rovingText,
   deselectOnClear = true,
   deselectOnChange = true
@@ -31,7 +31,7 @@ const autocompleteLite = ({
   const updateValue = newValue => {
     const endIndex = newValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (!constricted) onChange(newValue);
+    if (!select) onChange(newValue);
   };
   const updateItem = item => item !== selectedItem && setSelectedItem(item);
   const updateAll = item => {
@@ -42,7 +42,7 @@ const autocompleteLite = ({
     setOpen(false);
     setFocusItem();
     setTmpValue();
-    if (constricted) onChange();
+    if (select) onChange();
   };
   return {
     clearable: !!inputValue,
@@ -86,7 +86,7 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (!constricted && deselectOnChange || deselectOnClear && !newValue) updateItem();
+        if (!select && deselectOnChange || deselectOnClear && !newValue) updateItem();
       },
       onBlur: ({
         target

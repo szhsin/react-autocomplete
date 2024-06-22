@@ -56,7 +56,7 @@ export type Traversal<T> = (cx: Contextual<T>) => {
 
 export interface FeatureProps<T> {
   rovingText?: boolean;
-  constricted?: boolean;
+  select?: boolean;
   selectOnBlur?: boolean;
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
@@ -67,7 +67,7 @@ export interface FeatureProps<T> {
 
 export type AutocompleteFeatureProps<T> = Pick<
   FeatureProps<T>,
-  'rovingText' | 'constricted' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'
+  'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'
 >;
 
 export type Feature<T, Yield extends object> = (
