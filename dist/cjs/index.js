@@ -15,7 +15,7 @@ const useAutocomplete = ({
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
   const [selectedItem, setSelectedItem] = react.useState();
-  const getItemValue = react.useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
+  const getItemValue = item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
   const state = {
     focusItem,
     setFocusItem,

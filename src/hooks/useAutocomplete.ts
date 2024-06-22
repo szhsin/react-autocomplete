@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import type { AutocompleteProps, AutocompleteState, Contextual } from '../common';
 
 const useAutocomplete = <T, FeatureYield extends object>({
@@ -15,10 +15,8 @@ const useAutocomplete = <T, FeatureYield extends object>({
   const [focusItem, setFocusItem] = useState<T | undefined>();
   const [selectedItem, setSelectedItem] = useState<T | undefined>();
 
-  const getItemValue: Contextual<T>['getItemValue'] = useCallback(
-    (item) => (item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString()),
-    [_getItemValue]
-  );
+  const getItemValue: Contextual<T>['getItemValue'] = (item) =>
+    item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
 
   const state: AutocompleteState<T> = {
     focusItem,

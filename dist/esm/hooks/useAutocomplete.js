@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState } from 'react';
 
 const useAutocomplete = ({
   value,
@@ -13,7 +13,7 @@ const useAutocomplete = ({
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState();
   const [selectedItem, setSelectedItem] = useState();
-  const getItemValue = useCallback(item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString(), [_getItemValue]);
+  const getItemValue = item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
   const state = {
     focusItem,
     setFocusItem,
