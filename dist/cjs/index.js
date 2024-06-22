@@ -5,6 +5,8 @@ var react = require('react');
 const useAutocomplete = ({
   value,
   onChange,
+  selectedItem,
+  onSelectedItemChange,
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
@@ -14,13 +16,10 @@ const useAutocomplete = ({
   const [tmpValue, setTmpValue] = react.useState();
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
-  const [selectedItem, setSelectedItem] = react.useState();
   const getItemValue = item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
   const state = {
     focusItem,
     setFocusItem,
-    selectedItem,
-    setSelectedItem,
     open,
     setOpen
   };
@@ -30,9 +29,9 @@ const useAutocomplete = ({
     getItemValue,
     isItemDisabled,
     value,
-    onChange: newValue => {
-      if (value != newValue) onChange == null || onChange(newValue);
-    },
+    onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
+    selectedItem,
+    onSelectedItemChange: newItem => newItem !== selectedItem && (onSelectedItemChange == null ? void 0 : onSelectedItemChange(newItem)),
     inputRef,
     ...state
   };
@@ -99,7 +98,7 @@ const autocompleteLite = ({
   tmpValue,
   setTmpValue,
   selectedItem,
-  setSelectedItem,
+  onSelectedItemChange,
   focusItem,
   setFocusItem,
   open,
@@ -114,9 +113,8 @@ const autocompleteLite = ({
     inputRef.current.setSelectionRange(endIndex, endIndex);
     if (!select) onChange(newValue);
   };
-  const updateItem = item => item !== selectedItem && setSelectedItem(item);
   const updateAll = item => {
-    updateItem(item);
+    onSelectedItemChange(item);
     updateValue(getItemValue(item));
   };
   const closeList = () => {
@@ -139,7 +137,7 @@ const autocompleteLite = ({
         onChange('');
         setTmpValue();
         setFocusItem();
-        if (deselectOnClear) updateItem();
+        if (deselectOnClear) onSelectedItemChange();
       }
     }),
     getListProps: () => ({
@@ -167,7 +165,7 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (!select && deselectOnChange || deselectOnClear && !newValue) updateItem();
+        if (!select && deselectOnChange || deselectOnClear && !newValue) onSelectedItemChange();
       },
       onBlur: ({
         target

@@ -26,7 +26,10 @@ export default function Home() {
   const [selectOnBlur, setSelectOnBlur] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
   const [deselectOnChange, setDeselectOnChange] = useState(true);
+
   const [value, setValue] = useState<string | undefined>();
+  const [selectedItem, setSelectedItem] = useState<Item | undefined>();
+
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
   // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
@@ -43,10 +46,7 @@ export default function Home() {
     getToggleProps,
     getClearProps,
     open,
-    setOpen,
     focusItem,
-    selectedItem,
-    setSelectedItem,
     clearable
   } = useAutocomplete({
     // traversal: linearTraversal({
@@ -59,6 +59,11 @@ export default function Home() {
     onChange: (value) => {
       // console.log('onChange', value);
       setValue(value);
+    },
+    selectedItem,
+    onSelectedItemChange: (item) => {
+      // console.log('onSelectedItemChange', item);
+      setSelectedItem(item);
     },
 
     feature: isSupercomplete

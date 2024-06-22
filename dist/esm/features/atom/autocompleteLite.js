@@ -18,7 +18,7 @@ const autocompleteLite = ({
   tmpValue,
   setTmpValue,
   selectedItem,
-  setSelectedItem,
+  onSelectedItemChange,
   focusItem,
   setFocusItem,
   open,
@@ -33,9 +33,8 @@ const autocompleteLite = ({
     inputRef.current.setSelectionRange(endIndex, endIndex);
     if (!select) onChange(newValue);
   };
-  const updateItem = item => item !== selectedItem && setSelectedItem(item);
   const updateAll = item => {
-    updateItem(item);
+    onSelectedItemChange(item);
     updateValue(getItemValue(item));
   };
   const closeList = () => {
@@ -58,7 +57,7 @@ const autocompleteLite = ({
         onChange('');
         setTmpValue();
         setFocusItem();
-        if (deselectOnClear) updateItem();
+        if (deselectOnClear) onSelectedItemChange();
       }
     }),
     getListProps: () => ({
@@ -86,7 +85,7 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (!select && deselectOnChange || deselectOnClear && !newValue) updateItem();
+        if (!select && deselectOnChange || deselectOnClear && !newValue) onSelectedItemChange();
       },
       onBlur: ({
         target

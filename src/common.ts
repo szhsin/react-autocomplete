@@ -23,8 +23,6 @@ export type GetPropsWithRefFunctions<T> = {
 export interface AutocompleteState<T> {
   focusItem: T | undefined;
   setFocusItem: (item?: T | undefined) => void;
-  selectedItem: T | undefined;
-  setSelectedItem: (item?: T | undefined) => void;
   open: boolean;
   setOpen: (value: boolean) => void;
 }
@@ -33,6 +31,8 @@ export interface ContextualProps<T> {
   isItemDisabled: (item: T) => boolean;
   value: string | undefined;
   onChange: (value?: string | undefined) => void;
+  selectedItem: T | undefined;
+  onSelectedItemChange: (item?: T | undefined) => void;
 }
 
 export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {

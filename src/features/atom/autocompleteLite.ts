@@ -42,7 +42,7 @@ const autocompleteLite =
     tmpValue,
     setTmpValue,
     selectedItem,
-    setSelectedItem,
+    onSelectedItemChange,
     focusItem,
     setFocusItem,
     open,
@@ -59,10 +59,8 @@ const autocompleteLite =
       if (!select) onChange(newValue);
     };
 
-    const updateItem = (item?: T) => item !== selectedItem && setSelectedItem(item);
-
     const updateAll = (item?: T) => {
-      updateItem(item);
+      onSelectedItemChange(item);
       updateValue(getItemValue(item));
     };
 
@@ -89,7 +87,7 @@ const autocompleteLite =
           onChange('');
           setTmpValue();
           setFocusItem();
-          if (deselectOnClear) updateItem();
+          if (deselectOnClear) onSelectedItemChange();
         }
       }),
 
@@ -121,7 +119,8 @@ const autocompleteLite =
 
           const newValue = e.target.value;
           onChange(newValue);
-          if ((!select && deselectOnChange) || (deselectOnClear && !newValue)) updateItem();
+          if ((!select && deselectOnChange) || (deselectOnClear && !newValue))
+            onSelectedItemChange();
         },
 
         onBlur: ({ target }) => {
