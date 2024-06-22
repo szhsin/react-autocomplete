@@ -11,14 +11,14 @@ const autocompleteLite = ({
   deselectOnChange = true
 } = {}) => ({
   getItemValue,
+  getSelectedValue,
+  onSelectChange,
   isItemDisabled,
   traverse,
   value,
   onChange,
   tmpValue,
   setTmpValue,
-  selectedItem,
-  onSelectedItemChange,
   focusItem,
   setFocusItem,
   open,
@@ -27,14 +27,14 @@ const autocompleteLite = ({
 }) => {
   var _ref;
   const mutable = useMutableState({});
-  const inputValue = (_ref = tmpValue || value) != null ? _ref : getItemValue(selectedItem);
+  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
   const updateValue = newValue => {
     const endIndex = newValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
     if (!select) onChange(newValue);
   };
   const updateAll = item => {
-    onSelectedItemChange(item);
+    onSelectChange(item);
     updateValue(getItemValue(item));
   };
   const closeList = () => {
@@ -57,7 +57,7 @@ const autocompleteLite = ({
         onChange('');
         setTmpValue();
         setFocusItem();
-        if (deselectOnClear) onSelectedItemChange();
+        if (deselectOnClear) onSelectChange();
       }
     }),
     getListProps: () => ({
@@ -85,7 +85,9 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (!select && deselectOnChange || deselectOnClear && !newValue) onSelectedItemChange();
+        if (!select && deselectOnChange || deselectOnClear && !newValue) {
+          onSelectChange();
+        }
       },
       onBlur: ({
         target

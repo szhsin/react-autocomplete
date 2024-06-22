@@ -35,14 +35,14 @@ const autocompleteLite =
   }: AutocompleteFeatureProps<T> = {}): AutocompleteLiteFeature<T> =>
   ({
     getItemValue,
+    getSelectedValue,
+    onSelectChange,
     isItemDisabled,
     traverse,
     value,
     onChange,
     tmpValue,
     setTmpValue,
-    selectedItem,
-    onSelectedItemChange,
     focusItem,
     setFocusItem,
     open,
@@ -51,7 +51,7 @@ const autocompleteLite =
   }) => {
     const mutable = useMutableState<MutableState>({});
 
-    const inputValue = (tmpValue || value) ?? getItemValue(selectedItem);
+    const inputValue = (tmpValue || value) ?? getSelectedValue();
 
     const updateValue = (newValue: string) => {
       const endIndex = newValue.length;
@@ -60,7 +60,7 @@ const autocompleteLite =
     };
 
     const updateAll = (item?: T) => {
-      onSelectedItemChange(item);
+      onSelectChange(item);
       updateValue(getItemValue(item));
     };
 
@@ -87,7 +87,7 @@ const autocompleteLite =
           onChange('');
           setTmpValue();
           setFocusItem();
-          if (deselectOnClear) onSelectedItemChange();
+          if (deselectOnClear) onSelectChange();
         }
       }),
 
@@ -119,8 +119,9 @@ const autocompleteLite =
 
           const newValue = e.target.value;
           onChange(newValue);
-          if ((!select && deselectOnChange) || (deselectOnClear && !newValue))
-            onSelectedItemChange();
+          if ((!select && deselectOnChange) || (deselectOnClear && !newValue)) {
+            onSelectChange();
+          }
         },
 
         onBlur: ({ target }) => {

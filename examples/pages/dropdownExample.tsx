@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  useAutocomplete,
-  dropdown,
-  groupedTraversal,
-  useAutoHeight
-} from '@szhsin/react-autocomplete';
+import { useCombobox, dropdown, groupedTraversal, useAutoHeight } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
 
@@ -35,7 +30,7 @@ export default function Dropdown() {
     open,
     focusItem
     // inlineComplete
-  } = useAutocomplete({
+  } = useCombobox({
     // traversal: linearTraversal({
     //   items,
     //   traverseInput: true
@@ -53,8 +48,8 @@ export default function Dropdown() {
       // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
       // item && inlineComplete({ item });
     },
-    selectedItem,
-    onSelectedItemChange: setSelectedItem,
+    selected: selectedItem,
+    onSelectChange: setSelectedItem,
     // feature: autocomplete({ constricted, rovingText }),
     feature: dropdown({ rovingText }),
     traversal: groupedTraversal({

@@ -2,21 +2,20 @@
 
 var react = require('react');
 
+const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
+
 const useAutocomplete = ({
   value,
   onChange,
-  selectedItem,
-  onSelectedItemChange,
   isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
-  getItemValue: _getItemValue
+  ...adapterProps
 }) => {
   const inputRef = react.useRef(null);
   const [tmpValue, setTmpValue] = react.useState();
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
-  const getItemValue = item => item == null ? '' : _getItemValue ? _getItemValue(item) : item.toString();
   const state = {
     focusItem,
     setFocusItem,
@@ -24,15 +23,13 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    inputRef,
+    isItemDisabled,
     tmpValue,
     setTmpValue,
-    getItemValue,
-    isItemDisabled,
     value,
     onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
-    selectedItem,
-    onSelectedItemChange: newItem => newItem !== selectedItem && (onSelectedItemChange == null ? void 0 : onSelectedItemChange(newItem)),
-    inputRef,
+    ...adapterProps,
     ...state
   };
   const featureYield = useFeature({
@@ -43,6 +40,21 @@ const useAutocomplete = ({
     ...state,
     ...featureYield
   };
+};
+
+const useCombobox = ({
+  getItemValue: _getItemValue,
+  selected,
+  onSelectChange,
+  ...passthrough
+}) => {
+  const getItemValue = adaptGetItemValue(_getItemValue);
+  return useAutocomplete({
+    ...passthrough,
+    getItemValue,
+    getSelectedValue: () => getItemValue(selected),
+    onSelectChange: newItem => newItem !== selected && (onSelectChange == null ? void 0 : onSelectChange(newItem))
+  });
 };
 
 const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? react.useLayoutEffect : react.useEffect;
@@ -91,14 +103,14 @@ const autocompleteLite = ({
   deselectOnChange = true
 } = {}) => ({
   getItemValue,
+  getSelectedValue,
+  onSelectChange,
   isItemDisabled,
   traverse,
   value,
   onChange,
   tmpValue,
   setTmpValue,
-  selectedItem,
-  onSelectedItemChange,
   focusItem,
   setFocusItem,
   open,
@@ -107,14 +119,14 @@ const autocompleteLite = ({
 }) => {
   var _ref;
   const mutable = useMutableState({});
-  const inputValue = (_ref = tmpValue || value) != null ? _ref : getItemValue(selectedItem);
+  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
   const updateValue = newValue => {
     const endIndex = newValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
     if (!select) onChange(newValue);
   };
   const updateAll = item => {
-    onSelectedItemChange(item);
+    onSelectChange(item);
     updateValue(getItemValue(item));
   };
   const closeList = () => {
@@ -137,7 +149,7 @@ const autocompleteLite = ({
         onChange('');
         setTmpValue();
         setFocusItem();
-        if (deselectOnClear) onSelectedItemChange();
+        if (deselectOnClear) onSelectChange();
       }
     }),
     getListProps: () => ({
@@ -165,7 +177,9 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (!select && deselectOnChange || deselectOnClear && !newValue) onSelectedItemChange();
+        if (!select && deselectOnChange || deselectOnClear && !newValue) {
+          onSelectChange();
+        }
       },
       onBlur: ({
         target
@@ -437,4 +451,4 @@ exports.linearTraversal = linearTraversal;
 exports.mergeFeatures = mergeFeatures;
 exports.supercomplete = supercomplete;
 exports.useAutoHeight = useAutoHeight;
-exports.useAutocomplete = useAutocomplete;
+exports.useCombobox = useCombobox;

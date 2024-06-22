@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  useAutocomplete,
+  useCombobox,
   autocomplete,
   supercomplete,
   linearTraversal,
@@ -48,7 +48,7 @@ export default function Home() {
     open,
     focusItem,
     clearable
-  } = useAutocomplete({
+  } = useCombobox({
     // traversal: linearTraversal({
     //   items,
     //   traverseInput: true
@@ -60,8 +60,8 @@ export default function Home() {
       // console.log('onChange', value);
       setValue(value);
     },
-    selectedItem,
-    onSelectedItemChange: (item) => {
+    selected: selectedItem,
+    onSelectChange: (item) => {
       // console.log('onSelectedItemChange', item);
       setSelectedItem(item);
     },
