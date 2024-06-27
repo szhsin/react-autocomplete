@@ -1,4 +1,5 @@
 export { useCombobox } from './hooks/useCombobox';
+export { useMultiSelect } from './hooks/useMultiSelect';
 export { useAutoHeight } from './hooks/useAutoHeight';
 export { type AutocompleteLiteFeature, autocompleteLite } from './features/atom/autocompleteLite';
 export { type AutocompleteFeature, autocomplete } from './features/molecule/autocomplete';

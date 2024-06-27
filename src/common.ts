@@ -85,10 +85,6 @@ export type MergedFeatureYield<T, Features> = Features extends readonly [Feature
 
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 
-export interface GetItemValue<T> {
-  getItemValue: (item: T) => string;
-}
-
 export type BaseProps<T, FeatureYield extends object> = Partial<PassthroughProps<T>> & {
   feature: Feature<T, FeatureYield>;
   traversal: Traversal<T>;
@@ -97,9 +93,22 @@ export type BaseProps<T, FeatureYield extends object> = Partial<PassthroughProps
 export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> &
   AdapterProps<T>;
 
-export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & {
-  selected?: T | undefined;
-  onSelectChange?: (item: T | undefined) => void;
-} & (T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>);
+export type GetItemValue<T> = {
+  getItemValue: (item: T) => string;
+};
+
+export type MaybeGetItemValue<T> = T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>;
+
+export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> &
+  MaybeGetItemValue<T> & {
+    selected?: T | undefined;
+    onSelectChange?: ((item: T | undefined) => void) | undefined;
+  };
+
+export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> &
+  MaybeGetItemValue<T> & {
+    selected: T[];
+    onSelectChange?: (items: T[]) => void;
+  };
 
 /// constants

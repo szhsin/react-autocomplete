@@ -57,6 +57,21 @@ const useCombobox = ({
   });
 };
 
+const useMultiSelect = ({
+  getItemValue,
+  selected,
+  onSelectChange,
+  ...passthrough
+}) => useAutocomplete({
+  ...passthrough,
+  getItemValue: adaptGetItemValue(getItemValue),
+  getSelectedValue: () => '',
+  onSelectChange: item => {
+    if (!item) return;
+    if (!selected.includes(item)) onSelectChange == null || onSelectChange([...selected, item]);
+  }
+});
+
 const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? react.useLayoutEffect : react.useEffect;
 const findOverflowAncestor = element => {
   while (element) {
@@ -452,3 +467,4 @@ exports.mergeFeatures = mergeFeatures;
 exports.supercomplete = supercomplete;
 exports.useAutoHeight = useAutoHeight;
 exports.useCombobox = useCombobox;
+exports.useMultiSelect = useMultiSelect;

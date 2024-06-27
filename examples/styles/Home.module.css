@@ -24,3 +24,11 @@
   color: #777;
   user-select: none;
 }
+
+.selectedItems {
+  display: flex;
+  gap: 10px;
+  max-width: 300px;
+  align-items: center;
+  flex-wrap: wrap;
+}

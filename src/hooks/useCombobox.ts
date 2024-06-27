@@ -8,7 +8,7 @@ const useCombobox = <T, FeatureYield extends object>({
   onSelectChange,
   ...passthrough
 }: ComboboxProps<T, FeatureYield>) => {
-  const getItemValue = adaptGetItemValue<T>(_getItemValue);
+  const getItemValue = adaptGetItemValue(_getItemValue);
   return useAutocomplete({
     ...passthrough,
     getItemValue,
