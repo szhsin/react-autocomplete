@@ -54,15 +54,13 @@ const autocompleteLite =
 
     const inputValue = (tmpValue || value) ?? getSelectedValue();
 
-    const updateValue = (newValue: string) => {
-      const endIndex = newValue.length;
-      inputRef.current!.setSelectionRange(endIndex, endIndex);
-      if (!select) onChange(newValue);
-    };
-
-    const updateAll = (item?: T) => {
+    const selectItem = (item?: T) => {
       onSelectChange(item);
-      updateValue(getItemValue(item));
+
+      const itemValue = getItemValue(item);
+      const endIndex = itemValue.length;
+      inputRef.current!.setSelectionRange(endIndex, endIndex);
+      if (!select) onChange(itemValue);
     };
 
     const closeList = (isSelecting?: boolean) => {
@@ -104,7 +102,7 @@ const autocompleteLite =
         ref: focusItem === item ? scrollIntoView : null,
         onClick: () => {
           if (!isItemDisabled(item)) {
-            updateAll(item);
+            selectItem(item);
             closeList(true);
           }
         }
@@ -137,7 +135,7 @@ const autocompleteLite =
           if (!open) return;
 
           if (selectOnBlur && focusItem) {
-            updateAll(focusItem);
+            selectItem(focusItem);
           }
 
           closeList();
@@ -157,7 +155,7 @@ const autocompleteLite =
               break;
             case 'Enter':
               if (open && focusItem) {
-                updateAll(focusItem);
+                selectItem(focusItem);
                 closeList(true);
               }
               break;
