@@ -31,7 +31,8 @@ const autocompleteLite =
     select,
     selectOnBlur = rovingText,
     deselectOnClear = true,
-    deselectOnChange = true
+    deselectOnChange = true,
+    closeOnSelect = true
   }: AutocompleteFeatureProps<T> = {}): AutocompleteLiteFeature<T> =>
   ({
     getItemValue,
@@ -64,11 +65,13 @@ const autocompleteLite =
       updateValue(getItemValue(item));
     };
 
-    const closeList = () => {
-      setOpen(false);
+    const closeList = (isSelecting?: boolean) => {
       setFocusItem();
       setTmpValue();
-      if (select) onChange();
+      if (!isSelecting || closeOnSelect) {
+        setOpen(false);
+        if (select) onChange();
+      }
     };
 
     return {
@@ -102,7 +105,7 @@ const autocompleteLite =
         onClick: () => {
           if (!isItemDisabled(item)) {
             updateAll(item);
-            closeList();
+            closeList(true);
           }
         }
       }),
@@ -155,7 +158,7 @@ const autocompleteLite =
             case 'Enter':
               if (open && focusItem) {
                 updateAll(focusItem);
-                closeList();
+                closeList(true);
               }
               break;
             case 'Escape':

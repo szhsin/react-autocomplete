@@ -63,6 +63,7 @@ export interface FeatureProps<T> {
   selectOnBlur?: boolean;
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
+  closeOnSelect?: boolean;
   getInlineItem: (
     value: string
   ) => T | undefined | null | void | Promise<T | undefined | null | void>;
@@ -70,7 +71,12 @@ export interface FeatureProps<T> {
 
 export type AutocompleteFeatureProps<T> = Pick<
   FeatureProps<T>,
-  'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'
+  | 'rovingText'
+  | 'select'
+  | 'selectOnBlur'
+  | 'deselectOnClear'
+  | 'deselectOnChange'
+  | 'closeOnSelect'
 >;
 
 export type Feature<T, Yield extends object> = (
@@ -99,14 +105,20 @@ export type GetItemValue<T> = {
 
 export type MaybeGetItemValue<T> = T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>;
 
+export type Flippable = {
+  flipOnSelect?: boolean;
+};
+
 export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> &
-  MaybeGetItemValue<T> & {
+  MaybeGetItemValue<T> &
+  Flippable & {
     selected?: T | undefined;
-    onSelectChange?: ((item: T | undefined) => void) | undefined;
+    onSelectChange?: ((item?: T | undefined) => void) | undefined;
   };
 
 export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> &
-  MaybeGetItemValue<T> & {
+  MaybeGetItemValue<T> &
+  Flippable & {
     selected: T[];
     onSelectChange?: (items: T[]) => void;
   };
