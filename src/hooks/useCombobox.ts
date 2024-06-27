@@ -6,6 +6,7 @@ const useCombobox = <T, FeatureYield extends object>({
   getItemValue: _getItemValue,
   selected,
   onSelectChange,
+  flipOnSelect,
   ...passthrough
 }: ComboboxProps<T, FeatureYield>) => {
   const getItemValue = adaptGetItemValue(_getItemValue);
@@ -13,7 +14,13 @@ const useCombobox = <T, FeatureYield extends object>({
     ...passthrough,
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
-    onSelectChange: (newItem?: T | undefined) => newItem !== selected && onSelectChange?.(newItem)
+    onSelectChange: (newItem?: T | undefined) => {
+      if (newItem !== selected) {
+        onSelectChange?.(newItem);
+      } else if (flipOnSelect) {
+        onSelectChange?.();
+      }
+    }
   });
 };
 

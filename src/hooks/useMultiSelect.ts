@@ -6,6 +6,7 @@ const useMultiSelect = <T, FeatureYield extends object>({
   getItemValue,
   selected,
   onSelectChange,
+  flipOnSelect,
   ...passthrough
 }: MultiSelectProps<T, FeatureYield>) =>
   useAutocomplete({
@@ -14,7 +15,12 @@ const useMultiSelect = <T, FeatureYield extends object>({
     getSelectedValue: () => '',
     onSelectChange: (item?: T | undefined) => {
       if (!item) return;
-      if (!selected.includes(item)) onSelectChange?.([...selected, item]);
+
+      if (selected.includes(item)) {
+        if (flipOnSelect) onSelectChange?.(selected.filter((s) => s !== item));
+      } else {
+        onSelectChange?.([...selected, item]);
+      }
     }
   });
 
