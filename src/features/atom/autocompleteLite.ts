@@ -5,7 +5,7 @@ import type {
   AutocompleteFeatureProps,
   Clearable
 } from '../../common';
-import { useMutableState } from '../../hooks/useMutableState';
+import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
   T,
@@ -13,14 +13,6 @@ type AutocompleteLiteFeature<T> = Feature<
     Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> &
     Clearable
 >;
-
-interface MutableState {
-  /**
-   * ### INTERNAL API ###
-   * Whether to bypass onblur event on input
-   */
-  a?: boolean | 0 | 1;
-}
 
 const scrollIntoView = (element: HTMLElement | null) =>
   element?.scrollIntoView({ block: 'nearest' });
@@ -50,7 +42,7 @@ const autocompleteLite =
     setOpen,
     inputRef
   }) => {
-    const mutable = useMutableState<MutableState>({});
+    const [startCapture, stopCapture] = useFocusCapture(inputRef);
 
     const inputValue = (tmpValue || value) ?? getSelectedValue();
 
@@ -78,9 +70,7 @@ const autocompleteLite =
       getClearProps: () => ({
         tabIndex: -1,
 
-        onMouseDown: () => {
-          if (document.activeElement === inputRef.current) mutable.a = 1;
-        },
+        onMouseDown: startCapture,
 
         onClick: () => {
           inputRef.current?.focus();
@@ -93,9 +83,7 @@ const autocompleteLite =
       }),
 
       getListProps: () => ({
-        onMouseDown: () => {
-          mutable.a = 1;
-        }
+        onMouseDown: startCapture
       }),
 
       getItemProps: ({ item }) => ({
@@ -125,14 +113,8 @@ const autocompleteLite =
           }
         },
 
-        onBlur: ({ target }) => {
-          if (mutable.a) {
-            mutable.a = 0;
-            target.focus();
-            return;
-          }
-
-          if (!open) return;
+        onBlur: () => {
+          if (stopCapture() || !open) return;
 
           if (selectOnBlur && focusItem) {
             selectItem(focusItem);
@@ -165,6 +147,7 @@ const autocompleteLite =
           }
         },
 
+        onMouseDown: (e) => e.stopPropagation(),
         onClick: () => setOpen(true)
       })
     };

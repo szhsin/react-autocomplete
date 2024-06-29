@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, Clearable } from '../../common';
-import { useMutableState } from '../../hooks/useMutableState';
+import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<
   T,
@@ -9,18 +9,10 @@ type DropdownToggleFeature<T> = Feature<
     Clearable
 >;
 
-interface MutableState {
-  /**
-   * ### INTERNAL API ###
-   * Whether to skip opening drowdown in onClick
-   */
-  a?: boolean | 0 | 1;
-}
-
 const dropdownToggle =
   <T>(): DropdownToggleFeature<T> =>
   ({ inputRef, open, setOpen, focusItem, value, tmpValue }) => {
-    const mutable = useMutableState<MutableState>({});
+    const [startToggle, stopToggle] = useToggle(open, setOpen);
     const toggleRef = useRef<HTMLButtonElement>(null);
     const inputValue = tmpValue || value || '';
 
@@ -36,17 +28,9 @@ const dropdownToggle =
       getToggleProps: () => ({
         ref: toggleRef,
 
-        onMouseDown: () => {
-          mutable.a = open;
-        },
+        onMouseDown: startToggle,
 
-        onClick: () => {
-          if (mutable.a) {
-            mutable.a = 0;
-          } else {
-            setOpen(true);
-          }
-        },
+        onClick: stopToggle,
 
         onKeyDown: (e) => {
           const { key } = e;
