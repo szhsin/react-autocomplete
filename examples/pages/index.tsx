@@ -16,7 +16,9 @@ const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
 const getGroupedItems = (value: string) =>
   LIST_GROUP.map((group) => ({
     ...group,
-    states: group.states.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
+    states: group.states.filter((item) =>
+      item.name.toLowerCase().startsWith(value.toLowerCase())
+    )
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
@@ -110,7 +112,11 @@ export default function Home() {
       <div>
         <label>
           select
-          <input type="checkbox" checked={select} onChange={(e) => setselect(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={select}
+            onChange={(e) => setselect(e.target.checked)}
+          />
         </label>
       </div>
       {!isSupercomplete && (
@@ -182,7 +188,11 @@ export default function Home() {
       )}
       <button {...getToggleProps()}>{open ? '⬆️' : '⬇️'}</button>
       <button>next</button>
-      <input type="search" />
+      <input
+        type="search"
+        onKeyDown={(e) => console.log('keydown', e.key)}
+        onChange={(e) => console.log('onChange', e.target.value)}
+      />
       <ul
         {...getListProps()}
         className={styles.list}
