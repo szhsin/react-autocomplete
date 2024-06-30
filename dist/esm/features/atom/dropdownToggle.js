@@ -1,7 +1,9 @@
 import { useRef, useEffect } from 'react';
-import { useMutableState } from '../../hooks/useMutableState.js';
+import { useToggle } from '../../hooks/useToggle.js';
 
-const dropdownToggle = () => ({
+const dropdownToggle = ({
+  closeOnSelect = true
+}) => ({
   inputRef,
   open,
   setOpen,
@@ -9,7 +11,7 @@ const dropdownToggle = () => ({
   value,
   tmpValue
 }) => {
-  const mutable = useMutableState({});
+  const [startToggle, stopToggle] = useToggle(open, setOpen);
   const toggleRef = useRef(null);
   const inputValue = tmpValue || value || '';
   useEffect(() => {
@@ -24,16 +26,8 @@ const dropdownToggle = () => ({
     clearable: !!inputValue,
     getToggleProps: () => ({
       ref: toggleRef,
-      onMouseDown: () => {
-        mutable.a = open;
-      },
-      onClick: () => {
-        if (mutable.a) {
-          mutable.a = 0;
-        } else {
-          setOpen(true);
-        }
-      },
+      onMouseDown: startToggle,
+      onClick: stopToggle,
       onKeyDown: e => {
         const {
           key
@@ -50,9 +44,7 @@ const dropdownToggle = () => ({
         const {
           key
         } = e;
-        if (key === 'Escape') focusToggle();
-        if (key === 'Enter' && focusItem) {
-          e.preventDefault();
+        if (key === 'Escape' || closeOnSelect && focusItem && key === 'Enter') {
           focusToggle();
         }
       }

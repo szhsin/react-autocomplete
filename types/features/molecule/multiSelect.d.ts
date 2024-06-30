@@ -7,5 +7,5 @@ type MultiSelectFeature<T> = MergedFeature<T, [
     InputFocusFeature<T>,
     MultiInputFeature<T>
 ]>;
-declare const multiSelect: <T>(props: Pick<FeatureProps<T>, "rovingText" | "closeOnSelect">) => MultiSelectFeature<T>;
+declare const multiSelect: <T>(props?: Pick<FeatureProps<T>, "rovingText" | "closeOnSelect">) => MultiSelectFeature<T>;
 export { type MultiSelectFeature, multiSelect };

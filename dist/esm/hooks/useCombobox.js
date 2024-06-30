@@ -5,6 +5,7 @@ const useCombobox = ({
   getItemValue: _getItemValue,
   selected,
   onSelectChange,
+  flipOnSelect,
   ...passthrough
 }) => {
   const getItemValue = adaptGetItemValue(_getItemValue);
@@ -12,7 +13,13 @@ const useCombobox = ({
     ...passthrough,
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
-    onSelectChange: newItem => newItem !== selected && (onSelectChange == null ? void 0 : onSelectChange(newItem))
+    onSelectChange: newItem => {
+      if (newItem !== selected) {
+        onSelectChange == null || onSelectChange(newItem);
+      } else if (flipOnSelect) {
+        onSelectChange == null || onSelectChange();
+      }
+    }
   });
 };
 
