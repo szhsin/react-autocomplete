@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import {
-  useCombobox,
-  dropdown,
+  useMultiSelect,
+  multiSelectDropdown,
   groupedTraversal,
   useAutoHeight
 } from '@szhsin/react-autocomplete';
@@ -22,13 +22,13 @@ const getGroupedItems = (value: string = '') =>
 
 export default function Dropdown() {
   const [rovingText, setRovingText] = useState(false);
-  const [selectOnBlur, setSelectOnBlur] = useState(true);
   const [value, setValue] = useState<string | undefined>('');
-  const [selectedItem, setSelectedItem] = useState<Item | undefined>();
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
   const groupedItems = getGroupedItems(value);
 
   const {
+    getInputWrapperProps,
     getInputProps,
     getListProps,
     getItemProps,
@@ -36,9 +36,10 @@ export default function Dropdown() {
     getClearProps,
     clearable,
     open,
-    focusItem
+    focusItem,
+    removeSelect
     // inlineComplete
-  } = useCombobox({
+  } = useMultiSelect({
     // traversal: linearTraversal({
     //   items,
     //   traverseInput: true
@@ -57,10 +58,10 @@ export default function Dropdown() {
       // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
       // item && inlineComplete({ item });
     },
-    selected: selectedItem,
-    onSelectChange: setSelectedItem,
+    selected: selectedItems,
+    onSelectChange: setSelectedItems,
     // feature: autocomplete({ constricted, rovingText }),
-    feature: dropdown({ rovingText, selectOnBlur }),
+    feature: multiSelectDropdown({ rovingText }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -70,15 +71,21 @@ export default function Dropdown() {
 
   const inputProps = getInputProps();
 
-  const [maxHeight] = useAutoHeight({ anchorRef: inputProps.ref, show: open, margin: 30 });
+  const [maxHeight, computeHeight] = useAutoHeight({
+    anchorRef: inputProps.ref,
+    show: open,
+    margin: 30
+  });
+
+  useLayoutEffect(() => {
+    computeHeight();
+  }, [selectedItems, computeHeight]);
 
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
-      <div>Selected item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
       <input placeholder="test" />
-
       <div>
         <label>
           rovingText
@@ -90,18 +97,7 @@ export default function Dropdown() {
         </label>
       </div>
 
-      <div>
-        <label>
-          selectOnBlur
-          <input
-            type="checkbox"
-            checked={selectOnBlur}
-            onChange={(e) => setSelectOnBlur(e.target.checked)}
-          />
-        </label>
-      </div>
-
-      <button {...getToggleProps()}>{selectedItem?.name || 'Select'}</button>
+      <button {...getToggleProps()}>{selectedItems.length} selected</button>
       <div
         {...getListProps()}
         style={{
@@ -111,16 +107,24 @@ export default function Dropdown() {
           display: open ? 'block' : 'none'
         }}
       >
-        <div style={{ padding: 20 }}>
-          <input className={styles.input} {...inputProps} placeholder="Search a state..." />
-          {clearable && (
-            <button
-              style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
-              {...getClearProps()}
-            >
-              ❎
-            </button>
-          )}
+        <div style={{ padding: 20 }} className={styles.multiInput + ` ${styles.focused}`}>
+          {selectedItems.map((item) => (
+            <div className={styles.selectedItem} key={item.abbr}>
+              {item.name}
+              <span onClick={() => removeSelect(item)}>❎</span>
+            </div>
+          ))}
+          <div style={{ flexGrow: 1 }}>
+            <input className={styles.input} {...inputProps} />
+            {clearable && (
+              <button
+                style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
+                {...getClearProps()}
+              >
+                ❎
+              </button>
+            )}
+          </div>
         </div>
 
         {/* {items.map((item) => (
@@ -149,7 +153,7 @@ export default function Dropdown() {
                   key={item.abbr}
                   style={{
                     background: focusItem === item ? '#0a0' : 'none',
-                    textDecoration: item === selectedItem ? 'underline' : 'none'
+                    textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
                   }}
                   {...getItemProps({ item })}
                 >

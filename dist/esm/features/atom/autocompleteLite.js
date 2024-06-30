@@ -1,4 +1,4 @@
-import { useMutableState } from '../../hooks/useMutableState.js';
+import { useFocusCapture } from '../../hooks/useFocusCapture.js';
 
 const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
   block: 'nearest'
@@ -8,17 +8,18 @@ const autocompleteLite = ({
   select,
   selectOnBlur = rovingText,
   deselectOnClear = true,
-  deselectOnChange = true
+  deselectOnChange = true,
+  closeOnSelect = true
 } = {}) => ({
   getItemValue,
+  getSelectedValue,
+  onSelectChange,
   isItemDisabled,
   traverse,
   value,
   onChange,
   tmpValue,
   setTmpValue,
-  selectedItem,
-  onSelectedItemChange,
   focusItem,
   setFocusItem,
   open,
@@ -26,30 +27,28 @@ const autocompleteLite = ({
   inputRef
 }) => {
   var _ref;
-  const mutable = useMutableState({});
-  const inputValue = (_ref = tmpValue || value) != null ? _ref : getItemValue(selectedItem);
-  const updateValue = newValue => {
-    const endIndex = newValue.length;
+  const [startCapture, stopCapture] = useFocusCapture(inputRef);
+  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
+  const selectItem = item => {
+    onSelectChange(item);
+    const itemValue = getItemValue(item);
+    const endIndex = itemValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (!select) onChange(newValue);
+    if (!select) onChange(itemValue);
   };
-  const updateAll = item => {
-    onSelectedItemChange(item);
-    updateValue(getItemValue(item));
-  };
-  const closeList = () => {
-    setOpen(false);
+  const closeList = isSelecting => {
     setFocusItem();
     setTmpValue();
-    if (select) onChange();
+    if (!isSelecting || closeOnSelect) {
+      setOpen(false);
+      if (select) onChange();
+    }
   };
   return {
     clearable: !!inputValue,
     getClearProps: () => ({
       tabIndex: -1,
-      onMouseDown: () => {
-        if (document.activeElement === inputRef.current) mutable.a = 1;
-      },
+      onMouseDown: startCapture,
       onClick: () => {
         var _inputRef$current;
         (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
@@ -57,13 +56,11 @@ const autocompleteLite = ({
         onChange('');
         setTmpValue();
         setFocusItem();
-        if (deselectOnClear) onSelectedItemChange();
+        if (deselectOnClear) onSelectChange();
       }
     }),
     getListProps: () => ({
-      onMouseDown: () => {
-        mutable.a = 1;
-      }
+      onMouseDown: startCapture
     }),
     getItemProps: ({
       item
@@ -71,8 +68,8 @@ const autocompleteLite = ({
       ref: focusItem === item ? scrollIntoView : null,
       onClick: () => {
         if (!isItemDisabled(item)) {
-          updateAll(item);
-          closeList();
+          selectItem(item);
+          closeList(true);
         }
       }
     }),
@@ -85,19 +82,14 @@ const autocompleteLite = ({
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
-        if (!select && deselectOnChange || deselectOnClear && !newValue) onSelectedItemChange();
-      },
-      onBlur: ({
-        target
-      }) => {
-        if (mutable.a) {
-          mutable.a = 0;
-          target.focus();
-          return;
+        if (!select && deselectOnChange || deselectOnClear && !newValue) {
+          onSelectChange();
         }
-        if (!open) return;
+      },
+      onBlur: () => {
+        if (stopCapture() || !open) return;
         if (selectOnBlur && focusItem) {
-          updateAll(focusItem);
+          selectItem(focusItem);
         }
         closeList();
       },
@@ -115,8 +107,8 @@ const autocompleteLite = ({
             break;
           case 'Enter':
             if (open && focusItem) {
-              updateAll(focusItem);
-              closeList();
+              selectItem(focusItem);
+              closeList(true);
             }
             break;
           case 'Escape':
@@ -124,6 +116,7 @@ const autocompleteLite = ({
             break;
         }
       },
+      onMouseDown: e => e.stopPropagation(),
       onClick: () => setOpen(true)
     })
   };

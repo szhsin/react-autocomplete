@@ -1,8 +1,11 @@
-export { useAutocomplete } from './hooks/useAutocomplete.js';
+export { useCombobox } from './hooks/useCombobox.js';
+export { useMultiSelect } from './hooks/useMultiSelect.js';
 export { useAutoHeight } from './hooks/useAutoHeight.js';
 export { autocompleteLite } from './features/atom/autocompleteLite.js';
 export { autocomplete } from './features/molecule/autocomplete.js';
 export { dropdown } from './features/molecule/dropdown.js';
+export { multiSelect } from './features/molecule/multiSelect.js';
+export { multiSelectDropdown } from './features/molecule/multiSelectDropdown.js';
 export { supercomplete } from './features/molecule/supercomplete.js';
 export { linearTraversal } from './traversals/linearTraversal.js';
 export { groupedTraversal } from './traversals/groupedTraversal.js';

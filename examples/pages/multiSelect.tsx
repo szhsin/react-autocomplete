@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  useCombobox,
-  autocomplete,
-  supercomplete,
+  useMultiSelect,
+  multiSelect,
   linearTraversal,
   groupedTraversal
 } from '@szhsin/react-autocomplete';
@@ -22,15 +21,11 @@ const getGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
-  const [isSupercomplete, setSupercomplete] = useState(true);
-  const [select, setselect] = useState(false);
   const [rovingText, setRovingText] = useState(true);
-  const [selectOnBlur, setSelectOnBlur] = useState(true);
-  const [deselectOnClear, setDeselectOnClear] = useState(true);
-  const [deselectOnChange, setDeselectOnChange] = useState(true);
+  const [closeOnSelect, setCloseOnSelect] = useState(false);
 
   const [value, setValue] = useState<string | undefined>();
-  const [selectedItem, setSelectedItem] = useState<Item | undefined>();
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
@@ -47,44 +42,32 @@ export default function Home() {
     getItemProps,
     getToggleProps,
     getClearProps,
+    getInputWrapperProps,
     open,
     focusItem,
-    clearable
-  } = useCombobox({
+    clearable,
+    removeSelect,
+    focused
+  } = useMultiSelect({
     // traversal: linearTraversal({
     //   items,
     //   traverseInput: true
     // }),
     getItemValue,
     isItemDisabled,
+    flipOnSelect: true,
     value,
     onChange: (value) => {
       // console.log('onChange', value);
       setValue(value);
     },
-    selected: selectedItem,
-    onSelectChange: (item) => {
+    selected: selectedItems,
+    onSelectChange: (items) => {
       // console.log('onSelectedItemChange', item);
-      setSelectedItem(item);
+      setSelectedItems(items);
     },
 
-    feature: isSupercomplete
-      ? supercomplete({
-          select,
-          selectOnBlur,
-          deselectOnClear,
-          deselectOnChange,
-          getInlineItem: (newValue) =>
-            getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-          // getInlineItem: (newValue) =>
-          //   new Promise((res) =>
-          //     setTimeout(
-          //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-          //       1000
-          //     )
-          //   )
-        })
-      : autocomplete({ select, selectOnBlur, deselectOnClear, deselectOnChange, rovingText }),
+    feature: multiSelect({ rovingText, closeOnSelect }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -97,70 +80,30 @@ export default function Home() {
   return (
     <div className={styles.wrapper}>
       <div>value: {value}</div>
-      <div>Selected item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
+
       <div>
         <label>
-          Supercomplete
+          rovingText
           <input
             type="checkbox"
-            checked={isSupercomplete}
-            onChange={(e) => setSupercomplete(e.target.checked)}
+            checked={rovingText}
+            onChange={(e) => setRovingText(e.target.checked)}
           />
         </label>
       </div>
+
       <div>
         <label>
-          select
+          closeOnSelect
           <input
             type="checkbox"
-            checked={select}
-            onChange={(e) => setselect(e.target.checked)}
+            checked={closeOnSelect}
+            onChange={(e) => setCloseOnSelect(e.target.checked)}
           />
         </label>
       </div>
-      {!isSupercomplete && (
-        <div>
-          <label>
-            rovingText
-            <input
-              type="checkbox"
-              checked={rovingText}
-              onChange={(e) => setRovingText(e.target.checked)}
-            />
-          </label>
-        </div>
-      )}
-      <div>
-        <label>
-          selectOnBlur
-          <input
-            type="checkbox"
-            checked={selectOnBlur}
-            onChange={(e) => setSelectOnBlur(e.target.checked)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          deselectOnClear
-          <input
-            type="checkbox"
-            checked={deselectOnClear}
-            onChange={(e) => setDeselectOnClear(e.target.checked)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          deselectOnChange
-          <input
-            type="checkbox"
-            checked={deselectOnChange}
-            onChange={(e) => setDeselectOnChange(e.target.checked)}
-          />
-        </label>
-      </div>
+
       <div>
         <input
           ref={anotherRef}
@@ -177,22 +120,33 @@ export default function Home() {
           Sync value
         </button>
       </div>
-      <input className={styles.input} {...getInputProps()} />
-      {clearable && (
-        <button
-          style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
-          {...getClearProps()}
-        >
-          ❎
-        </button>
-      )}
+
+      <div
+        className={styles.multiInput + (focused ? ` ${styles.focused}` : '')}
+        {...getInputWrapperProps()}
+      >
+        {selectedItems.map((item) => (
+          <div className={styles.selectedItem} key={item.abbr}>
+            {item.name}
+            <span onClick={() => removeSelect(item)}>❎</span>
+          </div>
+        ))}
+        <div style={{ flexGrow: 1 }}>
+          <input className={styles.input} {...getInputProps()} />
+          {clearable && (
+            <button
+              style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
+              {...getClearProps()}
+            >
+              ❎
+            </button>
+          )}
+        </div>
+      </div>
+
       <button {...getToggleProps()}>{open ? '⬆️' : '⬇️'}</button>
       <button>next</button>
-      <input
-        type="search"
-        onKeyDown={(e) => console.log('keydown', e.key)}
-        onChange={(e) => console.log('onChange', e.target.value)}
-      />
+      <input type="search" />
       <ul
         {...getListProps()}
         className={styles.list}
@@ -226,7 +180,7 @@ export default function Home() {
                 key={item.abbr}
                 style={{
                   background: focusItem === item ? '#0a0' : 'none',
-                  textDecoration: item === selectedItem ? 'underline' : 'none'
+                  textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
                 }}
                 {...getItemProps({ item })}
               >

@@ -1,37 +1,28 @@
-import { useMutableState } from '../../hooks/useMutableState.js';
+import { useToggle } from '../../hooks/useToggle.js';
+import { useFocusCapture } from '../../hooks/useFocusCapture.js';
 
 const inputToggle = () => ({
   inputRef,
   open,
   setOpen
 }) => {
-  const mutable = useMutableState({});
+  const [startToggle, stopToggle] = useToggle(open, setOpen);
+  const [startCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
       tabIndex: -1,
       onMouseDown: () => {
-        mutable.b = open;
-        mutable.c = 1;
+        startToggle();
+        startCapture();
       },
       onClick: () => {
         var _inputRef$current;
-        if (mutable.b) {
-          mutable.b = 0;
-        } else {
-          setOpen(true);
-        }
+        stopToggle();
         (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
       }
     }),
     getInputProps: () => ({
-      onBlur: ({
-        target
-      }) => {
-        if (mutable.c) {
-          mutable.c = 0;
-          target.focus();
-        }
-      }
+      onBlur: stopCapture
     })
   };
 };

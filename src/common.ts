@@ -12,6 +12,7 @@ export interface GetPropsFunctions<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
   getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
+  getInputWrapperProps: () => HTMLAttributes<HTMLElement>;
   getListProps: () => HTMLAttributes<HTMLElement>;
   getItemProps: (option: { item: T }) => HTMLAttributes<HTMLElement>;
 }
@@ -27,19 +28,26 @@ export interface AutocompleteState<T> {
   setOpen: (value: boolean) => void;
 }
 
-export interface ContextualProps<T> {
+export interface PassthroughProps<T> {
   isItemDisabled: (item: T) => boolean;
   value: string | undefined;
   onChange: (value?: string | undefined) => void;
-  selectedItem: T | undefined;
-  onSelectedItemChange: (item?: T | undefined) => void;
 }
 
-export interface Contextual<T> extends ContextualProps<T>, AutocompleteState<T> {
+export interface AdapterProps<T> {
+  getItemValue: (item: T | undefined | null) => string;
+  getSelectedValue: () => string;
+  onSelectChange: (item?: T | undefined) => void;
+  removeSelect?: (item?: T | undefined) => void;
+}
+
+export interface Contextual<T>
+  extends PassthroughProps<T>,
+    AdapterProps<T>,
+    AutocompleteState<T> {
   tmpValue?: string;
   setTmpValue: (value?: string | undefined) => void;
   inputRef: React.RefObject<HTMLInputElement>;
-  getItemValue: (item: T | undefined | null) => string;
 }
 
 export interface Clearable {
@@ -60,6 +68,7 @@ export interface FeatureProps<T> {
   selectOnBlur?: boolean;
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
+  closeOnSelect?: boolean;
   getInlineItem: (
     value: string
   ) => T | undefined | null | void | Promise<T | undefined | null | void>;
@@ -67,7 +76,12 @@ export interface FeatureProps<T> {
 
 export type AutocompleteFeatureProps<T> = Pick<
   FeatureProps<T>,
-  'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange'
+  | 'rovingText'
+  | 'select'
+  | 'selectOnBlur'
+  | 'deselectOnClear'
+  | 'deselectOnChange'
+  | 'closeOnSelect'
 >;
 
 export type Feature<T, Yield extends object> = (
@@ -82,15 +96,44 @@ export type MergedFeatureYield<T, Features> = Features extends readonly [Feature
 
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 
-interface GetItemValue<T> {
-  getItemValue: (item: T) => string;
-}
-
-export type AutocompleteProps<T, FeatureYield extends object = object> = Partial<
-  ContextualProps<T>
-> & {
+export type BaseProps<T, FeatureYield extends object> = Partial<PassthroughProps<T>> & {
   feature: Feature<T, FeatureYield>;
   traversal: Traversal<T>;
-} & (T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>);
+};
+
+export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> &
+  AdapterProps<T>;
+
+export type GetItemValue<T> = {
+  getItemValue: (item: T) => string;
+};
+
+export type MaybeGetItemValue<T> = T extends string
+  ? Partial<GetItemValue<T>>
+  : GetItemValue<T>;
+
+export type Flippable = {
+  flipOnSelect?: boolean;
+};
+
+export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<
+  T,
+  FeatureYield
+> &
+  MaybeGetItemValue<T> &
+  Flippable & {
+    selected?: T | undefined;
+    onSelectChange?: ((item?: T | undefined) => void) | undefined;
+  };
+
+export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<
+  T,
+  FeatureYield
+> &
+  MaybeGetItemValue<T> &
+  Flippable & {
+    selected: T[];
+    onSelectChange?: (items: T[]) => void;
+  };
 
 /// constants

@@ -24,3 +24,32 @@
   color: #777;
   user-select: none;
 }
+
+.multiInput {
+  display: flex;
+  gap: 10px;
+  max-width: 300px;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 2px solid;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.focused {
+  border-color: lightskyblue;
+}
+
+.selectedItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+  border-radius: 4px;
+  background-color: #777;
+  border: 1px solid;
+}
+
+.selectedItem > span {
+  cursor: pointer;
+}
