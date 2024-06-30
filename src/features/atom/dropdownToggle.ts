@@ -1,5 +1,11 @@
 import { useEffect, useRef } from 'react';
-import type { Feature, GetPropsFunctions, GetPropsWithRefFunctions, Clearable } from '../../common';
+import type {
+  Feature,
+  FeatureProps,
+  GetPropsFunctions,
+  GetPropsWithRefFunctions,
+  Clearable
+} from '../../common';
 import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<
@@ -10,7 +16,9 @@ type DropdownToggleFeature<T> = Feature<
 >;
 
 const dropdownToggle =
-  <T>(): DropdownToggleFeature<T> =>
+  <T>({
+    closeOnSelect = true
+  }: Pick<FeatureProps<T>, 'closeOnSelect'>): DropdownToggleFeature<T> =>
   ({ inputRef, open, setOpen, focusItem, value, tmpValue }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
     const toggleRef = useRef<HTMLButtonElement>(null);
@@ -20,6 +28,8 @@ const dropdownToggle =
       if (open) inputRef.current?.focus();
     }, [open, inputRef]);
 
+    // We don't want to flow through onBlur handler in `autocompleteLite`,
+    // this is a workaround to short cut it by waiting for `open` becomes false
     const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
 
     return {
@@ -45,9 +55,7 @@ const dropdownToggle =
         value: inputValue,
         onKeyDown: (e) => {
           const { key } = e;
-          if (key === 'Escape') focusToggle();
-          if (key === 'Enter' && focusItem) {
-            e.preventDefault();
+          if (key === 'Escape' || (closeOnSelect && focusItem && key === 'Enter')) {
             focusToggle();
           }
         }

@@ -21,7 +21,11 @@ const groupedTraversal = <G, T>({
 
   const items: T[] = [];
   groups.forEach((group) => {
-    const itemsInGroup = isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : [];
+    const itemsInGroup = isArray(group)
+      ? group
+      : getItemsInGroup
+      ? getItemsInGroup(group)
+      : [];
     items.push(...itemsInGroup);
   });
 

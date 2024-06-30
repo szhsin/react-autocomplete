@@ -3,10 +3,13 @@ import { mergeFeatures } from '../../utils/mergeFeatures';
 import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite';
 import { type DropdownToggleFeature, dropdownToggle } from '../atom/dropdownToggle';
 
-type DropdownFeature<T> = MergedFeature<T, [AutocompleteLiteFeature<T>, DropdownToggleFeature<T>]>;
+type DropdownFeature<T> = MergedFeature<
+  T,
+  [AutocompleteLiteFeature<T>, DropdownToggleFeature<T>]
+>;
 
 const dropdown = <T>(
-  props?: Pick<FeatureProps<T>, 'rovingText' | 'selectOnBlur'>
+  props: Pick<FeatureProps<T>, 'rovingText' | 'selectOnBlur' | 'closeOnSelect'> = {}
 ): DropdownFeature<T> =>
   mergeFeatures(
     autocompleteLite<T>({
@@ -14,7 +17,7 @@ const dropdown = <T>(
       select: true,
       deselectOnClear: false
     }),
-    dropdownToggle<T>()
+    dropdownToggle<T>(props)
   );
 
 export { type DropdownFeature, dropdown };

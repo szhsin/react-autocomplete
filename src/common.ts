@@ -41,7 +41,10 @@ export interface AdapterProps<T> {
   removeSelect?: (item?: T | undefined) => void;
 }
 
-export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, AutocompleteState<T> {
+export interface Contextual<T>
+  extends PassthroughProps<T>,
+    AdapterProps<T>,
+    AutocompleteState<T> {
   tmpValue?: string;
   setTmpValue: (value?: string | undefined) => void;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -105,20 +108,28 @@ export type GetItemValue<T> = {
   getItemValue: (item: T) => string;
 };
 
-export type MaybeGetItemValue<T> = T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>;
+export type MaybeGetItemValue<T> = T extends string
+  ? Partial<GetItemValue<T>>
+  : GetItemValue<T>;
 
 export type Flippable = {
   flipOnSelect?: boolean;
 };
 
-export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> &
+export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<
+  T,
+  FeatureYield
+> &
   MaybeGetItemValue<T> &
   Flippable & {
     selected?: T | undefined;
     onSelectChange?: ((item?: T | undefined) => void) | undefined;
   };
 
-export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> &
+export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<
+  T,
+  FeatureYield
+> &
   MaybeGetItemValue<T> &
   Flippable & {
     selected: T[];
