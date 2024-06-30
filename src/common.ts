@@ -12,6 +12,7 @@ export interface GetPropsFunctions<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
   getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
+  getInputWrapperProps: () => HTMLAttributes<HTMLElement>;
   getListProps: () => HTMLAttributes<HTMLElement>;
   getItemProps: (option: { item: T }) => HTMLAttributes<HTMLElement>;
 }
@@ -37,6 +38,7 @@ export interface AdapterProps<T> {
   getItemValue: (item: T | undefined | null) => string;
   getSelectedValue: () => string;
   onSelectChange: (item?: T | undefined) => void;
+  removeSelect?: (item?: T | undefined) => void;
 }
 
 export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, AutocompleteState<T> {

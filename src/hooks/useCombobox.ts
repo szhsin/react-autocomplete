@@ -14,7 +14,7 @@ const useCombobox = <T, FeatureYield extends object>({
     ...passthrough,
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
-    onSelectChange: (newItem?: T | undefined) => {
+    onSelectChange: (newItem) => {
       if (newItem !== selected) {
         onSelectChange?.(newItem);
       } else if (flipOnSelect) {
