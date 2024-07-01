@@ -25,29 +25,53 @@
   user-select: none;
 }
 
-.multiInput {
+.multiInputWrapper {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
   max-width: 300px;
-  align-items: center;
-  flex-wrap: wrap;
   border: 2px solid;
   border-radius: 4px;
-  padding: 2px;
+  padding: 4px;
 }
 
 .focused {
   border-color: lightskyblue;
 }
 
+.multiInputContainer {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.multiInput {
+  flex-grow: 1;
+  appearance: none;
+  min-width: 60px;
+  width: 0;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.clearButton {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .selectedItem {
   display: flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid;
-  border-radius: 4px;
+  padding: 0 4px;
+  border: 2px solid #999;
+  border-radius: 8px;
   background-color: #777;
-  border: 1px solid;
 }
 
 .selectedItem > span {

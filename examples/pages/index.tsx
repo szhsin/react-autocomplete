@@ -28,6 +28,7 @@ export default function Home() {
   const [selectOnBlur, setSelectOnBlur] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
   const [deselectOnChange, setDeselectOnChange] = useState(true);
+  const [closeOnSelect, setCloseOnSelect] = useState(true);
 
   const [value, setValue] = useState<string | undefined>();
   const [selectedItem, setSelectedItem] = useState<Item | undefined>();
@@ -74,6 +75,7 @@ export default function Home() {
           selectOnBlur,
           deselectOnClear,
           deselectOnChange,
+          closeOnSelect,
           getInlineItem: (newValue) =>
             getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
           // getInlineItem: (newValue) =>
@@ -84,7 +86,14 @@ export default function Home() {
           //     )
           //   )
         })
-      : autocomplete({ select, selectOnBlur, deselectOnClear, deselectOnChange, rovingText }),
+      : autocomplete({
+          select,
+          selectOnBlur,
+          deselectOnClear,
+          deselectOnChange,
+          rovingText,
+          closeOnSelect
+        }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -162,6 +171,16 @@ export default function Home() {
         </label>
       </div>
       <div>
+        <label>
+          closeOnSelect
+          <input
+            type="checkbox"
+            checked={closeOnSelect}
+            onChange={(e) => setCloseOnSelect(e.target.checked)}
+          />
+        </label>
+      </div>
+      <div>
         <input
           ref={anotherRef}
           value={anotherValue}
@@ -180,7 +199,8 @@ export default function Home() {
       <input className={styles.input} {...getInputProps()} />
       {clearable && (
         <button
-          style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
+          className={styles.clearButton}
+          style={{ position: 'absolute', transform: 'translate(-120%, 10%)' }}
           {...getClearProps()}
         >
           ❎

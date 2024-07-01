@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   useMultiSelect,
   multiSelectDropdown,
@@ -22,6 +22,7 @@ const getGroupedItems = (value: string = '') =>
 
 export default function Dropdown() {
   const [rovingText, setRovingText] = useState(false);
+  const [closeOnSelect, setCloseOnSelect] = useState(false);
   const [value, setValue] = useState<string | undefined>('');
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
@@ -61,7 +62,7 @@ export default function Dropdown() {
     selected: selectedItems,
     onSelectChange: setSelectedItems,
     // feature: autocomplete({ constricted, rovingText }),
-    feature: multiSelectDropdown({ rovingText }),
+    feature: multiSelectDropdown({ rovingText, closeOnSelect }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -77,7 +78,7 @@ export default function Dropdown() {
     margin: 30
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     computeHeight();
   }, [selectedItems, computeHeight]);
 
@@ -86,6 +87,7 @@ export default function Dropdown() {
       <div>Current value: {value}</div>
       <div>Focus item: {focusItem?.name}</div>
       <input placeholder="test" />
+
       <div>
         <label>
           rovingText
@@ -93,6 +95,17 @@ export default function Dropdown() {
             type="checkbox"
             checked={rovingText}
             onChange={(e) => setRovingText(e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          closeOnSelect
+          <input
+            type="checkbox"
+            checked={closeOnSelect}
+            onChange={(e) => setCloseOnSelect(e.target.checked)}
           />
         </label>
       </div>
@@ -107,23 +120,23 @@ export default function Dropdown() {
           display: open ? 'block' : 'none'
         }}
       >
-        <div style={{ padding: 20 }} className={styles.multiInput + ` ${styles.focused}`}>
-          {selectedItems.map((item) => (
-            <div className={styles.selectedItem} key={item.abbr}>
-              {item.name}
-              <span onClick={() => removeSelect(item)}>❎</span>
+        <div style={{ padding: 8 }}>
+          <div className={styles.multiInputWrapper + ` ${styles.focused}`}>
+            {selectedItems.map((item) => (
+              <div className={styles.selectedItem} key={item.abbr}>
+                {item.name}
+                <span onClick={() => removeSelect(item)}>❎</span>
+              </div>
+            ))}
+
+            <div className={styles.multiInputContainer}>
+              <input className={`${styles.input} ${styles.multiInput}`} {...getInputProps()} />
+              {clearable && (
+                <button className={styles.clearButton} {...getClearProps()}>
+                  ❎
+                </button>
+              )}
             </div>
-          ))}
-          <div style={{ flexGrow: 1 }}>
-            <input className={styles.input} {...inputProps} />
-            {clearable && (
-              <button
-                style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
-                {...getClearProps()}
-              >
-                ❎
-              </button>
-            )}
           </div>
         </div>
 
