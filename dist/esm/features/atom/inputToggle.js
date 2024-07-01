@@ -7,7 +7,7 @@ const inputToggle = () => ({
   setOpen
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const [startCapture, stopCapture] = useFocusCapture(inputRef);
+  const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
       tabIndex: -1,
@@ -16,13 +16,12 @@ const inputToggle = () => ({
         startCapture();
       },
       onClick: () => {
-        var _inputRef$current;
         stopToggle();
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+        stopCapture();
       }
     }),
     getInputProps: () => ({
-      onBlur: stopCapture
+      onBlur: inCapture
     })
   };
 };

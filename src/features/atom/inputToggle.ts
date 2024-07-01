@@ -11,7 +11,7 @@ const inputToggle =
   <T>(): InputToggleFeature<T> =>
   ({ inputRef, open, setOpen }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
-    const [startCapture, stopCapture] = useFocusCapture(inputRef);
+    const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
     return {
       getToggleProps: () => ({
@@ -24,12 +24,12 @@ const inputToggle =
 
         onClick: () => {
           stopToggle();
-          inputRef.current?.focus();
+          stopCapture();
         }
       }),
 
       getInputProps: () => ({
-        onBlur: stopCapture
+        onBlur: inCapture
       })
     };
   };

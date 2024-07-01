@@ -27,7 +27,7 @@ const autocompleteLite = ({
   inputRef
 }) => {
   var _ref;
-  const [startCapture, stopCapture] = useFocusCapture(inputRef);
+  const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
   const selectItem = item => {
     onSelectChange(item);
@@ -50,8 +50,7 @@ const autocompleteLite = ({
       tabIndex: -1,
       onMouseDown: startCapture,
       onClick: () => {
-        var _inputRef$current;
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+        stopCapture();
         setOpen(true);
         onChange('');
         setTmpValue();
@@ -60,7 +59,8 @@ const autocompleteLite = ({
       }
     }),
     getListProps: () => ({
-      onMouseDown: startCapture
+      onMouseDown: startCapture,
+      onClick: stopCapture
     }),
     getItemProps: ({
       item
@@ -87,7 +87,7 @@ const autocompleteLite = ({
         }
       },
       onBlur: () => {
-        if (stopCapture() || !open) return;
+        if (inCapture() || !open) return;
         if (selectOnBlur && focusItem) {
           selectItem(focusItem);
         }

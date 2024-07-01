@@ -23,6 +23,7 @@ const getGroupedItems = (value: string = '') =>
 export default function Dropdown() {
   const [rovingText, setRovingText] = useState(false);
   const [selectOnBlur, setSelectOnBlur] = useState(true);
+  const [closeOnSelect, setCloseOnSelect] = useState(true);
   const [value, setValue] = useState<string | undefined>('');
   const [selectedItem, setSelectedItem] = useState<Item | undefined>();
 
@@ -60,7 +61,7 @@ export default function Dropdown() {
     selected: selectedItem,
     onSelectChange: setSelectedItem,
     // feature: autocomplete({ constricted, rovingText }),
-    feature: dropdown({ rovingText, selectOnBlur }),
+    feature: dropdown({ rovingText, selectOnBlur, closeOnSelect }),
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -101,6 +102,17 @@ export default function Dropdown() {
         </label>
       </div>
 
+      <div>
+        <label>
+          closeOnSelect
+          <input
+            type="checkbox"
+            checked={closeOnSelect}
+            onChange={(e) => setCloseOnSelect(e.target.checked)}
+          />
+        </label>
+      </div>
+
       <button {...getToggleProps()}>{selectedItem?.name || 'Select'}</button>
       <div
         {...getListProps()}
@@ -115,7 +127,8 @@ export default function Dropdown() {
           <input className={styles.input} {...inputProps} placeholder="Search a state..." />
           {clearable && (
             <button
-              style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
+              className={styles.clearButton}
+              style={{ position: 'absolute', transform: 'translate(-120%, 10%)' }}
               {...getClearProps()}
             >
               ❎

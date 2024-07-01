@@ -122,7 +122,7 @@ export default function Home() {
       </div>
 
       <div
-        className={styles.multiInput + (focused ? ` ${styles.focused}` : '')}
+        className={styles.multiInputWrapper + (focused ? ` ${styles.focused}` : '')}
         {...getInputWrapperProps()}
       >
         {selectedItems.map((item) => (
@@ -131,13 +131,11 @@ export default function Home() {
             <span onClick={() => removeSelect(item)}>❎</span>
           </div>
         ))}
-        <div style={{ flexGrow: 1 }}>
-          <input className={styles.input} {...getInputProps()} />
+
+        <div className={styles.multiInputContainer}>
+          <input className={`${styles.input} ${styles.multiInput}`} {...getInputProps()} />
           {clearable && (
-            <button
-              style={{ position: 'absolute', transform: 'translate(-120%, 20%)' }}
-              {...getClearProps()}
-            >
+            <button className={styles.clearButton} {...getClearProps()}>
               ❎
             </button>
           )}
