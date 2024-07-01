@@ -11,6 +11,9 @@ const useFocusCapture = focusRef => {
       (_focusRef$current = focusRef.current) == null || _focusRef$current.focus();
       return true;
     }
+  }, () => {
+    var _focusRef$current2;
+    return (_focusRef$current2 = focusRef.current) == null ? void 0 : _focusRef$current2.focus();
   }];
 };
 

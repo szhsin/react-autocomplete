@@ -21,7 +21,8 @@ const useFocusCapture = (focusRef: React.RefObject<HTMLElement>) => {
         focusRef.current?.focus();
         return true;
       }
-    }
+    },
+    () => focusRef.current?.focus()
   ] as const;
 };
 

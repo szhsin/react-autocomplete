@@ -9,17 +9,16 @@ type MultiInputFeature<T> = Feature<
 const multiInput =
   <T>(): MultiInputFeature<T> =>
   ({ inputRef, removeSelect }) => {
-    const [startCapture, stopCapture] = useFocusCapture(inputRef);
+    const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
     return {
       getInputWrapperProps: () => ({
         onMouseDown: startCapture,
-
-        onClick: () => inputRef.current?.focus()
+        onClick: stopCapture
       }),
 
       getInputProps: () => ({
-        onBlur: stopCapture,
+        onBlur: inCapture,
 
         onKeyDown: (e) =>
           !(e.target as HTMLInputElement).value && e.key === 'Backspace' && removeSelect?.()

@@ -144,6 +144,9 @@ const useFocusCapture = focusRef => {
       (_focusRef$current = focusRef.current) == null || _focusRef$current.focus();
       return true;
     }
+  }, () => {
+    var _focusRef$current2;
+    return (_focusRef$current2 = focusRef.current) == null ? void 0 : _focusRef$current2.focus();
   }];
 };
 
@@ -174,7 +177,7 @@ const autocompleteLite = ({
   inputRef
 }) => {
   var _ref;
-  const [startCapture, stopCapture] = useFocusCapture(inputRef);
+  const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
   const selectItem = item => {
     onSelectChange(item);
@@ -197,8 +200,7 @@ const autocompleteLite = ({
       tabIndex: -1,
       onMouseDown: startCapture,
       onClick: () => {
-        var _inputRef$current;
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+        stopCapture();
         setOpen(true);
         onChange('');
         setTmpValue();
@@ -207,7 +209,8 @@ const autocompleteLite = ({
       }
     }),
     getListProps: () => ({
-      onMouseDown: startCapture
+      onMouseDown: startCapture,
+      onClick: stopCapture
     }),
     getItemProps: ({
       item
@@ -234,7 +237,7 @@ const autocompleteLite = ({
         }
       },
       onBlur: () => {
-        if (stopCapture() || !open) return;
+        if (inCapture() || !open) return;
         if (selectOnBlur && focusItem) {
           selectItem(focusItem);
         }
@@ -309,7 +312,7 @@ const inputToggle = () => ({
   setOpen
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const [startCapture, stopCapture] = useFocusCapture(inputRef);
+  const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
       tabIndex: -1,
@@ -318,13 +321,12 @@ const inputToggle = () => ({
         startCapture();
       },
       onClick: () => {
-        var _inputRef$current;
         stopToggle();
-        (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+        stopCapture();
       }
     }),
     getInputProps: () => ({
-      onBlur: stopCapture
+      onBlur: inCapture
     })
   };
 };
@@ -403,17 +405,14 @@ const multiInput = () => ({
   inputRef,
   removeSelect
 }) => {
-  const [startCapture, stopCapture] = useFocusCapture(inputRef);
+  const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getInputWrapperProps: () => ({
       onMouseDown: startCapture,
-      onClick: () => {
-        var _inputRef$current;
-        return (_inputRef$current = inputRef.current) == null ? void 0 : _inputRef$current.focus();
-      }
+      onClick: stopCapture
     }),
     getInputProps: () => ({
-      onBlur: stopCapture,
+      onBlur: inCapture,
       onKeyDown: e => !e.target.value && e.key === 'Backspace' && (removeSelect == null ? void 0 : removeSelect())
     })
   };
