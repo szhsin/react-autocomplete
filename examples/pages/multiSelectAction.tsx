@@ -9,14 +9,17 @@ import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
 
 type Item = { name: string; abbr: string };
+const isEqual = (itemA?: Item, itemB?: Item) =>
+  itemA === itemB || (itemA?.name === itemB?.name && itemA?.abbr === itemB?.abbr);
 const getItemValue = (item: Item) => item.name;
 const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
+let addItemCounter = 1;
 
 const getGroupedItems = (value: string) =>
   LIST_GROUP.map((group) => ({
     ...group,
     states: group.states.filter((item) =>
-      item.name.toLowerCase().startsWith(value.toLowerCase())
+      item.name.toLowerCase().includes(value.toLowerCase())
     )
   })).filter((group) => !!group.states.length);
 
@@ -35,6 +38,12 @@ export default function Home() {
   // const feature = supercomplete<{ name: string; abbr: string }>();
 
   const groupedItems = getGroupedItems(value || '');
+  if (value) {
+    groupedItems.push({
+      groupKey: 'Add',
+      states: [{ name: value, abbr: 'Add' }]
+    });
+  }
 
   const {
     getInputProps,
@@ -65,6 +74,15 @@ export default function Home() {
     onSelectChange: (items) => {
       console.log('onSelectChange', items.length);
       setSelectedItems(items);
+    },
+    isEqual,
+    isItemAction: (item) => item.abbr === 'Add',
+    onAction: (item) => {
+      console.log('Creating', item.name);
+      setSelectedItems([
+        ...selectedItems,
+        { name: item.name, abbr: (addItemCounter++).toString() }
+      ]);
     },
 
     feature: multiSelect({ rovingText, closeOnSelect }),
@@ -169,20 +187,27 @@ export default function Home() {
 
         {groupedItems.map(({ groupKey: key, states: group }) => (
           <React.Fragment key={key}>
-            <li>
-              <h4 style={{ color: 'lightskyblue', margin: '10px 0' }}>{key}</h4>
-            </li>
+            {key !== 'Add' ? (
+              <li>
+                <h4 style={{ color: 'lightskyblue', margin: '10px 0' }}>{key}</h4>
+              </li>
+            ) : (
+              <hr />
+            )}
             {group.map((item) => (
               <li
                 className={isItemDisabled(item) ? styles.disabled : styles.option}
                 key={item.abbr}
                 style={{
-                  background: focusItem === item ? '#0a0' : 'none',
-                  textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
+                  background: isEqual(focusItem, item) ? '#0a0' : 'none',
+                  textDecoration:
+                    selectedItems.findIndex((s) => isEqual(item, s)) >= 0
+                      ? 'underline'
+                      : 'none'
                 }}
-                {...getItemProps({ item })}
+                {...getItemProps({ item: { ...item } })}
               >
-                {item.name}
+                {item.abbr === 'Add' ? `Create "${item.name}"` : item.name}
               </li>
             ))}
           </React.Fragment>
