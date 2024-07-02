@@ -29,7 +29,9 @@ export interface AutocompleteState<T> {
 }
 
 export interface PassthroughProps<T> {
-  isItemDisabled: (item: T) => boolean;
+  isItemDisabled?: (item: T) => boolean;
+  isItemAction?: (item: T) => boolean;
+  onAction?: (item: T) => void;
   value: string | undefined;
   onChange: (value?: string | undefined) => void;
 }

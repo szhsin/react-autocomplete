@@ -31,6 +31,8 @@ const autocompleteLite =
     getSelectedValue,
     onSelectChange,
     isItemDisabled,
+    isItemAction,
+    onAction,
     traverse,
     value,
     onChange,
@@ -46,9 +48,13 @@ const autocompleteLite =
 
     const inputValue = (tmpValue || value) ?? getSelectedValue();
 
-    const selectItem = (item?: T) => {
-      onSelectChange(item);
+    const selectItem = (item: T, noAction?: boolean) => {
+      if (isItemAction?.(item)) {
+        !noAction && onAction?.(item);
+        return;
+      }
 
+      onSelectChange(item);
       const itemValue = getItemValue(item);
       const endIndex = itemValue.length;
       inputRef.current!.setSelectionRange(endIndex, endIndex);
@@ -90,7 +96,7 @@ const autocompleteLite =
       getItemProps: ({ item }) => ({
         ref: focusItem === item ? scrollIntoView : null,
         onClick: () => {
-          if (!isItemDisabled(item)) {
+          if (!isItemDisabled?.(item)) {
             selectItem(item);
             closeList(true);
           }
@@ -118,7 +124,7 @@ const autocompleteLite =
           if (inCapture() || !open) return;
 
           if (selectOnBlur && focusItem) {
-            selectItem(focusItem);
+            selectItem(focusItem, true);
           }
 
           closeList();

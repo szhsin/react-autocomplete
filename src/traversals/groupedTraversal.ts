@@ -1,7 +1,7 @@
 import type { Traversal, TraversalProps } from '../common';
 import { linearTraversal } from './linearTraversal';
 
-interface GroupedTraversalProps<G, T> extends TraversalProps {
+export interface GroupedTraversalProps<G, T> extends TraversalProps {
   groupedItems?: G[] | { [s: string]: T[] } | ArrayLike<T[]>;
   getItemsInGroup?: (group: G) => T[];
 }

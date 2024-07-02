@@ -1,7 +1,7 @@
 import type { Traversal, TraversalProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
-interface LinearTraversalProps<T> extends TraversalProps {
+export interface LinearTraversalProps<T> extends TraversalProps {
   items?: T[];
 }
 
@@ -34,7 +34,7 @@ const linearTraversal =
             if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
           }
           newItem = items[nextIndex];
-          if (!newItem || !isItemDisabled(newItem)) break;
+          if (!newItem || !isItemDisabled?.(newItem)) break;
           if (++itemCounter >= itemLength) return focusItem;
         }
 

@@ -4,10 +4,9 @@ import type { AutocompleteProps, AutocompleteState } from '../common';
 const useAutocomplete = <T, FeatureYield extends object>({
   value,
   onChange,
-  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
-  ...adapterProps
+  ...passthrough
 }: AutocompleteProps<T, FeatureYield>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [tmpValue, setTmpValue] = useState<string | undefined>();
@@ -23,12 +22,11 @@ const useAutocomplete = <T, FeatureYield extends object>({
 
   const contextual = {
     inputRef,
-    isItemDisabled,
     tmpValue,
     setTmpValue,
     value,
     onChange: (newValue?: string | undefined) => value != newValue && onChange?.(newValue),
-    ...adapterProps,
+    ...passthrough,
     ...state
   };
 
