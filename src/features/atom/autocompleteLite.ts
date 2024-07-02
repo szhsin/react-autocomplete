@@ -30,6 +30,7 @@ const autocompleteLite =
     getItemValue,
     getSelectedValue,
     onSelectChange,
+    isEqual,
     isItemDisabled,
     isItemAction,
     onAction,
@@ -94,7 +95,7 @@ const autocompleteLite =
       }),
 
       getItemProps: ({ item }) => ({
-        ref: focusItem === item ? scrollIntoView : null,
+        ref: isEqual(focusItem, item) ? scrollIntoView : null,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             selectItem(item);

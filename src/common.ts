@@ -28,6 +28,10 @@ export interface AutocompleteState<T> {
   setOpen: (value: boolean) => void;
 }
 
+export interface Equality<T> {
+  isEqual: (itemA: T | undefined, itemB: T | undefined) => boolean;
+}
+
 export interface PassthroughProps<T> {
   isItemDisabled?: (item: T) => boolean;
   isItemAction?: (item: T) => boolean;
@@ -46,6 +50,7 @@ export interface AdapterProps<T> {
 export interface Contextual<T>
   extends PassthroughProps<T>,
     AdapterProps<T>,
+    Equality<T>,
     AutocompleteState<T> {
   tmpValue?: string;
   setTmpValue: (value?: string | undefined) => void;
@@ -104,7 +109,8 @@ export type BaseProps<T, FeatureYield extends object> = Partial<PassthroughProps
 };
 
 export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> &
-  AdapterProps<T>;
+  AdapterProps<T> &
+  Equality<T>;
 
 export type GetItemValue<T> = {
   getItemValue: (item: T) => string;
@@ -123,6 +129,7 @@ export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<
   FeatureYield
 > &
   MaybeGetItemValue<T> &
+  Partial<Equality<T>> &
   Flippable & {
     selected?: T | undefined;
     onSelectChange?: ((item?: T | undefined) => void) | undefined;
@@ -133,9 +140,12 @@ export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProp
   FeatureYield
 > &
   MaybeGetItemValue<T> &
+  Partial<Equality<T>> &
   Flippable & {
     selected: T[];
     onSelectChange?: (items: T[]) => void;
   };
 
 /// constants
+
+export const defaultEqual = <T>(itemA: T | undefined, itemB: T | undefined) => itemA === itemB;
