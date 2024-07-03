@@ -1,5 +1,5 @@
 import type { MergedFeature, FeatureProps } from '../../common';
-import { mergeFeatures } from '../../utils/mergeFeatures';
+import { mergeModules } from '../../utils/mergeModules';
 import { type AutocompleteFeature, autocomplete } from './autocomplete';
 import { type InputFocusFeature, inputFocus } from '../atom/inputFocus';
 import { type MultiInputFeature, multiInput } from '../atom/multiInput';
@@ -12,7 +12,7 @@ type MultiSelectFeature<T> = MergedFeature<
 const multiSelect = <T>(
   props: Pick<FeatureProps<T>, 'rovingText' | 'closeOnSelect'> = {}
 ): MultiSelectFeature<T> =>
-  mergeFeatures(
+  mergeModules(
     autocomplete<T>({ ...props, select: true, selectOnBlur: false }),
     inputFocus<T>(),
     multiInput<T>()

@@ -1,5 +1,5 @@
 import type { MergedFeature, FeatureProps } from '../../common';
-import { mergeFeatures } from '../../utils/mergeFeatures';
+import { mergeModules } from '../../utils/mergeModules';
 import { type AutocompleteFeature, autocomplete } from './autocomplete';
 import { type InlineFeature, inline } from '../atom/inline';
 
@@ -17,6 +17,6 @@ const supercomplete = <T>({
   | 'deselectOnChange'
   | 'closeOnSelect'
 >): SupercompleteFeature<T> =>
-  mergeFeatures(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getInlineItem }));
+  mergeModules(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getInlineItem }));
 
 export { type SupercompleteFeature, supercomplete };
