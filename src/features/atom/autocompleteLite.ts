@@ -49,10 +49,10 @@ const autocompleteLite =
 
     const inputValue = (tmpValue || value) ?? getSelectedValue();
 
-    const selectItem = (item: T, noAction?: boolean) => {
+    const selectItemOrAction = (item: T, noAction?: boolean) => {
       if (isItemAction?.(item)) {
         !noAction && onAction?.(item);
-        return;
+        return true; // Always close list on action
       }
 
       onSelectChange(item);
@@ -62,10 +62,10 @@ const autocompleteLite =
       if (!select) onChange(itemValue);
     };
 
-    const closeList = (isSelecting?: boolean) => {
+    const resetState = (shouldClose?: boolean) => {
       setFocusItem();
       setTmpValue();
-      if (!isSelecting || closeOnSelect) {
+      if (shouldClose || closeOnSelect) {
         setOpen(false);
         if (select) onChange();
       }
@@ -98,8 +98,7 @@ const autocompleteLite =
         ref: isEqual(focusItem, item) ? scrollIntoView : null,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
-            selectItem(item);
-            closeList(true);
+            resetState(selectItemOrAction(item));
           }
         }
       }),
@@ -125,10 +124,10 @@ const autocompleteLite =
           if (inCapture() || !open) return;
 
           if (selectOnBlur && focusItem) {
-            selectItem(focusItem, true);
+            selectItemOrAction(focusItem, true);
           }
 
-          closeList();
+          resetState(true);
         },
 
         onKeyDown: (e) => {
@@ -145,12 +144,11 @@ const autocompleteLite =
               break;
             case 'Enter':
               if (open && focusItem) {
-                selectItem(focusItem);
-                closeList(true);
+                resetState(selectItemOrAction(focusItem));
               }
               break;
             case 'Escape':
-              if (open) closeList();
+              if (open) resetState(true);
               break;
           }
         },
