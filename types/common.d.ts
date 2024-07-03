@@ -21,8 +21,13 @@ export interface AutocompleteState<T> {
     open: boolean;
     setOpen: (value: boolean) => void;
 }
+export interface Equality<T> {
+    isEqual: (itemA: T | undefined, itemB: T | undefined) => boolean;
+}
 export interface PassthroughProps<T> {
-    isItemDisabled: (item: T) => boolean;
+    isItemDisabled?: (item: T) => boolean;
+    isItemAction?: (item: T) => boolean;
+    onAction?: (item: T) => void;
     value: string | undefined;
     onChange: (value?: string | undefined) => void;
 }
@@ -32,7 +37,7 @@ export interface AdapterProps<T> {
     onSelectChange: (item?: T | undefined) => void;
     removeSelect?: (item?: T | undefined) => void;
 }
-export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, AutocompleteState<T> {
+export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equality<T>, AutocompleteState<T> {
     tmpValue?: string;
     setTmpValue: (value?: string | undefined) => void;
     inputRef: React.RefObject<HTMLInputElement>;
@@ -63,7 +68,7 @@ export type BaseProps<T, FeatureYield extends object> = Partial<PassthroughProps
     feature: Feature<T, FeatureYield>;
     traversal: Traversal<T>;
 };
-export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> & AdapterProps<T>;
+export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> & AdapterProps<T> & Equality<T>;
 export type GetItemValue<T> = {
     getItemValue: (item: T) => string;
 };
@@ -71,11 +76,12 @@ export type MaybeGetItemValue<T> = T extends string ? Partial<GetItemValue<T>> :
 export type Flippable = {
     flipOnSelect?: boolean;
 };
-export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & MaybeGetItemValue<T> & Flippable & {
+export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & MaybeGetItemValue<T> & Partial<Equality<T>> & Flippable & {
     selected?: T | undefined;
     onSelectChange?: ((item?: T | undefined) => void) | undefined;
 };
-export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & MaybeGetItemValue<T> & Flippable & {
+export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & MaybeGetItemValue<T> & Partial<Equality<T>> & Flippable & {
     selected: T[];
     onSelectChange?: (items: T[]) => void;
 };
+export declare const defaultEqual: <T>(itemA: T | undefined, itemB: T | undefined) => boolean;

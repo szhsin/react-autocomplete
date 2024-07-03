@@ -1,5 +1,5 @@
 import type { MergedFeature, FeatureProps } from '../../common';
-import { mergeFeatures } from '../../utils/mergeFeatures';
+import { mergeModules } from '../../utils/mergeModules';
 import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite';
 import { type DropdownToggleFeature, dropdownToggle } from '../atom/dropdownToggle';
 
@@ -11,7 +11,7 @@ type DropdownFeature<T> = MergedFeature<
 const dropdown = <T>(
   props: Pick<FeatureProps<T>, 'rovingText' | 'selectOnBlur' | 'closeOnSelect'> = {}
 ): DropdownFeature<T> =>
-  mergeFeatures(
+  mergeModules(
     autocompleteLite<T>({
       ...props,
       select: true,

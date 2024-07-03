@@ -9,4 +9,4 @@ export { multiSelectDropdown } from './features/molecule/multiSelectDropdown.js'
 export { supercomplete } from './features/molecule/supercomplete.js';
 export { linearTraversal } from './traversals/linearTraversal.js';
 export { groupedTraversal } from './traversals/groupedTraversal.js';
-export { mergeFeatures } from './utils/mergeFeatures.js';
+export { mergeModules } from './utils/mergeModules.js';

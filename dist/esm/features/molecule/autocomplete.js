@@ -1,7 +1,7 @@
-import { mergeFeatures } from '../../utils/mergeFeatures.js';
+import { mergeModules } from '../../utils/mergeModules.js';
 import { autocompleteLite } from '../atom/autocompleteLite.js';
 import { inputToggle } from '../atom/inputToggle.js';
 
-const autocomplete = (props = {}) => mergeFeatures(autocompleteLite(props), inputToggle());
+const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle());
 
 export { autocomplete };

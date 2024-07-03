@@ -1,8 +1,8 @@
 import type { Traversal, TraversalProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
-interface LinearTraversalProps<T> extends TraversalProps {
-  items?: T[];
+export interface LinearTraversalProps<T> extends TraversalProps {
+  items: T[];
 }
 
 interface MutableState {
@@ -14,13 +14,14 @@ interface MutableState {
 }
 
 const linearTraversal =
-  <T>({ traverseInput, items = [] }: LinearTraversalProps<T>): Traversal<T> =>
-  ({ focusItem, setFocusItem, isItemDisabled }) => {
+  <T>({ traverseInput, items }: LinearTraversalProps<T>): Traversal<T> =>
+  ({ focusItem, setFocusItem, isItemDisabled, isEqual }) => {
     const mutable = useMutableState<MutableState>({ a: -1 });
     return {
       traverse: (isForward) => {
         if (!focusItem) mutable.a = -1;
-        else if (focusItem !== items[mutable.a]) mutable.a = items.indexOf(focusItem);
+        else if (!isEqual(focusItem, items[mutable.a]))
+          mutable.a = items.findIndex((item) => isEqual(focusItem, item));
 
         const baseIndex = traverseInput ? -1 : 0;
         let newItem: T | undefined,
@@ -34,7 +35,7 @@ const linearTraversal =
             if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
           }
           newItem = items[nextIndex];
-          if (!newItem || !isItemDisabled(newItem)) break;
+          if (!newItem || !isItemDisabled?.(newItem)) break;
           if (++itemCounter >= itemLength) return focusItem;
         }
 

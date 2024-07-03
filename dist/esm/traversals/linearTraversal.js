@@ -2,18 +2,19 @@ import { useMutableState } from '../hooks/useMutableState.js';
 
 const linearTraversal = ({
   traverseInput,
-  items = []
+  items
 }) => ({
   focusItem,
   setFocusItem,
-  isItemDisabled
+  isItemDisabled,
+  isEqual
 }) => {
   const mutable = useMutableState({
     a: -1
   });
   return {
     traverse: isForward => {
-      if (!focusItem) mutable.a = -1;else if (focusItem !== items[mutable.a]) mutable.a = items.indexOf(focusItem);
+      if (!focusItem) mutable.a = -1;else if (!isEqual(focusItem, items[mutable.a])) mutable.a = items.findIndex(item => isEqual(focusItem, item));
       const baseIndex = traverseInput ? -1 : 0;
       let newItem,
         nextIndex = mutable.a,
@@ -26,7 +27,7 @@ const linearTraversal = ({
           if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
         }
         newItem = items[nextIndex];
-        if (!newItem || !isItemDisabled(newItem)) break;
+        if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
         if (++itemCounter >= itemLength) return focusItem;
       }
       mutable.a = nextIndex;

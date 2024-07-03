@@ -9,5 +9,5 @@ export { type MultiSelectDropdownFeature, multiSelectDropdown } from './features
 export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
 export { linearTraversal } from './traversals/linearTraversal';
 export { groupedTraversal } from './traversals/groupedTraversal';
-export { mergeFeatures } from './utils/mergeFeatures';
+export { mergeModules } from './utils/mergeModules';
 export type { AutocompleteProps, AutocompleteState, Feature, MergedFeature, FeatureProps } from './common';
