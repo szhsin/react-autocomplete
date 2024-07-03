@@ -6,7 +6,7 @@ const groupedTraversal = ({
   getItemsInGroup,
   ...restProps
 }) => {
-  const groups = isArray(groupedItems) ? groupedItems : groupedItems ? Object.values(groupedItems) : [];
+  const groups = isArray(groupedItems) ? groupedItems : Object.values(groupedItems);
   const items = [];
   groups.forEach(group => {
     const itemsInGroup = isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : [];

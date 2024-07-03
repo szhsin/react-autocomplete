@@ -3,10 +3,9 @@ import { useRef, useState } from 'react';
 const useAutocomplete = ({
   value,
   onChange,
-  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
-  ...adapterProps
+  ...passthrough
 }) => {
   const inputRef = useRef(null);
   const [tmpValue, setTmpValue] = useState();
@@ -20,12 +19,11 @@ const useAutocomplete = ({
   };
   const contextual = {
     inputRef,
-    isItemDisabled,
     tmpValue,
     setTmpValue,
     value,
     onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
-    ...adapterProps,
+    ...passthrough,
     ...state
   };
   const featureYield = useFeature({

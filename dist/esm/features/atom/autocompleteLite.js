@@ -14,7 +14,10 @@ const autocompleteLite = ({
   getItemValue,
   getSelectedValue,
   onSelectChange,
+  isEqual,
   isItemDisabled,
+  isItemAction,
+  onAction,
   traverse,
   value,
   onChange,
@@ -29,17 +32,21 @@ const autocompleteLite = ({
   var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
-  const selectItem = item => {
+  const selectItemOrAction = (item, noAction) => {
+    if (isItemAction != null && isItemAction(item)) {
+      !noAction && (onAction == null ? void 0 : onAction(item));
+      return true;
+    }
     onSelectChange(item);
     const itemValue = getItemValue(item);
     const endIndex = itemValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
     if (!select) onChange(itemValue);
   };
-  const closeList = isSelecting => {
+  const resetState = shouldClose => {
     setFocusItem();
     setTmpValue();
-    if (!isSelecting || closeOnSelect) {
+    if (shouldClose || closeOnSelect) {
       setOpen(false);
       if (select) onChange();
     }
@@ -65,11 +72,10 @@ const autocompleteLite = ({
     getItemProps: ({
       item
     }) => ({
-      ref: focusItem === item ? scrollIntoView : null,
+      ref: isEqual(focusItem, item) ? scrollIntoView : null,
       onClick: () => {
-        if (!isItemDisabled(item)) {
-          selectItem(item);
-          closeList(true);
+        if (!(isItemDisabled != null && isItemDisabled(item))) {
+          resetState(selectItemOrAction(item));
         }
       }
     }),
@@ -89,9 +95,9 @@ const autocompleteLite = ({
       onBlur: () => {
         if (inCapture() || !open) return;
         if (selectOnBlur && focusItem) {
-          selectItem(focusItem);
+          selectItemOrAction(focusItem, true);
         }
-        closeList();
+        resetState(true);
       },
       onKeyDown: e => {
         switch (e.key) {
@@ -107,12 +113,11 @@ const autocompleteLite = ({
             break;
           case 'Enter':
             if (open && focusItem) {
-              selectItem(focusItem);
-              closeList(true);
+              resetState(selectItemOrAction(focusItem));
             }
             break;
           case 'Escape':
-            if (open) closeList();
+            if (open) resetState(true);
             break;
         }
       },

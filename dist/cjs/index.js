@@ -2,15 +2,16 @@
 
 var react = require('react');
 
+const defaultEqual = (itemA, itemB) => itemA === itemB;
+
 const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
 
 const useAutocomplete = ({
   value,
   onChange,
-  isItemDisabled = () => false,
   feature: useFeature,
   traversal: useTraversal,
-  ...adapterProps
+  ...passthrough
 }) => {
   const inputRef = react.useRef(null);
   const [tmpValue, setTmpValue] = react.useState();
@@ -24,12 +25,11 @@ const useAutocomplete = ({
   };
   const contextual = {
     inputRef,
-    isItemDisabled,
     tmpValue,
     setTmpValue,
     value,
     onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
-    ...adapterProps,
+    ...passthrough,
     ...state
   };
   const featureYield = useFeature({
@@ -43,6 +43,7 @@ const useAutocomplete = ({
 };
 
 const useCombobox = ({
+  isEqual = defaultEqual,
   getItemValue: _getItemValue,
   selected,
   onSelectChange,
@@ -52,10 +53,11 @@ const useCombobox = ({
   const getItemValue = adaptGetItemValue(_getItemValue);
   return useAutocomplete({
     ...passthrough,
+    isEqual,
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: newItem => {
-      if (newItem !== selected) {
+      if (!isEqual(newItem, selected)) {
         onSelectChange == null || onSelectChange(newItem);
       } else if (flipOnSelect) {
         onSelectChange == null || onSelectChange();
@@ -65,31 +67,33 @@ const useCombobox = ({
 };
 
 const useMultiSelect = ({
+  isEqual = defaultEqual,
   getItemValue,
   selected,
   onSelectChange: _onSelectChange = () => {},
   flipOnSelect,
   ...passthrough
 }) => {
-  const removeItem = item => _onSelectChange(selected.filter(s => s !== item));
+  const removeItem = itemToRemove => _onSelectChange(selected.filter(item => !isEqual(itemToRemove, item)));
   const removeSelect = item => {
     if (item) {
       removeItem(item);
     } else {
-      _onSelectChange(selected.slice(0, selected.length - 1));
+      selected.length && _onSelectChange(selected.slice(0, selected.length - 1));
     }
   };
   return {
     ...useAutocomplete({
       ...passthrough,
+      isEqual,
       getItemValue: adaptGetItemValue(getItemValue),
       getSelectedValue: () => '',
-      onSelectChange: item => {
-        if (!item) return;
-        if (selected.includes(item)) {
-          if (flipOnSelect) removeItem(item);
-        } else {
-          _onSelectChange([...selected, item]);
+      onSelectChange: newItem => {
+        if (!newItem) return;
+        if (selected.findIndex(item => isEqual(item, newItem)) < 0) {
+          _onSelectChange([...selected, newItem]);
+        } else if (flipOnSelect) {
+          removeItem(newItem);
         }
       },
       removeSelect
@@ -164,7 +168,10 @@ const autocompleteLite = ({
   getItemValue,
   getSelectedValue,
   onSelectChange,
+  isEqual,
   isItemDisabled,
+  isItemAction,
+  onAction,
   traverse,
   value,
   onChange,
@@ -179,17 +186,21 @@ const autocompleteLite = ({
   var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
-  const selectItem = item => {
+  const selectItemOrAction = (item, noAction) => {
+    if (isItemAction != null && isItemAction(item)) {
+      !noAction && (onAction == null ? void 0 : onAction(item));
+      return true;
+    }
     onSelectChange(item);
     const itemValue = getItemValue(item);
     const endIndex = itemValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
     if (!select) onChange(itemValue);
   };
-  const closeList = isSelecting => {
+  const resetState = shouldClose => {
     setFocusItem();
     setTmpValue();
-    if (!isSelecting || closeOnSelect) {
+    if (shouldClose || closeOnSelect) {
       setOpen(false);
       if (select) onChange();
     }
@@ -215,11 +226,10 @@ const autocompleteLite = ({
     getItemProps: ({
       item
     }) => ({
-      ref: focusItem === item ? scrollIntoView : null,
+      ref: isEqual(focusItem, item) ? scrollIntoView : null,
       onClick: () => {
-        if (!isItemDisabled(item)) {
-          selectItem(item);
-          closeList(true);
+        if (!(isItemDisabled != null && isItemDisabled(item))) {
+          resetState(selectItemOrAction(item));
         }
       }
     }),
@@ -239,9 +249,9 @@ const autocompleteLite = ({
       onBlur: () => {
         if (inCapture() || !open) return;
         if (selectOnBlur && focusItem) {
-          selectItem(focusItem);
+          selectItemOrAction(focusItem, true);
         }
-        closeList();
+        resetState(true);
       },
       onKeyDown: e => {
         switch (e.key) {
@@ -257,12 +267,11 @@ const autocompleteLite = ({
             break;
           case 'Enter':
             if (open && focusItem) {
-              selectItem(focusItem);
-              closeList(true);
+              resetState(selectItemOrAction(focusItem));
             }
             break;
           case 'Escape':
-            if (open) closeList();
+            if (open) resetState(true);
             break;
         }
       },
@@ -293,7 +302,7 @@ const mergeObjects = (obj1, obj2) => {
   return merged;
 };
 
-const mergeFeatures = (...features) => cx => features.reduce((accu, curr) => mergeObjects(accu, curr(cx)), {});
+const mergeModules = (...modules) => cx => modules.reduce((accu, curr) => mergeObjects(accu, curr(cx)), {});
 
 const useToggle = (open, setOpen) => {
   const mutable = useMutableState({});
@@ -331,7 +340,7 @@ const inputToggle = () => ({
   };
 };
 
-const autocomplete = (props = {}) => mergeFeatures(autocompleteLite(props), inputToggle());
+const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle());
 
 const dropdownToggle = ({
   closeOnSelect = true
@@ -384,7 +393,7 @@ const dropdownToggle = ({
   };
 };
 
-const dropdown = (props = {}) => mergeFeatures(autocompleteLite({
+const dropdown = (props = {}) => mergeModules(autocompleteLite({
   ...props,
   select: true,
   deselectOnClear: false
@@ -418,13 +427,13 @@ const multiInput = () => ({
   };
 };
 
-const multiSelect = (props = {}) => mergeFeatures(autocomplete({
+const multiSelect = (props = {}) => mergeModules(autocomplete({
   ...props,
   select: true,
   selectOnBlur: false
 }), inputFocus(), multiInput());
 
-const multiSelectDropdown = (props = {}) => mergeFeatures(autocompleteLite({
+const multiSelectDropdown = (props = {}) => mergeModules(autocompleteLite({
   ...props,
   select: true,
   selectOnBlur: false
@@ -461,7 +470,7 @@ const inline = ({
 const supercomplete = ({
   getInlineItem,
   ...rest
-}) => mergeFeatures(autocomplete({
+}) => mergeModules(autocomplete({
   ...rest,
   rovingText: true
 }), inline({
@@ -470,18 +479,19 @@ const supercomplete = ({
 
 const linearTraversal = ({
   traverseInput,
-  items = []
+  items
 }) => ({
   focusItem,
   setFocusItem,
-  isItemDisabled
+  isItemDisabled,
+  isEqual
 }) => {
   const mutable = useMutableState({
     a: -1
   });
   return {
     traverse: isForward => {
-      if (!focusItem) mutable.a = -1;else if (focusItem !== items[mutable.a]) mutable.a = items.indexOf(focusItem);
+      if (!focusItem) mutable.a = -1;else if (!isEqual(focusItem, items[mutable.a])) mutable.a = items.findIndex(item => isEqual(focusItem, item));
       const baseIndex = traverseInput ? -1 : 0;
       let newItem,
         nextIndex = mutable.a,
@@ -494,7 +504,7 @@ const linearTraversal = ({
           if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
         }
         newItem = items[nextIndex];
-        if (!newItem || !isItemDisabled(newItem)) break;
+        if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
         if (++itemCounter >= itemLength) return focusItem;
       }
       mutable.a = nextIndex;
@@ -510,7 +520,7 @@ const groupedTraversal = ({
   getItemsInGroup,
   ...restProps
 }) => {
-  const groups = isArray(groupedItems) ? groupedItems : groupedItems ? Object.values(groupedItems) : [];
+  const groups = isArray(groupedItems) ? groupedItems : Object.values(groupedItems);
   const items = [];
   groups.forEach(group => {
     const itemsInGroup = isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : [];
@@ -527,7 +537,7 @@ exports.autocompleteLite = autocompleteLite;
 exports.dropdown = dropdown;
 exports.groupedTraversal = groupedTraversal;
 exports.linearTraversal = linearTraversal;
-exports.mergeFeatures = mergeFeatures;
+exports.mergeModules = mergeModules;
 exports.multiSelect = multiSelect;
 exports.multiSelectDropdown = multiSelectDropdown;
 exports.supercomplete = supercomplete;
