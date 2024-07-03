@@ -82,9 +82,9 @@ const autocompleteLite =
         onClick: () => {
           stopCapture();
           setOpen(true);
-          onChange('');
           setTmpValue();
           setFocusItem();
+          onChange('');
           if (deselectOnClear) onSelectChange();
         }
       }),
@@ -121,7 +121,7 @@ const autocompleteLite =
         },
 
         onBlur: () => {
-          if (inCapture() || !open) return;
+          if (inCapture()) return;
 
           if (selectOnBlur && focusItem) {
             selectItemOrAction(focusItem, true);
@@ -148,7 +148,12 @@ const autocompleteLite =
               }
               break;
             case 'Escape':
-              if (open) resetState(true);
+              if (open) {
+                resetState(true);
+              } else {
+                onChange('');
+                if (deselectOnClear) onSelectChange();
+              }
               break;
           }
         },
