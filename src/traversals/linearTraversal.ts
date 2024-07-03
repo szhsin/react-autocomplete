@@ -2,7 +2,7 @@ import type { Traversal, TraversalProps } from '../common';
 import { useMutableState } from '../hooks/useMutableState';
 
 export interface LinearTraversalProps<T> extends TraversalProps {
-  items?: T[];
+  items: T[];
 }
 
 interface MutableState {
@@ -14,7 +14,7 @@ interface MutableState {
 }
 
 const linearTraversal =
-  <T>({ traverseInput, items = [] }: LinearTraversalProps<T>): Traversal<T> =>
+  <T>({ traverseInput, items }: LinearTraversalProps<T>): Traversal<T> =>
   ({ focusItem, setFocusItem, isItemDisabled, isEqual }) => {
     const mutable = useMutableState<MutableState>({ a: -1 });
     return {
