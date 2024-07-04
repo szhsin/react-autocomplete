@@ -37,7 +37,8 @@ export default function Dropdown() {
     getClearProps,
     clearable,
     open,
-    focusItem
+    focusItem,
+    inputRef
     // inlineComplete
   } = useCombobox({
     // traversal: linearTraversal({
@@ -69,9 +70,7 @@ export default function Dropdown() {
     })
   });
 
-  const inputProps = getInputProps();
-
-  const [maxHeight] = useAutoHeight({ anchorRef: inputProps.ref, show: open, margin: 30 });
+  const [maxHeight] = useAutoHeight({ anchorRef: inputRef, show: open, margin: 30 });
 
   return (
     <div className={styles.wrapper}>
@@ -124,7 +123,11 @@ export default function Dropdown() {
         }}
       >
         <div style={{ padding: 20 }}>
-          <input className={styles.input} {...inputProps} placeholder="Search a state..." />
+          <input
+            className={styles.input}
+            {...getInputProps()}
+            placeholder="Search a state..."
+          />
           {clearable && (
             <button
               className={styles.clearButton}

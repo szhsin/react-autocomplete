@@ -12,13 +12,13 @@ const useAutocomplete = ({
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState();
   const state = {
+    inputRef,
     focusItem,
     setFocusItem,
     open,
     setOpen
   };
   const contextual = {
-    inputRef,
     tmpValue,
     setTmpValue,
     value,

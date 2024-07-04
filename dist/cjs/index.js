@@ -18,13 +18,13 @@ const useAutocomplete = ({
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
   const state = {
+    inputRef,
     focusItem,
     setFocusItem,
     open,
     setOpen
   };
   const contextual = {
-    inputRef,
     tmpValue,
     setTmpValue,
     value,

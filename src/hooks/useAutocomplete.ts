@@ -14,6 +14,7 @@ const useAutocomplete = <T, FeatureYield extends object>({
   const [focusItem, setFocusItem] = useState<T | undefined>();
 
   const state: AutocompleteState<T> = {
+    inputRef,
     focusItem,
     setFocusItem,
     open,
@@ -21,7 +22,6 @@ const useAutocomplete = <T, FeatureYield extends object>({
   };
 
   const contextual = {
-    inputRef,
     tmpValue,
     setTmpValue,
     value,
