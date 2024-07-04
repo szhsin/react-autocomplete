@@ -22,6 +22,7 @@ export type GetPropsWithRefFunctions<T> = {
 };
 
 export interface AutocompleteState<T> {
+  inputRef: React.RefObject<HTMLInputElement>;
   focusItem: T | undefined;
   setFocusItem: (item?: T | undefined) => void;
   open: boolean;
@@ -54,7 +55,6 @@ export interface Contextual<T>
     AutocompleteState<T> {
   tmpValue?: string;
   setTmpValue: (value?: string | undefined) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
 }
 
 export interface Clearable {

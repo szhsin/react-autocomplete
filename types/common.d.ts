@@ -16,6 +16,7 @@ export type GetPropsWithRefFunctions<T> = {
     [P in keyof GetPropsFunctions<T>]: GetPropsWithRef<GetPropsFunctions<T>[P]>;
 };
 export interface AutocompleteState<T> {
+    inputRef: React.RefObject<HTMLInputElement>;
     focusItem: T | undefined;
     setFocusItem: (item?: T | undefined) => void;
     open: boolean;
@@ -40,7 +41,6 @@ export interface AdapterProps<T> {
 export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equality<T>, AutocompleteState<T> {
     tmpValue?: string;
     setTmpValue: (value?: string | undefined) => void;
-    inputRef: React.RefObject<HTMLInputElement>;
 }
 export interface Clearable {
     clearable: boolean;
