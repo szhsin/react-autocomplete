@@ -286,6 +286,22 @@ const autocompleteLite = ({
   };
 };
 
+const autoFocus = ({
+  getFocusItem
+}) => ({
+  setFocusItem
+}) => ({
+  getInputProps: () => ({
+    onChange: async e => {
+      const nextValue = e.target.value;
+      if (nextValue) {
+        const item = await getFocusItem(nextValue);
+        item && setFocusItem(item);
+      }
+    }
+  })
+});
+
 const mergeObjects = (obj1, obj2) => {
   const merged = {
     ...obj1
@@ -445,7 +461,7 @@ const multiSelectDropdown = (props = {}) => mergeModules(autocompleteLite({
 }), dropdownToggle(props), multiInput());
 
 const inline = ({
-  getInlineItem
+  getFocusItem
 }) => ({
   getItemValue,
   setTmpValue,
@@ -460,7 +476,7 @@ const inline = ({
         return;
       }
       const nextValue = target.value;
-      const item = await getInlineItem(nextValue);
+      const item = await getFocusItem(nextValue);
       if (!item) return;
       setFocusItem(item);
       const itemValue = getItemValue(item);
@@ -473,13 +489,13 @@ const inline = ({
 });
 
 const supercomplete = ({
-  getInlineItem,
+  getFocusItem,
   ...rest
 }) => mergeModules(autocomplete({
   ...rest,
   rovingText: true
 }), inline({
-  getInlineItem
+  getFocusItem
 }));
 
 const linearTraversal = ({
@@ -537,6 +553,7 @@ const groupedTraversal = ({
   });
 };
 
+exports.autoFocus = autoFocus;
 exports.autocomplete = autocomplete;
 exports.autocompleteLite = autocompleteLite;
 exports.dropdown = dropdown;

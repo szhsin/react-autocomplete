@@ -76,7 +76,7 @@ export interface FeatureProps<T> {
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
   closeOnSelect?: boolean;
-  getInlineItem: (
+  getFocusItem: (
     value: string
   ) => T | undefined | null | void | Promise<T | undefined | null | void>;
 }

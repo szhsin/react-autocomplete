@@ -3,13 +3,13 @@ import { autocomplete } from './autocomplete.js';
 import { inline } from '../atom/inline.js';
 
 const supercomplete = ({
-  getInlineItem,
+  getFocusItem,
   ...rest
 }) => mergeModules(autocomplete({
   ...rest,
   rovingText: true
 }), inline({
-  getInlineItem
+  getFocusItem
 }));
 
 export { supercomplete };

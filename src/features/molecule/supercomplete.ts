@@ -6,17 +6,17 @@ import { type InlineFeature, inline } from '../atom/inline';
 type SupercompleteFeature<T> = MergedFeature<T, [AutocompleteFeature<T>, InlineFeature<T>]>;
 
 const supercomplete = <T>({
-  getInlineItem,
+  getFocusItem,
   ...rest
 }: Pick<
   FeatureProps<T>,
-  | 'getInlineItem'
+  | 'getFocusItem'
   | 'select'
   | 'selectOnBlur'
   | 'deselectOnClear'
   | 'deselectOnChange'
   | 'closeOnSelect'
 >): SupercompleteFeature<T> =>
-  mergeModules(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getInlineItem }));
+  mergeModules(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getFocusItem }));
 
 export { type SupercompleteFeature, supercomplete };

@@ -58,7 +58,7 @@ export interface FeatureProps<T> {
     deselectOnClear?: boolean;
     deselectOnChange?: boolean;
     closeOnSelect?: boolean;
-    getInlineItem: (value: string) => T | undefined | null | void | Promise<T | undefined | null | void>;
+    getFocusItem: (value: string) => T | undefined | null | void | Promise<T | undefined | null | void>;
 }
 export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'>;
 export type Feature<T, Yield extends object> = (cx: Contextual<T> & ReturnType<Traversal<T>>) => Yield;

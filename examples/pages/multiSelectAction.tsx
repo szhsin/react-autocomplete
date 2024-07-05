@@ -28,7 +28,10 @@ export default function Home() {
   const [closeOnSelect, setCloseOnSelect] = useState(false);
 
   const [value, setValue] = useState<string | undefined>();
-  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Item[]>([
+    { name: 'Alaska', abbr: 'AK' },
+    { name: 'Connecticut', abbr: 'CT' }
+  ]);
 
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
