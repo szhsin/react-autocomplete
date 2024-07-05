@@ -1,9 +1,9 @@
 import type { Feature, GetPropsFunctions, FeatureProps } from '../../common';
 
-type InlineFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'>>;
+type AutoInlineFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'>>;
 
-const inline =
-  <T>({ getInlineItem }: Pick<FeatureProps<T>, 'getInlineItem'>): InlineFeature<T> =>
+const autoInline =
+  <T>({ getFocusItem }: Pick<FeatureProps<T>, 'getFocusItem'>): AutoInlineFeature<T> =>
   ({ getItemValue, setTmpValue, setFocusItem }) => ({
     getInputProps: () => ({
       onChange: async ({ target, nativeEvent }) => {
@@ -12,7 +12,7 @@ const inline =
         }
 
         const nextValue = target.value;
-        const item = await getInlineItem(nextValue);
+        const item = await getFocusItem(nextValue);
         if (!item) return;
 
         setFocusItem(item);
@@ -25,4 +25,4 @@ const inline =
     })
   });
 
-export { type InlineFeature, inline };
+export { type AutoInlineFeature, autoInline };

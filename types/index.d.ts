@@ -2,6 +2,7 @@ export { useCombobox } from './hooks/useCombobox';
 export { useMultiSelect } from './hooks/useMultiSelect';
 export { useAutoHeight } from './hooks/useAutoHeight';
 export { type AutocompleteLiteFeature, autocompleteLite } from './features/atom/autocompleteLite';
+export { type AutoFocusFeature, autoFocus } from './features/atom/autoFocus';
 export { type AutocompleteFeature, autocomplete } from './features/molecule/autocomplete';
 export { type DropdownFeature, dropdown } from './features/molecule/dropdown';
 export { type MultiSelectFeature, multiSelect } from './features/molecule/multiSelect';

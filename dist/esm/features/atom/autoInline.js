@@ -1,5 +1,5 @@
-const inline = ({
-  getInlineItem
+const autoInline = ({
+  getFocusItem
 }) => ({
   getItemValue,
   setTmpValue,
@@ -14,7 +14,7 @@ const inline = ({
         return;
       }
       const nextValue = target.value;
-      const item = await getInlineItem(nextValue);
+      const item = await getFocusItem(nextValue);
       if (!item) return;
       setFocusItem(item);
       const itemValue = getItemValue(item);
@@ -26,4 +26,4 @@ const inline = ({
   })
 });
 
-export { inline };
+export { autoInline };

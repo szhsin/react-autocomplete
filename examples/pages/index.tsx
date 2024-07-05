@@ -8,6 +8,7 @@ import {
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
+import { autocompleteFocus } from '../features/autocompleteFocus';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
@@ -22,7 +23,7 @@ const getGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
-  const [isSupercomplete, setSupercomplete] = useState(true);
+  const [selectedFeature, setSelectedFeature] = useState('supercomplete');
   const [select, setselect] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [selectOnBlur, setSelectOnBlur] = useState(true);
@@ -39,6 +40,15 @@ export default function Home() {
   // const [myinput, setmyinput] = useState('');
   // const [items, setItems] = useState(US_STATES);
   // const feature = supercomplete<{ name: string; abbr: string }>();
+
+  const featureProps = {
+    select,
+    selectOnBlur,
+    deselectOnClear,
+    deselectOnChange,
+    closeOnSelect,
+    rovingText
+  };
 
   const groupedItems = getGroupedItems(value || '');
 
@@ -60,7 +70,7 @@ export default function Home() {
     isItemDisabled,
     value,
     onChange: (value) => {
-      // console.log('onChange', value);
+      console.log('onChange', value);
       setValue(value);
     },
     selected: selectedItem,
@@ -69,31 +79,28 @@ export default function Home() {
       setSelectedItem(item);
     },
 
-    feature: isSupercomplete
-      ? supercomplete({
-          select,
-          selectOnBlur,
-          deselectOnClear,
-          deselectOnChange,
-          closeOnSelect,
-          getInlineItem: (newValue) =>
-            getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-          // getInlineItem: (newValue) =>
-          //   new Promise((res) =>
-          //     setTimeout(
-          //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-          //       1000
-          //     )
-          //   )
-        })
-      : autocomplete({
-          select,
-          selectOnBlur,
-          deselectOnClear,
-          deselectOnChange,
-          rovingText,
-          closeOnSelect
-        }),
+    feature:
+      selectedFeature === 'supercomplete'
+        ? supercomplete({
+            ...featureProps,
+            getFocusItem: (newValue) =>
+              getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+            // getInlineItem: (newValue) =>
+            //   new Promise((res) =>
+            //     setTimeout(
+            //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+            //       1000
+            //     )
+            //   )
+          })
+        : selectedFeature === 'autocompleteFocus'
+        ? autocompleteFocus({
+            ...featureProps,
+            getFocusItem: (newValue) =>
+              getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+          })
+        : autocomplete(featureProps),
+
     traversal: groupedTraversal({
       traverseInput: true,
       groupedItems,
@@ -108,16 +115,16 @@ export default function Home() {
       <div>value: {value}</div>
       <div>Selected item: {selectedItem?.name}</div>
       <div>Focus item: {focusItem?.name}</div>
-      <div>
-        <label>
-          Supercomplete
-          <input
-            type="checkbox"
-            checked={isSupercomplete}
-            onChange={(e) => setSupercomplete(e.target.checked)}
-          />
-        </label>
-      </div>
+
+      <select
+        value={selectedFeature} // ...force the select's value to match the state variable...
+        onChange={(e) => setSelectedFeature(e.target.value)} // ... and update the state variable on any change!
+      >
+        <option value="supercomplete">supercomplete</option>
+        <option value="autocomplete">autocomplete</option>
+        <option value="autocompleteFocus">autocompleteFocus</option>
+      </select>
+
       <div>
         <label>
           select
@@ -128,7 +135,7 @@ export default function Home() {
           />
         </label>
       </div>
-      {!isSupercomplete && (
+      {selectedFeature !== 'supercomplete' && (
         <div>
           <label>
             rovingText
