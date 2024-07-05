@@ -1,6 +1,6 @@
 import { mergeModules } from '../../utils/mergeModules.js';
 import { autocomplete } from './autocomplete.js';
-import { inline } from '../atom/inline.js';
+import { autoInline } from '../atom/autoInline.js';
 
 const supercomplete = ({
   getFocusItem,
@@ -8,7 +8,7 @@ const supercomplete = ({
 }) => mergeModules(autocomplete({
   ...rest,
   rovingText: true
-}), inline({
+}), autoInline({
   getFocusItem
 }));
 

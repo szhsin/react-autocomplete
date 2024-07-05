@@ -460,7 +460,7 @@ const multiSelectDropdown = (props = {}) => mergeModules(autocompleteLite({
   selectOnBlur: false
 }), dropdownToggle(props), multiInput());
 
-const inline = ({
+const autoInline = ({
   getFocusItem
 }) => ({
   getItemValue,
@@ -494,7 +494,7 @@ const supercomplete = ({
 }) => mergeModules(autocomplete({
   ...rest,
   rovingText: true
-}), inline({
+}), autoInline({
   getFocusItem
 }));
 

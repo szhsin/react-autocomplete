@@ -1,9 +1,12 @@
 import type { MergedFeature, FeatureProps } from '../../common';
 import { mergeModules } from '../../utils/mergeModules';
 import { type AutocompleteFeature, autocomplete } from './autocomplete';
-import { type InlineFeature, inline } from '../atom/inline';
+import { type AutoInlineFeature, autoInline } from '../atom/autoInline';
 
-type SupercompleteFeature<T> = MergedFeature<T, [AutocompleteFeature<T>, InlineFeature<T>]>;
+type SupercompleteFeature<T> = MergedFeature<
+  T,
+  [AutocompleteFeature<T>, AutoInlineFeature<T>]
+>;
 
 const supercomplete = <T>({
   getFocusItem,
@@ -17,6 +20,9 @@ const supercomplete = <T>({
   | 'deselectOnChange'
   | 'closeOnSelect'
 >): SupercompleteFeature<T> =>
-  mergeModules(autocomplete<T>({ ...rest, rovingText: true }), inline<T>({ getFocusItem }));
+  mergeModules(
+    autocomplete<T>({ ...rest, rovingText: true }),
+    autoInline<T>({ getFocusItem })
+  );
 
 export { type SupercompleteFeature, supercomplete };
