@@ -488,15 +488,10 @@ const autoInline = ({
   })
 });
 
-const supercomplete = ({
-  getFocusItem,
-  ...rest
-}) => mergeModules(autocomplete({
-  ...rest,
+const supercomplete = props => mergeModules(autocomplete({
+  ...props,
   rovingText: true
-}), autoInline({
-  getFocusItem
-}));
+}), autoInline(props));
 
 const linearTraversal = ({
   traverseInput,
