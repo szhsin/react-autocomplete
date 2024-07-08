@@ -14,16 +14,11 @@ const groupedTraversal = <G, T>({
   ...restProps
 }: GroupedTraversalProps<G, T>): Traversal<T> => {
   const groups = isArray(groupedItems) ? groupedItems : Object.values(groupedItems);
-
-  const items: T[] = [];
-  groups.forEach((group) => {
-    const itemsInGroup = isArray(group)
-      ? group
-      : getItemsInGroup
-      ? getItemsInGroup(group)
-      : [];
-    items.push(...itemsInGroup);
-  });
+  const items = groups.reduce<T[]>(
+    (accu, group) =>
+      accu.concat(isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : []),
+    []
+  );
 
   return linearTraversal({ ...restProps, items });
 };
