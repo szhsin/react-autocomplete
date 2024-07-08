@@ -8,21 +8,17 @@ type SupercompleteFeature<T> = MergedFeature<
   [AutocompleteFeature<T>, AutoInlineFeature<T>]
 >;
 
-const supercomplete = <T>({
-  getFocusItem,
-  ...rest
-}: Pick<
-  FeatureProps<T>,
-  | 'getFocusItem'
-  | 'select'
-  | 'selectOnBlur'
-  | 'deselectOnClear'
-  | 'deselectOnChange'
-  | 'closeOnSelect'
->): SupercompleteFeature<T> =>
-  mergeModules(
-    autocomplete<T>({ ...rest, rovingText: true }),
-    autoInline<T>({ getFocusItem })
-  );
+const supercomplete = <T>(
+  props: Pick<
+    FeatureProps<T>,
+    | 'getFocusItem'
+    | 'select'
+    | 'selectOnBlur'
+    | 'deselectOnClear'
+    | 'deselectOnChange'
+    | 'closeOnSelect'
+  >
+): SupercompleteFeature<T> =>
+  mergeModules(autocomplete<T>({ ...props, rovingText: true }), autoInline<T>(props));
 
 export { type SupercompleteFeature, supercomplete };

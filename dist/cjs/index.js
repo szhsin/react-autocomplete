@@ -266,8 +266,12 @@ const autocompleteLite = ({
             }
             break;
           case 'Enter':
-            if (open && focusItem) {
-              resetState(selectItemOrAction(focusItem));
+            if (open) {
+              if (focusItem) {
+                resetState(selectItemOrAction(focusItem));
+              } else if (!select) {
+                resetState(true);
+              }
             }
             break;
           case 'Escape':
@@ -488,15 +492,10 @@ const autoInline = ({
   })
 });
 
-const supercomplete = ({
-  getFocusItem,
-  ...rest
-}) => mergeModules(autocomplete({
-  ...rest,
+const supercomplete = props => mergeModules(autocomplete({
+  ...props,
   rovingText: true
-}), autoInline({
-  getFocusItem
-}));
+}), autoInline(props));
 
 const linearTraversal = ({
   traverseInput,
@@ -542,11 +541,7 @@ const groupedTraversal = ({
   ...restProps
 }) => {
   const groups = isArray(groupedItems) ? groupedItems : Object.values(groupedItems);
-  const items = [];
-  groups.forEach(group => {
-    const itemsInGroup = isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : [];
-    items.push(...itemsInGroup);
-  });
+  const items = groups.reduce((accu, group) => accu.concat(isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : []), []);
   return linearTraversal({
     ...restProps,
     items

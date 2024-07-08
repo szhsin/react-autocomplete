@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import type { AutocompleteProps, AutocompleteState } from '../common';
+import type { AutocompleteProps, AutocompleteState, Contextual } from '../common';
 
 const useAutocomplete = <T, FeatureYield extends object>({
   value,
@@ -21,11 +21,11 @@ const useAutocomplete = <T, FeatureYield extends object>({
     setOpen
   };
 
-  const contextual = {
+  const contextual: Contextual<T> = {
     tmpValue,
     setTmpValue,
     value,
-    onChange: (newValue?: string | undefined) => value != newValue && onChange?.(newValue),
+    onChange: (newValue) => value != newValue && onChange?.(newValue),
     ...passthrough,
     ...state
   };

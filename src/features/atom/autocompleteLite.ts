@@ -143,8 +143,12 @@ const autocompleteLite =
               }
               break;
             case 'Enter':
-              if (open && focusItem) {
-                resetState(selectItemOrAction(focusItem));
+              if (open) {
+                if (focusItem) {
+                  resetState(selectItemOrAction(focusItem));
+                } else if (!select) {
+                  resetState(true);
+                }
               }
               break;
             case 'Escape':
