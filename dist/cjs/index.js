@@ -191,11 +191,11 @@ const autocompleteLite = ({
       !noAction && (onAction == null ? void 0 : onAction(item));
       return true;
     }
-    onSelectChange(item);
     const itemValue = getItemValue(item);
+    if (!select) onChange(itemValue);
     const endIndex = itemValue.length;
     inputRef.current.setSelectionRange(endIndex, endIndex);
-    if (!select) onChange(itemValue);
+    onSelectChange(item);
   };
   const resetState = shouldClose => {
     setFocusItem();
@@ -206,7 +206,7 @@ const autocompleteLite = ({
     }
   };
   return {
-    clearable: !!inputValue,
+    isInputEmpty: !inputValue,
     getClearProps: () => ({
       tabIndex: -1,
       onMouseDown: startCapture,
@@ -268,6 +268,7 @@ const autocompleteLite = ({
           case 'Enter':
             if (open) {
               if (focusItem) {
+                e.preventDefault();
                 resetState(selectItemOrAction(focusItem));
               } else if (!select) {
                 resetState(true);
@@ -389,7 +390,7 @@ const dropdownToggle = ({
     return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
   }, 0);
   return {
-    clearable: !!inputValue,
+    isInputEmpty: !inputValue,
     getToggleProps: () => ({
       ref: toggleRef,
       onMouseDown: startToggle,

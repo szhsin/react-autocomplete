@@ -57,8 +57,8 @@ export interface Contextual<T>
   setTmpValue: (value?: string | undefined) => void;
 }
 
-export interface Clearable {
-  clearable: boolean;
+export interface FeatureState {
+  isInputEmpty: boolean;
 }
 
 export interface TraversalProps {

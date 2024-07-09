@@ -23,7 +23,7 @@ const dropdownToggle = ({
     return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
   }, 0);
   return {
-    clearable: !!inputValue,
+    isInputEmpty: !inputValue,
     getToggleProps: () => ({
       ref: toggleRef,
       onMouseDown: startToggle,

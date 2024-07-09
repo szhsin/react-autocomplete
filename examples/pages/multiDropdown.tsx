@@ -35,7 +35,7 @@ export default function Dropdown() {
     getItemProps,
     getToggleProps,
     getClearProps,
-    clearable,
+    isInputEmpty,
     open,
     focusItem,
     removeSelect
@@ -131,7 +131,7 @@ export default function Dropdown() {
 
             <div className={styles.multiInputContainer}>
               <input className={`${styles.input} ${styles.multiInput}`} {...getInputProps()} />
-              {clearable && (
+              {!isInputEmpty && (
                 <button className={styles.clearButton} {...getClearProps()}>
                   ❎
                 </button>

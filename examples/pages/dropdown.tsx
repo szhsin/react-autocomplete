@@ -35,7 +35,7 @@ export default function Dropdown() {
     getItemProps,
     getToggleProps,
     getClearProps,
-    clearable,
+    isInputEmpty,
     open,
     focusItem,
     inputRef
@@ -128,7 +128,7 @@ export default function Dropdown() {
             {...getInputProps()}
             placeholder="Search a state..."
           />
-          {clearable && (
+          {!isInputEmpty && (
             <button
               className={styles.clearButton}
               style={{ position: 'absolute', transform: 'translate(-120%, 10%)' }}

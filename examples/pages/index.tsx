@@ -60,7 +60,7 @@ export default function Home() {
     getClearProps,
     open,
     focusItem,
-    clearable
+    isInputEmpty
   } = useCombobox({
     // traversal: linearTraversal({
     //   items,
@@ -204,7 +204,7 @@ export default function Home() {
         </button>
       </div>
       <input className={styles.input} {...getInputProps()} />
-      {clearable && (
+      {!isInputEmpty && (
         <button
           className={styles.clearButton}
           style={{ position: 'absolute', transform: 'translate(-120%, 10%)' }}

@@ -42,8 +42,8 @@ export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equ
     tmpValue?: string;
     setTmpValue: (value?: string | undefined) => void;
 }
-export interface Clearable {
-    clearable: boolean;
+export interface FeatureState {
+    isInputEmpty: boolean;
 }
 export interface TraversalProps {
     traverseInput?: boolean;

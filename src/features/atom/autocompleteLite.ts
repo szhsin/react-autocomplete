@@ -3,7 +3,7 @@ import type {
   GetPropsFunctions,
   GetPropsWithRefFunctions,
   AutocompleteFeatureProps,
-  Clearable
+  FeatureState
 } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
@@ -11,7 +11,7 @@ type AutocompleteLiteFeature<T> = Feature<
   T,
   Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps' | 'getClearProps'> &
     Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> &
-    Clearable
+    FeatureState
 >;
 
 const scrollIntoView = (element: HTMLElement | null) =>
@@ -55,11 +55,13 @@ const autocompleteLite =
         return true; // Always close list on action
       }
 
-      onSelectChange(item);
       const itemValue = getItemValue(item);
+      if (!select) onChange(itemValue);
       const endIndex = itemValue.length;
       inputRef.current!.setSelectionRange(endIndex, endIndex);
-      if (!select) onChange(itemValue);
+      // We place onSelectChange after onChange to give user an opportunity
+      // to manipulate the `value` state
+      onSelectChange(item);
     };
 
     const resetState = (shouldClose?: boolean) => {
@@ -72,7 +74,7 @@ const autocompleteLite =
     };
 
     return {
-      clearable: !!inputValue,
+      isInputEmpty: !inputValue,
 
       getClearProps: () => ({
         tabIndex: -1,
@@ -145,6 +147,8 @@ const autocompleteLite =
             case 'Enter':
               if (open) {
                 if (focusItem) {
+                  // Call preventDefault as we've already triggered on* events in this branch
+                  e.preventDefault();
                   resetState(selectItemOrAction(focusItem));
                 } else if (!select) {
                   resetState(true);
