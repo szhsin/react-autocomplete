@@ -4,7 +4,7 @@ import type {
   FeatureProps,
   GetPropsFunctions,
   GetPropsWithRefFunctions,
-  Clearable
+  FeatureState
 } from '../../common';
 import { useToggle } from '../../hooks/useToggle';
 
@@ -12,7 +12,7 @@ type DropdownToggleFeature<T> = Feature<
   T,
   Pick<GetPropsWithRefFunctions<T>, 'getToggleProps'> &
     Pick<GetPropsFunctions<T>, 'getInputProps'> &
-    Clearable
+    FeatureState
 >;
 
 const dropdownToggle =
@@ -33,7 +33,7 @@ const dropdownToggle =
     const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
 
     return {
-      clearable: !!inputValue,
+      isInputEmpty: !inputValue,
 
       getToggleProps: () => ({
         ref: toggleRef,

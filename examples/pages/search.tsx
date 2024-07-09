@@ -22,7 +22,7 @@ export default function Home() {
     getClearProps,
     open,
     focusItem,
-    clearable
+    isInputEmpty
   } = useCombobox({
     onSelectChange: (selected) => search(selected?.name),
     getItemValue,
@@ -52,7 +52,7 @@ export default function Home() {
       >
         <input className={styles.input} {...getInputProps()} />
 
-        {clearable && (
+        {!isInputEmpty && (
           <button
             type="button"
             className={styles.clearButton}

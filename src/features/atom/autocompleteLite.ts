@@ -3,7 +3,7 @@ import type {
   GetPropsFunctions,
   GetPropsWithRefFunctions,
   AutocompleteFeatureProps,
-  Clearable
+  FeatureState
 } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
@@ -11,7 +11,7 @@ type AutocompleteLiteFeature<T> = Feature<
   T,
   Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps' | 'getClearProps'> &
     Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> &
-    Clearable
+    FeatureState
 >;
 
 const scrollIntoView = (element: HTMLElement | null) =>
@@ -74,7 +74,7 @@ const autocompleteLite =
     };
 
     return {
-      clearable: !!inputValue,
+      isInputEmpty: !inputValue,
 
       getClearProps: () => ({
         tabIndex: -1,

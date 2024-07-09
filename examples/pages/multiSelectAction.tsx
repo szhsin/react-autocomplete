@@ -57,7 +57,7 @@ export default function Home() {
     getInputWrapperProps,
     open,
     focusItem,
-    clearable,
+    isInputEmpty,
     removeSelect,
     focused
   } = useMultiSelect({
@@ -155,7 +155,7 @@ export default function Home() {
 
         <div className={styles.multiInputContainer}>
           <input className={`${styles.input} ${styles.multiInput}`} {...getInputProps()} />
-          {clearable && (
+          {!isInputEmpty && (
             <button className={styles.clearButton} {...getClearProps()}>
               ❎
             </button>

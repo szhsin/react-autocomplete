@@ -52,7 +52,7 @@ const autocompleteLite = ({
     }
   };
   return {
-    clearable: !!inputValue,
+    isInputEmpty: !inputValue,
     getClearProps: () => ({
       tabIndex: -1,
       onMouseDown: startCapture,
