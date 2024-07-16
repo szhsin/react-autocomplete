@@ -18,6 +18,8 @@ const linearTraversal =
   ({ focusItem, setFocusItem, isItemDisabled, isEqual }) => {
     const mutable = useMutableState<MutableState>({ a: -1 });
     return {
+      items,
+
       traverse: (isForward) => {
         if (!focusItem) mutable.a = -1;
         else if (!isEqual(focusItem, items[mutable.a]))

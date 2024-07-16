@@ -75,14 +75,14 @@ export default function Home() {
           display: open && items.length ? 'block' : 'none'
         }}
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <li
             className={styles.option}
             key={item.abbr}
             style={{
               background: focusItem === item ? '#0a0' : 'none'
             }}
-            {...getItemProps({ item })}
+            {...getItemProps({ item, index })}
           >
             {item.name}
           </li>

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useId } from 'react';
 
 const useAutocomplete = ({
   value,
@@ -11,6 +11,7 @@ const useAutocomplete = ({
   const [tmpValue, setTmpValue] = useState();
   const [open, setOpen] = useState(false);
   const [focusItem, setFocusItem] = useState();
+  const id = useId();
   const state = {
     inputRef,
     focusItem,
@@ -19,6 +20,7 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    id,
     tmpValue,
     setTmpValue,
     value,

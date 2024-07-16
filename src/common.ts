@@ -14,7 +14,7 @@ export interface GetPropsFunctions<T> {
   getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getInputWrapperProps: () => HTMLAttributes<HTMLElement>;
   getListProps: () => HTMLAttributes<HTMLElement>;
-  getItemProps: (option: { item: T }) => HTMLAttributes<HTMLElement>;
+  getItemProps: (option: { item: T; index: number }) => HTMLAttributes<HTMLElement>;
 }
 
 export type GetPropsWithRefFunctions<T> = {
@@ -53,6 +53,7 @@ export interface Contextual<T>
     AdapterProps<T>,
     Equality<T>,
     AutocompleteState<T> {
+  id: string;
   tmpValue?: string;
   setTmpValue: (value?: string | undefined) => void;
 }
@@ -67,6 +68,7 @@ export interface TraversalProps {
 
 export type Traversal<T> = (cx: Contextual<T>) => {
   traverse: (isForward: boolean) => T | null | undefined;
+  items: T[];
 };
 
 export interface FeatureProps<T> {

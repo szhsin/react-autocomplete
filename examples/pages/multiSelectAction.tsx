@@ -97,6 +97,7 @@ export default function Home() {
   });
 
   // getInputProps().ref.current
+  let itemIndex = 0;
 
   return (
     <div className={styles.wrapper}>
@@ -208,7 +209,7 @@ export default function Home() {
                       ? 'underline'
                       : 'none'
                 }}
-                {...getItemProps({ item: { ...item } })}
+                {...getItemProps({ item: { ...item }, index: itemIndex++ })}
               >
                 {item.abbr === 'Add' ? `Create "${item.name}"` : item.name}
               </li>

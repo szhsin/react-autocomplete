@@ -17,6 +17,7 @@ const useAutocomplete = ({
   const [tmpValue, setTmpValue] = react.useState();
   const [open, setOpen] = react.useState(false);
   const [focusItem, setFocusItem] = react.useState();
+  const id = react.useId();
   const state = {
     inputRef,
     focusItem,
@@ -25,6 +26,7 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    id,
     tmpValue,
     setTmpValue,
     value,
@@ -181,7 +183,9 @@ const autocompleteLite = ({
   setFocusItem,
   open,
   setOpen,
-  inputRef
+  inputRef,
+  items,
+  id
 }) => {
   var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
@@ -205,6 +209,11 @@ const autocompleteLite = ({
       if (select) onChange();
     }
   };
+  let ariaActivedescendant;
+  if (focusItem) {
+    const activeIndex = items.findIndex(item => isEqual(focusItem, item));
+    if (activeIndex >= 0) ariaActivedescendant = id + activeIndex;
+  }
   return {
     isInputEmpty: !inputValue,
     getClearProps: () => ({
@@ -224,9 +233,11 @@ const autocompleteLite = ({
       onClick: stopCapture
     }),
     getItemProps: ({
-      item
+      item,
+      index
     }) => ({
       ref: isEqual(focusItem, item) ? scrollIntoView : null,
+      id: id + index,
       onClick: () => {
         if (!(isItemDisabled != null && isItemDisabled(item))) {
           resetState(selectItemOrAction(item));
@@ -236,6 +247,7 @@ const autocompleteLite = ({
     getInputProps: () => ({
       ref: inputRef,
       value: inputValue,
+      'aria-activedescendant': ariaActivedescendant,
       onChange: e => {
         setOpen(true);
         setFocusItem();
@@ -511,6 +523,7 @@ const linearTraversal = ({
     a: -1
   });
   return {
+    items,
     traverse: isForward => {
       if (!focusItem) mutable.a = -1;else if (!isEqual(focusItem, items[mutable.a])) mutable.a = items.findIndex(item => isEqual(focusItem, item));
       const baseIndex = traverseInput ? -1 : 0;

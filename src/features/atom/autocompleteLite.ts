@@ -43,7 +43,9 @@ const autocompleteLite =
     setFocusItem,
     open,
     setOpen,
-    inputRef
+    inputRef,
+    items,
+    id
   }) => {
     const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
@@ -73,6 +75,12 @@ const autocompleteLite =
       }
     };
 
+    let ariaActivedescendant: string | undefined;
+    if (focusItem) {
+      const activeIndex = items.findIndex((item) => isEqual(focusItem, item));
+      if (activeIndex >= 0) ariaActivedescendant = id + activeIndex;
+    }
+
     return {
       isInputEmpty: !inputValue,
 
@@ -96,8 +104,9 @@ const autocompleteLite =
         onClick: stopCapture
       }),
 
-      getItemProps: ({ item }) => ({
+      getItemProps: ({ item, index }) => ({
         ref: isEqual(focusItem, item) ? scrollIntoView : null,
+        id: id + index,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));
@@ -109,6 +118,8 @@ const autocompleteLite =
         ref: inputRef,
 
         value: inputValue,
+
+        'aria-activedescendant': ariaActivedescendant,
 
         onChange: (e) => {
           setOpen(true);

@@ -71,6 +71,7 @@ export default function Dropdown() {
   });
 
   const [maxHeight] = useAutoHeight({ anchorRef: inputRef, show: open, margin: 30 });
+  let itemIndex = 0;
 
   return (
     <div className={styles.wrapper}>
@@ -167,7 +168,7 @@ export default function Dropdown() {
                     background: focusItem === item ? '#0a0' : 'none',
                     textDecoration: item === selectedItem ? 'underline' : 'none'
                   }}
-                  {...getItemProps({ item })}
+                  {...getItemProps({ item, index: itemIndex++ })}
                 >
                   {item.name}
                 </li>
