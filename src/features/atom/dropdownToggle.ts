@@ -36,6 +36,9 @@ const dropdownToggle =
       isInputEmpty: !inputValue,
 
       getToggleProps: () => ({
+        type: 'button',
+        'aria-haspopup': true,
+        'aria-expanded': open,
         ref: toggleRef,
 
         onMouseDown: startToggle,

@@ -6,6 +6,8 @@ const autoInline =
   <T>({ getFocusItem }: Pick<FeatureProps<T>, 'getFocusItem'>): AutoInlineFeature<T> =>
   ({ getItemValue, setTmpValue, setFocusItem }) => ({
     getInputProps: () => ({
+      'aria-autocomplete': 'both',
+
       onChange: async ({ target, nativeEvent }) => {
         if ((nativeEvent as unknown as { inputType: string }).inputType !== 'insertText') {
           return;

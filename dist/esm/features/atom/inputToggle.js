@@ -1,7 +1,9 @@
+import { ButtonProps, getId } from '../../common.js';
 import { useToggle } from '../../hooks/useToggle.js';
 import { useFocusCapture } from '../../hooks/useFocusCapture.js';
 
 const inputToggle = () => ({
+  id,
   inputRef,
   open,
   setOpen
@@ -10,7 +12,9 @@ const inputToggle = () => ({
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
-      tabIndex: -1,
+      ...ButtonProps,
+      'aria-expanded': open,
+      'aria-controls': getId(id, 'l'),
       onMouseDown: () => {
         startToggle();
         startCapture();

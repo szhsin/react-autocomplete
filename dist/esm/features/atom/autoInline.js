@@ -6,6 +6,7 @@ const autoInline = ({
   setFocusItem
 }) => ({
   getInputProps: () => ({
+    'aria-autocomplete': 'both',
     onChange: async ({
       target,
       nativeEvent

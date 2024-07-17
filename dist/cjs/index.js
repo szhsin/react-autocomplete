@@ -4,6 +4,10 @@ var react = require('react');
 
 const defaultEqual = (itemA, itemB) => itemA === itemB;
 const getId = (prefix, suffix) => prefix && prefix + suffix;
+const ButtonProps = {
+  tabIndex: -1,
+  type: 'button'
+};
 
 const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
 
@@ -210,6 +214,7 @@ const autocompleteLite = ({
       if (select) onChange();
     }
   };
+  const listId = getId(id, 'l');
   let ariaActivedescendant;
   if (focusItem) {
     const activeIndex = items.findIndex(item => isEqual(focusItem, item));
@@ -218,7 +223,7 @@ const autocompleteLite = ({
   return {
     isInputEmpty: !inputValue,
     getClearProps: () => ({
-      tabIndex: -1,
+      ...ButtonProps,
       onMouseDown: startCapture,
       onClick: () => {
         stopCapture();
@@ -230,6 +235,8 @@ const autocompleteLite = ({
       }
     }),
     getListProps: () => ({
+      id: listId,
+      role: 'listbox',
       onMouseDown: startCapture,
       onClick: stopCapture
     }),
@@ -237,8 +244,9 @@ const autocompleteLite = ({
       item,
       index
     }) => ({
-      ref: isEqual(focusItem, item) ? scrollIntoView : null,
       id: getId(id, index),
+      role: 'option',
+      ref: isEqual(focusItem, item) ? scrollIntoView : null,
       onClick: () => {
         if (!(isItemDisabled != null && isItemDisabled(item))) {
           resetState(selectItemOrAction(item));
@@ -246,6 +254,12 @@ const autocompleteLite = ({
       }
     }),
     getInputProps: () => ({
+      type: 'text',
+      role: 'combobox',
+      autoComplete: 'off',
+      'aria-autocomplete': 'list',
+      'aria-expanded': open,
+      'aria-controls': listId,
       'aria-activedescendant': ariaActivedescendant,
       ref: inputRef,
       value: inputValue,
@@ -355,6 +369,7 @@ const useToggle = (open, setOpen) => {
 };
 
 const inputToggle = () => ({
+  id,
   inputRef,
   open,
   setOpen
@@ -363,7 +378,9 @@ const inputToggle = () => ({
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
-      tabIndex: -1,
+      ...ButtonProps,
+      'aria-expanded': open,
+      'aria-controls': getId(id, 'l'),
       onMouseDown: () => {
         startToggle();
         startCapture();
@@ -405,6 +422,9 @@ const dropdownToggle = ({
   return {
     isInputEmpty: !inputValue,
     getToggleProps: () => ({
+      type: 'button',
+      'aria-haspopup': true,
+      'aria-expanded': open,
       ref: toggleRef,
       onMouseDown: startToggle,
       onClick: stopToggle,
@@ -486,6 +506,7 @@ const autoInline = ({
   setFocusItem
 }) => ({
   getInputProps: () => ({
+    'aria-autocomplete': 'both',
     onChange: async ({
       target,
       nativeEvent

@@ -5,7 +5,7 @@ import type {
   AutocompleteFeatureProps,
   FeatureState
 } from '../../types';
-import { getId } from '../../common';
+import { getId, ButtonProps } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
@@ -76,6 +76,7 @@ const autocompleteLite =
       }
     };
 
+    const listId = getId(id, 'l');
     let ariaActivedescendant: string | undefined;
     if (focusItem) {
       const activeIndex = items.findIndex((item) => isEqual(focusItem, item));
@@ -86,7 +87,7 @@ const autocompleteLite =
       isInputEmpty: !inputValue,
 
       getClearProps: () => ({
-        tabIndex: -1,
+        ...ButtonProps,
 
         onMouseDown: startCapture,
 
@@ -101,13 +102,16 @@ const autocompleteLite =
       }),
 
       getListProps: () => ({
+        id: listId,
+        role: 'listbox',
         onMouseDown: startCapture,
         onClick: stopCapture
       }),
 
       getItemProps: ({ item, index }) => ({
-        ref: isEqual(focusItem, item) ? scrollIntoView : null,
         id: getId(id, index),
+        role: 'option',
+        ref: isEqual(focusItem, item) ? scrollIntoView : null,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));
@@ -116,6 +120,12 @@ const autocompleteLite =
       }),
 
       getInputProps: () => ({
+        type: 'text',
+        role: 'combobox',
+        autoComplete: 'off',
+        'aria-autocomplete': 'list',
+        'aria-expanded': open,
+        'aria-controls': listId,
         'aria-activedescendant': ariaActivedescendant,
         ref: inputRef,
         value: inputValue,
