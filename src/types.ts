@@ -1,4 +1,9 @@
-import type { HTMLAttributes, InputHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import type {
+  HTMLAttributes,
+  InputHTMLAttributes,
+  ButtonHTMLAttributes,
+  LabelHTMLAttributes
+} from 'react';
 
 export type GetPropsWithRef<T> = T extends (...args: infer P) => infer R
   ? R extends HTMLAttributes<infer E>
@@ -8,6 +13,7 @@ export type GetPropsWithRef<T> = T extends (...args: infer P) => infer R
 
 export interface GetPropsFunctions<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
+  getLabelProps: () => LabelHTMLAttributes<HTMLLabelElement>;
   getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getInputWrapperProps: () => HTMLAttributes<HTMLElement>;

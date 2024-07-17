@@ -396,7 +396,26 @@ const inputToggle = () => ({
   };
 };
 
-const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle());
+const label = () => ({
+  id
+}) => {
+  const inputId = getId(id, 'i');
+  const labelId = getId(id, 'a');
+  return {
+    getLabelProps: () => ({
+      id: labelId,
+      htmlFor: inputId
+    }),
+    getInputProps: () => ({
+      id: inputId
+    }),
+    getListProps: () => ({
+      'aria-labelledby': labelId
+    })
+  };
+};
+
+const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle(), label());
 
 const dropdownToggle = ({
   closeOnSelect = true

@@ -53,6 +53,7 @@ export default function Home() {
   const groupedItems = getGroupedItems(value || '');
 
   const {
+    getLabelProps,
     getInputProps,
     getListProps,
     getItemProps,
@@ -203,6 +204,9 @@ export default function Home() {
         >
           Sync value
         </button>
+      </div>
+      <div>
+        <label {...getLabelProps()}>States</label>
       </div>
       <input className={styles.input} {...getInputProps()} />
       {!isInputEmpty && (
