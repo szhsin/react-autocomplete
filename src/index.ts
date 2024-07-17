@@ -23,4 +23,4 @@ export type {
   Feature,
   MergedFeature,
   FeatureProps
-} from './common';
+} from './types';

@@ -1,4 +1,4 @@
-import type { ComboboxProps } from '../common';
+import type { ComboboxProps } from '../types';
 import { defaultEqual } from '../common';
 import { adaptGetItemValue } from '../utils/adaptGetItemValue';
 import { useAutocomplete } from './useAutocomplete';

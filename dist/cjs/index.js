@@ -3,6 +3,7 @@
 var react = require('react');
 
 const defaultEqual = (itemA, itemB) => itemA === itemB;
+const getId = (prefix, suffix) => prefix && prefix + suffix;
 
 const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
 
@@ -212,7 +213,7 @@ const autocompleteLite = ({
   let ariaActivedescendant;
   if (focusItem) {
     const activeIndex = items.findIndex(item => isEqual(focusItem, item));
-    if (activeIndex >= 0) ariaActivedescendant = id + activeIndex;
+    if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
   }
   return {
     isInputEmpty: !inputValue,
@@ -237,7 +238,7 @@ const autocompleteLite = ({
       index
     }) => ({
       ref: isEqual(focusItem, item) ? scrollIntoView : null,
-      id: id + index,
+      id: getId(id, index),
       onClick: () => {
         if (!(isItemDisabled != null && isItemDisabled(item))) {
           resetState(selectItemOrAction(item));
@@ -245,9 +246,9 @@ const autocompleteLite = ({
       }
     }),
     getInputProps: () => ({
+      'aria-activedescendant': ariaActivedescendant,
       ref: inputRef,
       value: inputValue,
-      'aria-activedescendant': ariaActivedescendant,
       onChange: e => {
         setOpen(true);
         setFocusItem();

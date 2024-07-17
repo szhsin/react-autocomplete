@@ -4,7 +4,8 @@ import type {
   GetPropsWithRefFunctions,
   AutocompleteFeatureProps,
   FeatureState
-} from '../../common';
+} from '../../types';
+import { getId } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
@@ -78,7 +79,7 @@ const autocompleteLite =
     let ariaActivedescendant: string | undefined;
     if (focusItem) {
       const activeIndex = items.findIndex((item) => isEqual(focusItem, item));
-      if (activeIndex >= 0) ariaActivedescendant = id + activeIndex;
+      if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
     }
 
     return {
@@ -106,7 +107,7 @@ const autocompleteLite =
 
       getItemProps: ({ item, index }) => ({
         ref: isEqual(focusItem, item) ? scrollIntoView : null,
-        id: id + index,
+        id: getId(id, index),
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));
@@ -115,11 +116,9 @@ const autocompleteLite =
       }),
 
       getInputProps: () => ({
-        ref: inputRef,
-
-        value: inputValue,
-
         'aria-activedescendant': ariaActivedescendant,
+        ref: inputRef,
+        value: inputValue,
 
         onChange: (e) => {
           setOpen(true);

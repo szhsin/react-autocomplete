@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions, FeatureProps } from '../../common';
+import type { Feature, GetPropsFunctions, FeatureProps } from '../../types';
 
 type AutoInlineFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'>>;
 

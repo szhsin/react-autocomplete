@@ -1,4 +1,4 @@
-import type { MultiSelectProps, AdapterProps } from '../common';
+import type { MultiSelectProps, AdapterProps } from '../types';
 import { defaultEqual } from '../common';
 import { adaptGetItemValue } from '../utils/adaptGetItemValue';
 import { useAutocomplete } from './useAutocomplete';

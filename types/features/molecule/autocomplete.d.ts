@@ -1,4 +1,4 @@
-import type { MergedFeature, AutocompleteFeatureProps } from '../../common';
+import type { MergedFeature, AutocompleteFeatureProps } from '../../types';
 import { type AutocompleteLiteFeature } from '../atom/autocompleteLite';
 import { type InputToggleFeature } from '../atom/inputToggle';
 type AutocompleteFeature<T> = MergedFeature<T, [

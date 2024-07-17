@@ -1,4 +1,4 @@
-import type { MergedFeature, FeatureProps } from '../../common';
+import type { MergedFeature, FeatureProps } from '../../types';
 import { type AutocompleteLiteFeature } from '../atom/autocompleteLite';
 import { type DropdownToggleFeature } from '../atom/dropdownToggle';
 import { type MultiInputFeature } from '../atom/multiInput';

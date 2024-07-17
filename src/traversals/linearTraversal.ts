@@ -1,4 +1,4 @@
-import type { Traversal, TraversalProps } from '../common';
+import type { Traversal, TraversalProps } from '../types';
 
 export interface LinearTraversalProps<T> extends TraversalProps {
   items: T[];

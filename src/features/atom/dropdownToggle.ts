@@ -5,7 +5,7 @@ import type {
   GetPropsFunctions,
   GetPropsWithRefFunctions,
   FeatureState
-} from '../../common';
+} from '../../types';
 import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<

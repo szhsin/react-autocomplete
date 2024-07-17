@@ -1,5 +1,5 @@
 import { useState, useRef, useId } from 'react';
-import type { AutocompleteProps, AutocompleteState, Contextual } from '../common';
+import type { AutocompleteProps, AutocompleteState, Contextual } from '../types';
 
 const useAutocomplete = <T, FeatureYield extends object>({
   value,

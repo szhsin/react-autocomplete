@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions } from '../../common';
+import type { Feature, GetPropsFunctions } from '../../types';
 import { useToggle } from '../../hooks/useToggle';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 

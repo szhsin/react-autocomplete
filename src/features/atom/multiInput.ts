@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions } from '../../common';
+import type { Feature, GetPropsFunctions } from '../../types';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type MultiInputFeature<T> = Feature<

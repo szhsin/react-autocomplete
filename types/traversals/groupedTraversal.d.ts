@@ -1,4 +1,4 @@
-import type { Traversal, TraversalProps } from '../common';
+import type { Traversal, TraversalProps } from '../types';
 export interface GroupedTraversalProps<G, T> extends TraversalProps {
     groupedItems: G[] | {
         [s: string]: T[];
