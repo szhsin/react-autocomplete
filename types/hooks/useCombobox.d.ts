@@ -6,5 +6,6 @@ declare const useCombobox: <T, FeatureYield extends object>({ isEqual, getItemVa
     setFocusItem: (item?: T | undefined) => void;
     open: boolean;
     setOpen: (value: boolean) => void;
+    isItemSelected: (item: T) => boolean;
 } & FeatureYield;
 export { useCombobox };

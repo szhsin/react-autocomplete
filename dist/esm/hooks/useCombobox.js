@@ -14,6 +14,7 @@ const useCombobox = ({
   return useAutocomplete({
     ...passthrough,
     isEqual,
+    isItemSelected: item => isEqual(item, selected),
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: newItem => {

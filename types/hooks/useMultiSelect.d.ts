@@ -6,6 +6,7 @@ declare const useMultiSelect: <T, FeatureYield extends object>({ isEqual, getIte
     setFocusItem: (item?: T | undefined) => void;
     open: boolean;
     setOpen: (value: boolean) => void;
+    isItemSelected: (item: T) => boolean;
 } & FeatureYield & {
     removeSelect: (item?: T | undefined) => void;
 };

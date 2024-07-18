@@ -1,11 +1,12 @@
 import { useState, useRef, useId } from 'react';
-import type { AutocompleteProps, AutocompleteState, Contextual } from '../types';
+import type { AutocompleteProps, AutocompleteReturn, Contextual } from '../types';
 
 const useAutocomplete = <T, FeatureYield extends object>({
   value,
   onChange,
   feature: useFeature,
   traversal: useTraversal,
+  isItemSelected,
   ...passthrough
 }: AutocompleteProps<T, FeatureYield>) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -14,7 +15,8 @@ const useAutocomplete = <T, FeatureYield extends object>({
   const [focusItem, setFocusItem] = useState<T | undefined>();
   const id = useId();
 
-  const state: AutocompleteState<T> = {
+  const state: AutocompleteReturn<T> = {
+    isItemSelected,
     inputRef,
     focusItem,
     setFocusItem,

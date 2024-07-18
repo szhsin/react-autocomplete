@@ -16,6 +16,7 @@ const useAutocomplete = ({
   onChange,
   feature: useFeature,
   traversal: useTraversal,
+  isItemSelected,
   ...passthrough
 }) => {
   const inputRef = react.useRef(null);
@@ -24,6 +25,7 @@ const useAutocomplete = ({
   const [focusItem, setFocusItem] = react.useState();
   const id = react.useId();
   const state = {
+    isItemSelected,
     inputRef,
     focusItem,
     setFocusItem,
@@ -61,6 +63,7 @@ const useCombobox = ({
   return useAutocomplete({
     ...passthrough,
     isEqual,
+    isItemSelected: item => isEqual(item, selected),
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: newItem => {
@@ -93,6 +96,7 @@ const useMultiSelect = ({
     ...useAutocomplete({
       ...passthrough,
       isEqual,
+      isItemSelected: item => selected.findIndex(s => isEqual(item, s)) >= 0,
       getItemValue: adaptGetItemValue(getItemValue),
       getSelectedValue: () => '',
       onSelectChange: newItem => {
@@ -176,6 +180,7 @@ const autocompleteLite = ({
   getSelectedValue,
   onSelectChange,
   isEqual,
+  isItemSelected,
   isItemDisabled,
   isItemAction,
   onAction,
@@ -217,7 +222,7 @@ const autocompleteLite = ({
   const listId = getId(id, 'l');
   let ariaActivedescendant;
   if (focusItem) {
-    const activeIndex = items.findIndex(item => isEqual(focusItem, item));
+    const activeIndex = items.findIndex(item => isEqual(item, focusItem));
     if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
   }
   return {
@@ -246,7 +251,8 @@ const autocompleteLite = ({
     }) => ({
       id: getId(id, index),
       role: 'option',
-      ref: isEqual(focusItem, item) ? scrollIntoView : null,
+      'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
+      ref: isEqual(item, focusItem) ? scrollIntoView : null,
       onClick: () => {
         if (!(isItemDisabled != null && isItemDisabled(item))) {
           resetState(selectItemOrAction(item));

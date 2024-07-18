@@ -32,6 +32,7 @@ const autocompleteLite =
     getSelectedValue,
     onSelectChange,
     isEqual,
+    isItemSelected,
     isItemDisabled,
     isItemAction,
     onAction,
@@ -79,7 +80,7 @@ const autocompleteLite =
     const listId = getId(id, 'l');
     let ariaActivedescendant: string | undefined;
     if (focusItem) {
-      const activeIndex = items.findIndex((item) => isEqual(focusItem, item));
+      const activeIndex = items.findIndex((item) => isEqual(item, focusItem));
       if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
     }
 
@@ -111,7 +112,8 @@ const autocompleteLite =
       getItemProps: ({ item, index }) => ({
         id: getId(id, index),
         role: 'option',
-        ref: isEqual(focusItem, item) ? scrollIntoView : null,
+        'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
+        ref: isEqual(item, focusItem) ? scrollIntoView : null,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));

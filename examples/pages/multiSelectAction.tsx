@@ -59,6 +59,7 @@ export default function Home() {
     focusItem,
     isInputEmpty,
     removeSelect,
+    isItemSelected,
     focused
   } = useMultiSelect({
     // traversal: linearTraversal({
@@ -204,10 +205,7 @@ export default function Home() {
                 key={item.abbr}
                 style={{
                   background: isEqual(focusItem, item) ? '#0a0' : 'none',
-                  textDecoration:
-                    selectedItems.findIndex((s) => isEqual(item, s)) >= 0
-                      ? 'underline'
-                      : 'none'
+                  textDecoration: isItemSelected(item) ? 'underline' : 'none'
                 }}
                 {...getItemProps({ item: { ...item }, index: itemIndex++ })}
               >

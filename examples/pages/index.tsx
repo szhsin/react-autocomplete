@@ -61,7 +61,8 @@ export default function Home() {
     getClearProps,
     open,
     focusItem,
-    isInputEmpty
+    isInputEmpty,
+    isItemSelected
   } = useCombobox({
     // traversal: linearTraversal({
     //   items,
@@ -258,7 +259,7 @@ export default function Home() {
                 key={item.abbr}
                 style={{
                   background: focusItem === item ? '#0a0' : 'none',
-                  textDecoration: item === selectedItem ? 'underline' : 'none'
+                  textDecoration: isItemSelected(item) ? 'underline' : 'none'
                 }}
                 {...getItemProps({ item, index: itemIndex++ })}
               >

@@ -26,6 +26,7 @@ const useMultiSelect = <T, FeatureYield extends object>({
     ...useAutocomplete({
       ...passthrough,
       isEqual,
+      isItemSelected: (item) => selected.findIndex((s) => isEqual(item, s)) >= 0,
       getItemValue: adaptGetItemValue(getItemValue),
       getSelectedValue: () => '',
       onSelectChange: (newItem) => {

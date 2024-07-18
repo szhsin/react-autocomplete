@@ -5,6 +5,7 @@ const useAutocomplete = ({
   onChange,
   feature: useFeature,
   traversal: useTraversal,
+  isItemSelected,
   ...passthrough
 }) => {
   const inputRef = useRef(null);
@@ -13,6 +14,7 @@ const useAutocomplete = ({
   const [focusItem, setFocusItem] = useState();
   const id = useId();
   const state = {
+    isItemSelected,
     inputRef,
     focusItem,
     setFocusItem,

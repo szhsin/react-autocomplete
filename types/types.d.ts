@@ -17,7 +17,10 @@ export interface GetPropsFunctions<T> {
 export type GetPropsWithRefFunctions<T> = {
     [P in keyof GetPropsFunctions<T>]: GetPropsWithRef<GetPropsFunctions<T>[P]>;
 };
-export interface AutocompleteState<T> {
+export interface ContextualOrReturn<T> {
+    isItemSelected: (item: T) => boolean;
+}
+export interface AutocompleteReturn<T> extends ContextualOrReturn<T> {
     inputRef: React.RefObject<HTMLInputElement>;
     focusItem: T | undefined;
     setFocusItem: (item?: T | undefined) => void;
@@ -34,13 +37,13 @@ export interface PassthroughProps<T> {
     value: string | undefined;
     onChange: (value?: string | undefined) => void;
 }
-export interface AdapterProps<T> {
+export interface AdapterProps<T> extends ContextualOrReturn<T> {
     getItemValue: (item: T | undefined | null) => string;
     getSelectedValue: () => string;
     onSelectChange: (item?: T | undefined) => void;
     removeSelect?: (item?: T | undefined) => void;
 }
-export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equality<T>, AutocompleteState<T> {
+export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equality<T>, AutocompleteReturn<T> {
     id?: string;
     tmpValue?: string;
     setTmpValue: (value?: string | undefined) => void;

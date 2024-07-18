@@ -15,6 +15,7 @@ const useCombobox = <T, FeatureYield extends object>({
   return useAutocomplete({
     ...passthrough,
     isEqual,
+    isItemSelected: (item) => isEqual(item, selected),
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: (newItem) => {

@@ -11,4 +11,4 @@ export { type SupercompleteFeature, supercomplete } from './features/molecule/su
 export { linearTraversal } from './traversals/linearTraversal';
 export { groupedTraversal } from './traversals/groupedTraversal';
 export { mergeModules } from './utils/mergeModules';
-export type { AutocompleteProps, AutocompleteState, Feature, MergedFeature, FeatureProps } from './types';
+export type { ComboboxProps, MultiSelectProps, Feature, MergedFeature, FeatureProps } from './types';
