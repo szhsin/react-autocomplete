@@ -1,6 +1,6 @@
 'use strict';
 
-var react = require('react');
+var React = require('react');
 
 const defaultEqual = (itemA, itemB) => itemA === itemB;
 const getId = (prefix, suffix) => prefix && prefix + suffix;
@@ -11,6 +11,14 @@ const ButtonProps = {
 
 const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
 
+let current = 0;
+const useIdShim = () => {
+  const [id, setId] = React.useState();
+  React.useEffect(() => setId(++current), []);
+  return id && `szh-ac${id}-`;
+};
+const useId = React.useId || useIdShim;
+
 const useAutocomplete = ({
   value,
   onChange,
@@ -19,11 +27,10 @@ const useAutocomplete = ({
   isItemSelected,
   ...passthrough
 }) => {
-  const inputRef = react.useRef(null);
-  const [tmpValue, setTmpValue] = react.useState();
-  const [open, setOpen] = react.useState(false);
-  const [focusItem, setFocusItem] = react.useState();
-  const id = react.useId();
+  const inputRef = React.useRef(null);
+  const [tmpValue, setTmpValue] = React.useState();
+  const [open, setOpen] = React.useState(false);
+  const [focusItem, setFocusItem] = React.useState();
   const state = {
     isItemSelected,
     inputRef,
@@ -33,7 +40,7 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
-    id,
+    id: useId(),
     tmpValue,
     setTmpValue,
     value,
@@ -113,7 +120,7 @@ const useMultiSelect = ({
   };
 };
 
-const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? react.useLayoutEffect : react.useEffect;
+const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? React.useLayoutEffect : React.useEffect;
 const findOverflowAncestor = element => {
   while (element) {
     element = element.parentElement;
@@ -131,8 +138,8 @@ const useAutoHeight = ({
   show,
   margin = 0
 }) => {
-  const [height, setHeight] = react.useState();
-  const computeHeight = react.useCallback(() => {
+  const [height, setHeight] = React.useState();
+  const computeHeight = React.useCallback(() => {
     const anchor = anchorRef.current;
     if (!anchor) return;
     const overflowAncestor = findOverflowAncestor(anchor);
@@ -146,7 +153,7 @@ const useAutoHeight = ({
   return [height, computeHeight];
 };
 
-const useMutableState = stateContainer => react.useState(stateContainer)[0];
+const useMutableState = stateContainer => React.useState(stateContainer)[0];
 
 const useFocusCapture = focusRef => {
   const mutable = useMutableState({});
@@ -434,9 +441,9 @@ const dropdownToggle = ({
   tmpValue
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const toggleRef = react.useRef(null);
+  const toggleRef = React.useRef(null);
   const inputValue = tmpValue || value || '';
-  react.useEffect(() => {
+  React.useEffect(() => {
     var _inputRef$current;
     if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
   }, [open, inputRef]);
@@ -484,7 +491,7 @@ const dropdown = (props = {}) => mergeModules(autocompleteLite({
 }), dropdownToggle(props));
 
 const inputFocus = () => () => {
-  const [focused, setFocused] = react.useState(false);
+  const [focused, setFocused] = React.useState(false);
   return {
     focused,
     getInputProps: () => ({

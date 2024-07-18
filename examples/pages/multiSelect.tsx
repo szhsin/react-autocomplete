@@ -37,6 +37,7 @@ export default function Home() {
   const groupedItems = getGroupedItems(value || '');
 
   const {
+    getLabelProps,
     getInputProps,
     getListProps,
     getItemProps,
@@ -122,6 +123,7 @@ export default function Home() {
         </button>
       </div>
 
+      <label {...getLabelProps()}>States</label>
       <div
         className={styles.multiInputWrapper + (focused ? ` ${styles.focused}` : '')}
         {...getInputWrapperProps()}
