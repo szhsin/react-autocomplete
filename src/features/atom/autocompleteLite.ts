@@ -4,7 +4,8 @@ import type {
   GetPropsWithRefFunctions,
   AutocompleteFeatureProps,
   FeatureState
-} from '../../common';
+} from '../../types';
+import { getId, ButtonProps } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
@@ -31,6 +32,7 @@ const autocompleteLite =
     getSelectedValue,
     onSelectChange,
     isEqual,
+    isItemSelected,
     isItemDisabled,
     isItemAction,
     onAction,
@@ -43,7 +45,9 @@ const autocompleteLite =
     setFocusItem,
     open,
     setOpen,
-    inputRef
+    inputRef,
+    items,
+    id
   }) => {
     const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
@@ -73,11 +77,18 @@ const autocompleteLite =
       }
     };
 
+    const listId = getId(id, 'l');
+    let ariaActivedescendant: string | undefined;
+    if (focusItem) {
+      const activeIndex = items.findIndex((item) => isEqual(item, focusItem));
+      if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
+    }
+
     return {
       isInputEmpty: !inputValue,
 
       getClearProps: () => ({
-        tabIndex: -1,
+        ...ButtonProps,
 
         onMouseDown: startCapture,
 
@@ -92,12 +103,17 @@ const autocompleteLite =
       }),
 
       getListProps: () => ({
+        id: listId,
+        role: 'listbox',
         onMouseDown: startCapture,
         onClick: stopCapture
       }),
 
-      getItemProps: ({ item }) => ({
-        ref: isEqual(focusItem, item) ? scrollIntoView : null,
+      getItemProps: ({ item, index }) => ({
+        id: getId(id, index),
+        role: 'option',
+        'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
+        ref: isEqual(item, focusItem) ? scrollIntoView : null,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));
@@ -106,8 +122,14 @@ const autocompleteLite =
       }),
 
       getInputProps: () => ({
+        type: 'text',
+        role: 'combobox',
+        autoComplete: 'off',
+        'aria-autocomplete': 'list',
+        'aria-expanded': open,
+        'aria-controls': listId,
+        'aria-activedescendant': ariaActivedescendant,
         ref: inputRef,
-
         value: inputValue,
 
         onChange: (e) => {

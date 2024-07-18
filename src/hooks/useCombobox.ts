@@ -1,4 +1,4 @@
-import type { ComboboxProps } from '../common';
+import type { ComboboxProps } from '../types';
 import { defaultEqual } from '../common';
 import { adaptGetItemValue } from '../utils/adaptGetItemValue';
 import { useAutocomplete } from './useAutocomplete';
@@ -15,6 +15,7 @@ const useCombobox = <T, FeatureYield extends object>({
   return useAutocomplete({
     ...passthrough,
     isEqual,
+    isItemSelected: (item) => isEqual(item, selected),
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: (newItem) => {

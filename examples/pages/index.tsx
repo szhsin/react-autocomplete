@@ -53,6 +53,7 @@ export default function Home() {
   const groupedItems = getGroupedItems(value || '');
 
   const {
+    getLabelProps,
     getInputProps,
     getListProps,
     getItemProps,
@@ -60,7 +61,8 @@ export default function Home() {
     getClearProps,
     open,
     focusItem,
-    isInputEmpty
+    isInputEmpty,
+    isItemSelected
   } = useCombobox({
     // traversal: linearTraversal({
     //   items,
@@ -109,6 +111,7 @@ export default function Home() {
   });
 
   // getInputProps().ref.current
+  let itemIndex = 0;
 
   return (
     <div className={styles.wrapper}>
@@ -203,6 +206,9 @@ export default function Home() {
           Sync value
         </button>
       </div>
+      <div>
+        <label {...getLabelProps()}>States</label>
+      </div>
       <input className={styles.input} {...getInputProps()} />
       {!isInputEmpty && (
         <button
@@ -253,9 +259,9 @@ export default function Home() {
                 key={item.abbr}
                 style={{
                   background: focusItem === item ? '#0a0' : 'none',
-                  textDecoration: item === selectedItem ? 'underline' : 'none'
+                  textDecoration: isItemSelected(item) ? 'underline' : 'none'
                 }}
-                {...getItemProps({ item })}
+                {...getItemProps({ item, index: itemIndex++ })}
               >
                 {item.name}
               </li>

@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions, FeatureProps } from '../../common';
+import type { Feature, GetPropsFunctions, FeatureProps } from '../../types';
 
 type AutoInlineFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'>>;
 
@@ -6,6 +6,8 @@ const autoInline =
   <T>({ getFocusItem }: Pick<FeatureProps<T>, 'getFocusItem'>): AutoInlineFeature<T> =>
   ({ getItemValue, setTmpValue, setFocusItem }) => ({
     getInputProps: () => ({
+      'aria-autocomplete': 'both',
+
       onChange: async ({ target, nativeEvent }) => {
         if ((nativeEvent as unknown as { inputType: string }).inputType !== 'insertText') {
           return;

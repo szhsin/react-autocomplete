@@ -82,6 +82,8 @@ export default function Dropdown() {
     computeHeight();
   }, [selectedItems, computeHeight]);
 
+  let itemIndex = 0;
+
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
@@ -168,7 +170,7 @@ export default function Dropdown() {
                     background: focusItem === item ? '#0a0' : 'none',
                     textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
                   }}
-                  {...getItemProps({ item })}
+                  {...getItemProps({ item, index: itemIndex++ })}
                 >
                   {item.name}
                 </li>

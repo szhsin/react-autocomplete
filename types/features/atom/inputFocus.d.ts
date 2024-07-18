@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions } from '../../common';
+import type { Feature, GetPropsFunctions } from '../../types';
 type InputFocusFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'> & {
     focused: boolean;
 }>;

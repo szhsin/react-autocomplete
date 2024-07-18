@@ -1,6 +1,6 @@
 {
   "name": "@szhsin/react-autocomplete",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "",
   "author": "Zheng Song",
   "license": "MIT",
@@ -45,8 +45,7 @@
     }
   },
   "peerDependencies": {
-    "react": "^16.14 || ^17.0 || ^18.0",
-    "react-dom": "^16.14 || ^17.0 || ^18.0"
+    "react": "^16.8 || ^17.0 || ^18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",

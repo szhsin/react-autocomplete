@@ -1,23 +1,38 @@
 'use strict';
 
-var react = require('react');
+var React = require('react');
 
 const defaultEqual = (itemA, itemB) => itemA === itemB;
+const getId = (prefix, suffix) => prefix && prefix + suffix;
+const ButtonProps = {
+  tabIndex: -1,
+  type: 'button'
+};
 
 const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
+
+let current = 0;
+const useIdShim = () => {
+  const [id, setId] = React.useState();
+  React.useEffect(() => setId(++current), []);
+  return id && `szh-ac${id}-`;
+};
+const useId = React.useId || useIdShim;
 
 const useAutocomplete = ({
   value,
   onChange,
   feature: useFeature,
   traversal: useTraversal,
+  isItemSelected,
   ...passthrough
 }) => {
-  const inputRef = react.useRef(null);
-  const [tmpValue, setTmpValue] = react.useState();
-  const [open, setOpen] = react.useState(false);
-  const [focusItem, setFocusItem] = react.useState();
+  const inputRef = React.useRef(null);
+  const [tmpValue, setTmpValue] = React.useState();
+  const [open, setOpen] = React.useState(false);
+  const [focusItem, setFocusItem] = React.useState();
   const state = {
+    isItemSelected,
     inputRef,
     focusItem,
     setFocusItem,
@@ -25,6 +40,7 @@ const useAutocomplete = ({
     setOpen
   };
   const contextual = {
+    id: useId(),
     tmpValue,
     setTmpValue,
     value,
@@ -54,6 +70,7 @@ const useCombobox = ({
   return useAutocomplete({
     ...passthrough,
     isEqual,
+    isItemSelected: item => isEqual(item, selected),
     getItemValue,
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: newItem => {
@@ -86,6 +103,7 @@ const useMultiSelect = ({
     ...useAutocomplete({
       ...passthrough,
       isEqual,
+      isItemSelected: item => selected.findIndex(s => isEqual(item, s)) >= 0,
       getItemValue: adaptGetItemValue(getItemValue),
       getSelectedValue: () => '',
       onSelectChange: newItem => {
@@ -102,7 +120,7 @@ const useMultiSelect = ({
   };
 };
 
-const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? react.useLayoutEffect : react.useEffect;
+const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? React.useLayoutEffect : React.useEffect;
 const findOverflowAncestor = element => {
   while (element) {
     element = element.parentElement;
@@ -120,8 +138,8 @@ const useAutoHeight = ({
   show,
   margin = 0
 }) => {
-  const [height, setHeight] = react.useState();
-  const computeHeight = react.useCallback(() => {
+  const [height, setHeight] = React.useState();
+  const computeHeight = React.useCallback(() => {
     const anchor = anchorRef.current;
     if (!anchor) return;
     const overflowAncestor = findOverflowAncestor(anchor);
@@ -135,7 +153,7 @@ const useAutoHeight = ({
   return [height, computeHeight];
 };
 
-const useMutableState = stateContainer => react.useState(stateContainer)[0];
+const useMutableState = stateContainer => React.useState(stateContainer)[0];
 
 const useFocusCapture = focusRef => {
   const mutable = useMutableState({});
@@ -169,6 +187,7 @@ const autocompleteLite = ({
   getSelectedValue,
   onSelectChange,
   isEqual,
+  isItemSelected,
   isItemDisabled,
   isItemAction,
   onAction,
@@ -181,7 +200,9 @@ const autocompleteLite = ({
   setFocusItem,
   open,
   setOpen,
-  inputRef
+  inputRef,
+  items,
+  id
 }) => {
   var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
@@ -205,10 +226,16 @@ const autocompleteLite = ({
       if (select) onChange();
     }
   };
+  const listId = getId(id, 'l');
+  let ariaActivedescendant;
+  if (focusItem) {
+    const activeIndex = items.findIndex(item => isEqual(item, focusItem));
+    if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
+  }
   return {
     isInputEmpty: !inputValue,
     getClearProps: () => ({
-      tabIndex: -1,
+      ...ButtonProps,
       onMouseDown: startCapture,
       onClick: () => {
         stopCapture();
@@ -220,13 +247,19 @@ const autocompleteLite = ({
       }
     }),
     getListProps: () => ({
+      id: listId,
+      role: 'listbox',
       onMouseDown: startCapture,
       onClick: stopCapture
     }),
     getItemProps: ({
-      item
+      item,
+      index
     }) => ({
-      ref: isEqual(focusItem, item) ? scrollIntoView : null,
+      id: getId(id, index),
+      role: 'option',
+      'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
+      ref: isEqual(item, focusItem) ? scrollIntoView : null,
       onClick: () => {
         if (!(isItemDisabled != null && isItemDisabled(item))) {
           resetState(selectItemOrAction(item));
@@ -234,6 +267,13 @@ const autocompleteLite = ({
       }
     }),
     getInputProps: () => ({
+      type: 'text',
+      role: 'combobox',
+      autoComplete: 'off',
+      'aria-autocomplete': 'list',
+      'aria-expanded': open,
+      'aria-controls': listId,
+      'aria-activedescendant': ariaActivedescendant,
       ref: inputRef,
       value: inputValue,
       onChange: e => {
@@ -342,6 +382,7 @@ const useToggle = (open, setOpen) => {
 };
 
 const inputToggle = () => ({
+  id,
   inputRef,
   open,
   setOpen
@@ -350,7 +391,9 @@ const inputToggle = () => ({
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
-      tabIndex: -1,
+      ...ButtonProps,
+      'aria-expanded': open,
+      'aria-controls': getId(id, 'l'),
       onMouseDown: () => {
         startToggle();
         startCapture();
@@ -366,7 +409,26 @@ const inputToggle = () => ({
   };
 };
 
-const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle());
+const label = () => ({
+  id
+}) => {
+  const inputId = getId(id, 'i');
+  const labelId = getId(id, 'a');
+  return {
+    getLabelProps: () => ({
+      id: labelId,
+      htmlFor: inputId
+    }),
+    getInputProps: () => ({
+      id: inputId
+    }),
+    getListProps: () => ({
+      'aria-labelledby': labelId
+    })
+  };
+};
+
+const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle(), label());
 
 const dropdownToggle = ({
   closeOnSelect = true
@@ -379,9 +441,9 @@ const dropdownToggle = ({
   tmpValue
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const toggleRef = react.useRef(null);
+  const toggleRef = React.useRef(null);
   const inputValue = tmpValue || value || '';
-  react.useEffect(() => {
+  React.useEffect(() => {
     var _inputRef$current;
     if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
   }, [open, inputRef]);
@@ -392,6 +454,9 @@ const dropdownToggle = ({
   return {
     isInputEmpty: !inputValue,
     getToggleProps: () => ({
+      type: 'button',
+      'aria-haspopup': true,
+      'aria-expanded': open,
       ref: toggleRef,
       onMouseDown: startToggle,
       onClick: stopToggle,
@@ -426,7 +491,7 @@ const dropdown = (props = {}) => mergeModules(autocompleteLite({
 }), dropdownToggle(props));
 
 const inputFocus = () => () => {
-  const [focused, setFocused] = react.useState(false);
+  const [focused, setFocused] = React.useState(false);
   return {
     focused,
     getInputProps: () => ({
@@ -473,6 +538,7 @@ const autoInline = ({
   setFocusItem
 }) => ({
   getInputProps: () => ({
+    'aria-autocomplete': 'both',
     onChange: async ({
       target,
       nativeEvent
@@ -507,15 +573,12 @@ const linearTraversal = ({
   isItemDisabled,
   isEqual
 }) => {
-  const mutable = useMutableState({
-    a: -1
-  });
   return {
+    items,
     traverse: isForward => {
-      if (!focusItem) mutable.a = -1;else if (!isEqual(focusItem, items[mutable.a])) mutable.a = items.findIndex(item => isEqual(focusItem, item));
       const baseIndex = traverseInput ? -1 : 0;
       let newItem,
-        nextIndex = mutable.a,
+        nextIndex = items.findIndex(item => isEqual(focusItem, item)),
         itemCounter = 0;
       const itemLength = items.length;
       for (;;) {
@@ -528,7 +591,6 @@ const linearTraversal = ({
         if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
         if (++itemCounter >= itemLength) return focusItem;
       }
-      mutable.a = nextIndex;
       setFocusItem(newItem);
       return newItem;
     }

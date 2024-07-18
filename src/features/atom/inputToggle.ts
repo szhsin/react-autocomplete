@@ -1,4 +1,5 @@
-import type { Feature, GetPropsFunctions } from '../../common';
+import type { Feature, GetPropsFunctions } from '../../types';
+import { getId, ButtonProps } from '../../common';
 import { useToggle } from '../../hooks/useToggle';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
@@ -9,13 +10,15 @@ type InputToggleFeature<T> = Feature<
 
 const inputToggle =
   <T>(): InputToggleFeature<T> =>
-  ({ inputRef, open, setOpen }) => {
+  ({ id, inputRef, open, setOpen }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
     const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
     return {
       getToggleProps: () => ({
-        tabIndex: -1,
+        ...ButtonProps,
+        'aria-expanded': open,
+        'aria-controls': getId(id, 'l'),
 
         onMouseDown: () => {
           startToggle();

@@ -5,7 +5,7 @@ import type {
   GetPropsFunctions,
   GetPropsWithRefFunctions,
   FeatureState
-} from '../../common';
+} from '../../types';
 import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<
@@ -36,6 +36,9 @@ const dropdownToggle =
       isInputEmpty: !inputValue,
 
       getToggleProps: () => ({
+        type: 'button',
+        'aria-haspopup': true,
+        'aria-expanded': open,
         ref: toggleRef,
 
         onMouseDown: startToggle,

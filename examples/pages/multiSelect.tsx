@@ -37,6 +37,7 @@ export default function Home() {
   const groupedItems = getGroupedItems(value || '');
 
   const {
+    getLabelProps,
     getInputProps,
     getListProps,
     getItemProps,
@@ -76,6 +77,7 @@ export default function Home() {
   });
 
   // getInputProps().ref.current
+  let itemIndex = 0;
 
   return (
     <div className={styles.wrapper}>
@@ -121,6 +123,7 @@ export default function Home() {
         </button>
       </div>
 
+      <label {...getLabelProps()}>States</label>
       <div
         className={styles.multiInputWrapper + (focused ? ` ${styles.focused}` : '')}
         {...getInputWrapperProps()}
@@ -180,7 +183,7 @@ export default function Home() {
                   background: focusItem === item ? '#0a0' : 'none',
                   textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
                 }}
-                {...getItemProps({ item })}
+                {...getItemProps({ item, index: itemIndex++ })}
               >
                 {item.name}
               </li>

@@ -18,9 +18,9 @@ export { linearTraversal } from './traversals/linearTraversal';
 export { groupedTraversal } from './traversals/groupedTraversal';
 export { mergeModules } from './utils/mergeModules';
 export type {
-  AutocompleteProps,
-  AutocompleteState,
+  ComboboxProps,
+  MultiSelectProps,
   Feature,
   MergedFeature,
   FeatureProps
-} from './common';
+} from './types';
