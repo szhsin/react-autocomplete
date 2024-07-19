@@ -3,8 +3,7 @@ import {
   useCombobox,
   autocomplete,
   supercomplete,
-  linearTraversal,
-  groupedTraversal
+  getGroupedItems
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
@@ -14,7 +13,7 @@ type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
 const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
 
-const getGroupedItems = (value: string) =>
+const filterGroupedItems = (value: string) =>
   LIST_GROUP.map((group) => ({
     ...group,
     states: group.states.filter((item) =>
@@ -50,7 +49,7 @@ export default function Home() {
     rovingText
   };
 
-  const groupedItems = getGroupedItems(value || '');
+  const groupedItems = filterGroupedItems(value || '');
 
   const {
     getLabelProps,
@@ -86,11 +85,11 @@ export default function Home() {
         ? supercomplete({
             ...featureProps,
             getFocusItem: (newValue) =>
-              getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+              filterGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
             // getInlineItem: (newValue) =>
             //   new Promise((res) =>
             //     setTimeout(
-            //       () => res(getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
+            //       () => res(filterGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
             //       1000
             //     )
             //   )
@@ -99,14 +98,13 @@ export default function Home() {
         ? autocompleteFocus({
             ...featureProps,
             getFocusItem: (newValue) =>
-              getGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+              filterGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
           })
         : autocomplete(featureProps),
 
-    traversal: groupedTraversal({
-      traverseInput: true,
-      groupedItems,
-      getItemsInGroup: (gp) => gp.states
+    items: getGroupedItems({
+      groups: groupedItems,
+      getItemsInGroup: (group) => group.states
     })
   });
 

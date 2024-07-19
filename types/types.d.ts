@@ -34,8 +34,9 @@ export interface PassthroughProps<T> {
     isItemDisabled?: (item: T) => boolean;
     isItemAction?: (item: T) => boolean;
     onAction?: (item: T) => void;
-    value: string | undefined;
+    value?: string | undefined;
     onChange: (value?: string | undefined) => void;
+    items: T[];
 }
 export interface AdapterProps<T> extends ContextualOrReturn<T> {
     getItemValue: (item: T | undefined | null) => string;
@@ -51,13 +52,6 @@ export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equ
 export interface FeatureState {
     isInputEmpty: boolean;
 }
-export interface TraversalProps {
-    traverseInput?: boolean;
-}
-export type Traversal<T> = (cx: Contextual<T>) => {
-    traverse: (isForward: boolean) => T | null | undefined;
-    items: T[];
-};
 export interface FeatureProps<T> {
     rovingText?: boolean;
     select?: boolean;
@@ -68,13 +62,12 @@ export interface FeatureProps<T> {
     getFocusItem: (value: string) => T | undefined | null | void | Promise<T | undefined | null | void>;
 }
 export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'>;
-export type Feature<T, Yield extends object> = (cx: Contextual<T> & ReturnType<Traversal<T>>) => Yield;
+export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;
 export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>] ? S : Features extends readonly [Feature<T, infer F>, ...infer R] ? F & MergedFeatureYield<T, R> : never;
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
-export type BaseProps<T, FeatureYield extends object> = Partial<PassthroughProps<T>> & {
+export interface BaseProps<T, FeatureYield extends object> extends PassthroughProps<T> {
     feature: Feature<T, FeatureYield>;
-    traversal: Traversal<T>;
-};
+}
 export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> & AdapterProps<T> & Equality<T>;
 export type GetItemValue<T> = {
     getItemValue: (item: T) => string;

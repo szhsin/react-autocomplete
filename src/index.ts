@@ -14,8 +14,7 @@ export {
   multiSelectDropdown
 } from './features/molecule/multiSelectDropdown';
 export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
-export { linearTraversal } from './traversals/linearTraversal';
-export { groupedTraversal } from './traversals/groupedTraversal';
+export { getGroupedItems } from './utils/getGroupedItems';
 export { mergeModules } from './utils/mergeModules';
 export type {
   ComboboxProps,

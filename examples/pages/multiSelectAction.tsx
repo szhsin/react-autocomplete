@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  useMultiSelect,
-  multiSelect,
-  linearTraversal,
-  groupedTraversal
-} from '@szhsin/react-autocomplete';
+import { useMultiSelect, multiSelect, getGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
 
@@ -15,7 +10,7 @@ const getItemValue = (item: Item) => item.name;
 const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
 let addItemCounter = 1;
 
-const getGroupedItems = (value: string) =>
+const filterGroupedItems = (value: string) =>
   LIST_GROUP.map((group) => ({
     ...group,
     states: group.states.filter((item) =>
@@ -40,7 +35,7 @@ export default function Home() {
   // const [items, setItems] = useState(US_STATES);
   // const feature = supercomplete<{ name: string; abbr: string }>();
 
-  const groupedItems = getGroupedItems(value || '');
+  const groupedItems = filterGroupedItems(value || '');
   if (value) {
     groupedItems.push({
       groupKey: 'Add',
@@ -90,10 +85,9 @@ export default function Home() {
     },
 
     feature: multiSelect({ rovingText, closeOnSelect }),
-    traversal: groupedTraversal({
-      traverseInput: true,
-      groupedItems,
-      getItemsInGroup: (gp) => gp.states
+    items: getGroupedItems({
+      groups: groupedItems,
+      getItemsInGroup: (group) => group.states
     })
   });
 

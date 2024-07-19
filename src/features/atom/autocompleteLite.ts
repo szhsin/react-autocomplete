@@ -36,7 +36,6 @@ const autocompleteLite =
     isItemDisabled,
     isItemAction,
     onAction,
-    traverse,
     value,
     onChange,
     tmpValue,
@@ -75,6 +74,27 @@ const autocompleteLite =
         setOpen(false);
         if (select) onChange();
       }
+    };
+
+    const traverse = (isForward: boolean) => {
+      const baseIndex = rovingText ? -1 : 0;
+      let newItem: T | undefined,
+        nextIndex = items.findIndex((item) => isEqual(focusItem, item)),
+        itemCounter = 0;
+      const itemLength = items.length;
+      for (;;) {
+        if (isForward) {
+          if (++nextIndex >= itemLength) nextIndex = baseIndex;
+        } else {
+          if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+        }
+        newItem = items[nextIndex];
+        if (!newItem || !isItemDisabled?.(newItem)) break;
+        if (++itemCounter >= itemLength) return;
+      }
+
+      setFocusItem(newItem);
+      if (rovingText) setTmpValue(getItemValue(newItem));
     };
 
     const listId = getId(id, 'l');
@@ -160,8 +180,7 @@ const autocompleteLite =
             case 'ArrowDown':
               e.preventDefault();
               if (open) {
-                const nextItem = traverse(e.key != 'ArrowUp');
-                if (rovingText) setTmpValue(getItemValue(nextItem));
+                traverse(e.key != 'ArrowUp');
               } else {
                 setOpen(true);
               }
