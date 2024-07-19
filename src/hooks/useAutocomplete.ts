@@ -1,12 +1,10 @@
 import { useState, useRef } from 'react';
 import { useId } from './useId';
-import type { AutocompleteProps, AutocompleteReturn, Contextual } from '../types';
+import type { AutocompleteProps, AutocompleteReturn } from '../types';
 
 const useAutocomplete = <T, FeatureYield extends object>({
-  value,
   onChange,
   feature: useFeature,
-  traversal: useTraversal,
   isItemSelected,
   ...passthrough
 }: AutocompleteProps<T, FeatureYield>) => {
@@ -24,17 +22,14 @@ const useAutocomplete = <T, FeatureYield extends object>({
     setOpen
   };
 
-  const contextual: Contextual<T> = {
+  const featureYield = useFeature({
     id: useId(),
     tmpValue,
     setTmpValue,
-    value,
-    onChange: (newValue) => value != newValue && onChange?.(newValue),
+    onChange: (newValue) => passthrough.value != newValue && onChange?.(newValue),
     ...passthrough,
     ...state
-  };
-
-  const featureYield = useFeature({ ...contextual, ...useTraversal(contextual) });
+  });
 
   return {
     ...state,

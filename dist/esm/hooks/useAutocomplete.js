@@ -2,10 +2,8 @@ import { useRef, useState } from 'react';
 import { useId } from './useId.js';
 
 const useAutocomplete = ({
-  value,
   onChange,
   feature: useFeature,
-  traversal: useTraversal,
   isItemSelected,
   ...passthrough
 }) => {
@@ -21,18 +19,13 @@ const useAutocomplete = ({
     open,
     setOpen
   };
-  const contextual = {
+  const featureYield = useFeature({
     id: useId(),
     tmpValue,
     setTmpValue,
-    value,
-    onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
+    onChange: newValue => passthrough.value != newValue && (onChange == null ? void 0 : onChange(newValue)),
     ...passthrough,
     ...state
-  };
-  const featureYield = useFeature({
-    ...contextual,
-    ...useTraversal(contextual)
   });
   return {
     ...state,

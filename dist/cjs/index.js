@@ -20,10 +20,8 @@ const useIdShim = () => {
 const useId = React.useId || useIdShim;
 
 const useAutocomplete = ({
-  value,
   onChange,
   feature: useFeature,
-  traversal: useTraversal,
   isItemSelected,
   ...passthrough
 }) => {
@@ -39,18 +37,13 @@ const useAutocomplete = ({
     open,
     setOpen
   };
-  const contextual = {
+  const featureYield = useFeature({
     id: useId(),
     tmpValue,
     setTmpValue,
-    value,
-    onChange: newValue => value != newValue && (onChange == null ? void 0 : onChange(newValue)),
+    onChange: newValue => passthrough.value != newValue && (onChange == null ? void 0 : onChange(newValue)),
     ...passthrough,
     ...state
-  };
-  const featureYield = useFeature({
-    ...contextual,
-    ...useTraversal(contextual)
   });
   return {
     ...state,
@@ -191,7 +184,6 @@ const autocompleteLite = ({
   isItemDisabled,
   isItemAction,
   onAction,
-  traverse,
   value,
   onChange,
   tmpValue,
@@ -225,6 +217,25 @@ const autocompleteLite = ({
       setOpen(false);
       if (select) onChange();
     }
+  };
+  const traverse = isForward => {
+    const baseIndex = rovingText ? -1 : 0;
+    let newItem,
+      nextIndex = items.findIndex(item => isEqual(focusItem, item)),
+      itemCounter = 0;
+    const itemLength = items.length;
+    for (;;) {
+      if (isForward) {
+        if (++nextIndex >= itemLength) nextIndex = baseIndex;
+      } else {
+        if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+      }
+      newItem = items[nextIndex];
+      if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
+      if (++itemCounter >= itemLength) return;
+    }
+    setFocusItem(newItem);
+    if (rovingText) setTmpValue(getItemValue(newItem));
   };
   const listId = getId(id, 'l');
   let ariaActivedescendant;
@@ -299,8 +310,7 @@ const autocompleteLite = ({
           case 'ArrowDown':
             e.preventDefault();
             if (open) {
-              const nextItem = traverse(e.key != 'ArrowUp');
-              if (rovingText) setTmpValue(getItemValue(nextItem));
+              traverse(e.key != 'ArrowUp');
             } else {
               setOpen(true);
             }
@@ -564,59 +574,20 @@ const supercomplete = props => mergeModules(autocomplete({
   rovingText: true
 }), autoInline(props));
 
-const linearTraversal = ({
-  traverseInput,
-  items
-}) => ({
-  focusItem,
-  setFocusItem,
-  isItemDisabled,
-  isEqual
-}) => {
-  return {
-    items,
-    traverse: isForward => {
-      const baseIndex = traverseInput ? -1 : 0;
-      let newItem,
-        nextIndex = items.findIndex(item => isEqual(focusItem, item)),
-        itemCounter = 0;
-      const itemLength = items.length;
-      for (;;) {
-        if (isForward) {
-          if (++nextIndex >= itemLength) nextIndex = baseIndex;
-        } else {
-          if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
-        }
-        newItem = items[nextIndex];
-        if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
-        if (++itemCounter >= itemLength) return focusItem;
-      }
-      setFocusItem(newItem);
-      return newItem;
-    }
-  };
-};
-
 const isArray = Array.isArray;
-const groupedTraversal = ({
-  groupedItems,
-  getItemsInGroup,
-  ...restProps
+const getGroupedItems = ({
+  groups,
+  getItemsInGroup
 }) => {
-  const groups = isArray(groupedItems) ? groupedItems : Object.values(groupedItems);
-  const items = groups.reduce((accu, group) => accu.concat(isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : []), []);
-  return linearTraversal({
-    ...restProps,
-    items
-  });
+  const groupArray = isArray(groups) ? groups : Object.values(groups);
+  return groupArray.reduce((accu, group) => accu.concat(isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : []), []);
 };
 
 exports.autoFocus = autoFocus;
 exports.autocomplete = autocomplete;
 exports.autocompleteLite = autocompleteLite;
 exports.dropdown = dropdown;
-exports.groupedTraversal = groupedTraversal;
-exports.linearTraversal = linearTraversal;
+exports.getGroupedItems = getGroupedItems;
 exports.mergeModules = mergeModules;
 exports.multiSelect = multiSelect;
 exports.multiSelectDropdown = multiSelectDropdown;

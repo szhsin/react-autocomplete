@@ -8,7 +8,6 @@ export { type DropdownFeature, dropdown } from './features/molecule/dropdown';
 export { type MultiSelectFeature, multiSelect } from './features/molecule/multiSelect';
 export { type MultiSelectDropdownFeature, multiSelectDropdown } from './features/molecule/multiSelectDropdown';
 export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
-export { linearTraversal } from './traversals/linearTraversal';
-export { groupedTraversal } from './traversals/groupedTraversal';
+export { getGroupedItems } from './utils/getGroupedItems';
 export { mergeModules } from './utils/mergeModules';
 export type { ComboboxProps, MultiSelectProps, Feature, MergedFeature, FeatureProps } from './types';

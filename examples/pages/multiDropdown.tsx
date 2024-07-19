@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   useMultiSelect,
   multiSelectDropdown,
-  groupedTraversal,
+  getGroupedItems,
   useAutoHeight
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
@@ -12,7 +12,7 @@ type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
 const isItemDisabled = ({ abbr }: Item) => abbr.startsWith('CO');
 
-const getGroupedItems = (value: string = '') =>
+const filterGroupedItems = (value: string = '') =>
   LIST_GROUP.map((group) => ({
     ...group,
     states: group.states.filter((item) =>
@@ -26,7 +26,7 @@ export default function Dropdown() {
   const [value, setValue] = useState<string | undefined>('');
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
-  const groupedItems = getGroupedItems(value);
+  const groupedItems = filterGroupedItems(value);
 
   const {
     getInputWrapperProps,
@@ -56,17 +56,16 @@ export default function Dropdown() {
       //   item.name.toLowerCase().startsWith(value.toLowerCase())
       // ).find((item) => !isItemDisabled(item));
       // // setItems(items);
-      // const item = getGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
+      // const item = filterGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
       // item && inlineComplete({ item });
     },
     selected: selectedItems,
     onSelectChange: setSelectedItems,
     // feature: autocomplete({ constricted, rovingText }),
     feature: multiSelectDropdown({ rovingText, closeOnSelect }),
-    traversal: groupedTraversal({
-      traverseInput: true,
-      groupedItems,
-      getItemsInGroup: (gp) => gp.states
+    items: getGroupedItems({
+      groups: groupedItems,
+      getItemsInGroup: (group) => group.states
     })
   });
 

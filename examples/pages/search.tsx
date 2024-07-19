@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCombobox, supercomplete, linearTraversal } from '@szhsin/react-autocomplete';
+import { useCombobox, supercomplete } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { US_STATES } from '../data';
 
@@ -36,7 +36,7 @@ export default function Home() {
         )[0]
     }),
 
-    traversal: linearTraversal({ items, traverseInput: true })
+    items
   });
 
   return (
