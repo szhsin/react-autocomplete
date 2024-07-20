@@ -6,16 +6,16 @@ const useMultiSelect = ({
   isEqual = defaultEqual,
   getItemValue,
   selected,
-  onSelectChange: _onSelectChange = () => {},
+  onSelectChange,
   flipOnSelect,
   ...passthrough
 }) => {
-  const removeItem = itemToRemove => _onSelectChange(selected.filter(item => !isEqual(itemToRemove, item)));
+  const removeItem = itemToRemove => onSelectChange?.(selected.filter(item => !isEqual(itemToRemove, item)));
   const removeSelect = item => {
     if (item) {
       removeItem(item);
     } else {
-      selected.length && _onSelectChange(selected.slice(0, selected.length - 1));
+      selected.length && onSelectChange?.(selected.slice(0, selected.length - 1));
     }
   };
   return {
@@ -28,7 +28,7 @@ const useMultiSelect = ({
       onSelectChange: newItem => {
         if (!newItem) return;
         if (selected.findIndex(item => isEqual(item, newItem)) < 0) {
-          _onSelectChange([...selected, newItem]);
+          onSelectChange?.([...selected, newItem]);
         } else if (flipOnSelect) {
           removeItem(newItem);
         }

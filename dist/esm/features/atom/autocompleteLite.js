@@ -1,7 +1,7 @@
 import { ButtonProps, getId } from '../../common.js';
 import { useFocusCapture } from '../../hooks/useFocusCapture.js';
 
-const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
+const scrollIntoView = element => element?.scrollIntoView({
   block: 'nearest'
 });
 const autocompleteLite = ({
@@ -32,18 +32,17 @@ const autocompleteLite = ({
   items,
   id
 }) => {
-  var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
-  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
+  const inputValue = (tmpValue || value) ?? getSelectedValue();
   const selectItemOrAction = (item, noAction) => {
-    if (isItemAction != null && isItemAction(item)) {
-      !noAction && (onAction == null ? void 0 : onAction(item));
+    if (isItemAction?.(item)) {
+      !noAction && onAction?.(item);
       return true;
     }
     const itemValue = getItemValue(item);
     if (!select) onChange(itemValue);
     const endIndex = itemValue.length;
-    inputRef.current.setSelectionRange(endIndex, endIndex);
+    inputRef.current?.setSelectionRange(endIndex, endIndex);
     onSelectChange(item);
   };
   const resetState = shouldClose => {
@@ -67,7 +66,7 @@ const autocompleteLite = ({
         if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
       }
       newItem = items[nextIndex];
-      if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
+      if (!newItem || !isItemDisabled?.(newItem)) break;
       if (++itemCounter >= itemLength) return;
     }
     setFocusItem(newItem);
@@ -108,7 +107,7 @@ const autocompleteLite = ({
       'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
       ref: isEqual(item, focusItem) ? scrollIntoView : null,
       onClick: () => {
-        if (!(isItemDisabled != null && isItemDisabled(item))) {
+        if (!isItemDisabled?.(item)) {
           resetState(selectItemOrAction(item));
         }
       }

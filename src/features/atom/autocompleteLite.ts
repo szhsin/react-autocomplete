@@ -61,7 +61,7 @@ const autocompleteLite =
       const itemValue = getItemValue(item);
       if (!select) onChange(itemValue);
       const endIndex = itemValue.length;
-      inputRef.current!.setSelectionRange(endIndex, endIndex);
+      inputRef.current?.setSelectionRange(endIndex, endIndex);
       // We place onSelectChange after onChange to give user an opportunity
       // to manipulate the `value` state
       onSelectChange(item);

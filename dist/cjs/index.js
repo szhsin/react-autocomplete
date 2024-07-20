@@ -41,7 +41,7 @@ const useAutocomplete = ({
     id: useId(),
     tmpValue,
     setTmpValue,
-    onChange: newValue => passthrough.value != newValue && (onChange == null ? void 0 : onChange(newValue)),
+    onChange: newValue => passthrough.value != newValue && onChange?.(newValue),
     ...passthrough,
     ...state
   });
@@ -68,9 +68,9 @@ const useCombobox = ({
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: newItem => {
       if (!isEqual(newItem, selected)) {
-        onSelectChange == null || onSelectChange(newItem);
+        onSelectChange?.(newItem);
       } else if (flipOnSelect) {
-        onSelectChange == null || onSelectChange();
+        onSelectChange?.();
       }
     }
   });
@@ -80,16 +80,16 @@ const useMultiSelect = ({
   isEqual = defaultEqual,
   getItemValue,
   selected,
-  onSelectChange: _onSelectChange = () => {},
+  onSelectChange,
   flipOnSelect,
   ...passthrough
 }) => {
-  const removeItem = itemToRemove => _onSelectChange(selected.filter(item => !isEqual(itemToRemove, item)));
+  const removeItem = itemToRemove => onSelectChange?.(selected.filter(item => !isEqual(itemToRemove, item)));
   const removeSelect = item => {
     if (item) {
       removeItem(item);
     } else {
-      selected.length && _onSelectChange(selected.slice(0, selected.length - 1));
+      selected.length && onSelectChange?.(selected.slice(0, selected.length - 1));
     }
   };
   return {
@@ -102,7 +102,7 @@ const useMultiSelect = ({
       onSelectChange: newItem => {
         if (!newItem) return;
         if (selected.findIndex(item => isEqual(item, newItem)) < 0) {
-          _onSelectChange([...selected, newItem]);
+          onSelectChange?.([...selected, newItem]);
         } else if (flipOnSelect) {
           removeItem(newItem);
         }
@@ -154,18 +154,14 @@ const useFocusCapture = focusRef => {
     if (document.activeElement === focusRef.current) mutable.a = 1;
   }, () => {
     if (mutable.a) {
-      var _focusRef$current;
       mutable.a = 0;
-      (_focusRef$current = focusRef.current) == null || _focusRef$current.focus();
+      focusRef.current?.focus();
       return true;
     }
-  }, () => {
-    var _focusRef$current2;
-    return (_focusRef$current2 = focusRef.current) == null ? void 0 : _focusRef$current2.focus();
-  }];
+  }, () => focusRef.current?.focus()];
 };
 
-const scrollIntoView = element => element == null ? void 0 : element.scrollIntoView({
+const scrollIntoView = element => element?.scrollIntoView({
   block: 'nearest'
 });
 const autocompleteLite = ({
@@ -196,18 +192,17 @@ const autocompleteLite = ({
   items,
   id
 }) => {
-  var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
-  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
+  const inputValue = (tmpValue || value) ?? getSelectedValue();
   const selectItemOrAction = (item, noAction) => {
-    if (isItemAction != null && isItemAction(item)) {
-      !noAction && (onAction == null ? void 0 : onAction(item));
+    if (isItemAction?.(item)) {
+      !noAction && onAction?.(item);
       return true;
     }
     const itemValue = getItemValue(item);
     if (!select) onChange(itemValue);
     const endIndex = itemValue.length;
-    inputRef.current.setSelectionRange(endIndex, endIndex);
+    inputRef.current?.setSelectionRange(endIndex, endIndex);
     onSelectChange(item);
   };
   const resetState = shouldClose => {
@@ -231,7 +226,7 @@ const autocompleteLite = ({
         if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
       }
       newItem = items[nextIndex];
-      if (!newItem || !(isItemDisabled != null && isItemDisabled(newItem))) break;
+      if (!newItem || !isItemDisabled?.(newItem)) break;
       if (++itemCounter >= itemLength) return;
     }
     setFocusItem(newItem);
@@ -272,7 +267,7 @@ const autocompleteLite = ({
       'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
       ref: isEqual(item, focusItem) ? scrollIntoView : null,
       onClick: () => {
-        if (!(isItemDisabled != null && isItemDisabled(item))) {
+        if (!isItemDisabled?.(item)) {
           resetState(selectItemOrAction(item));
         }
       }
@@ -454,13 +449,9 @@ const dropdownToggle = ({
   const toggleRef = React.useRef(null);
   const inputValue = tmpValue || value || '';
   React.useEffect(() => {
-    var _inputRef$current;
-    if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+    if (open) inputRef.current?.focus();
   }, [open, inputRef]);
-  const focusToggle = () => setTimeout(() => {
-    var _toggleRef$current;
-    return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
-  }, 0);
+  const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
   return {
     isInputEmpty: !inputValue,
     getToggleProps: () => ({
@@ -523,7 +514,7 @@ const multiInput = () => ({
     }),
     getInputProps: () => ({
       onBlur: inCapture,
-      onKeyDown: e => !e.target.value && e.key === 'Backspace' && (removeSelect == null ? void 0 : removeSelect())
+      onKeyDown: e => !e.target.value && e.key === 'Backspace' && removeSelect?.()
     })
   };
 };

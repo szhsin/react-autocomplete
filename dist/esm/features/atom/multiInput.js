@@ -12,7 +12,7 @@ const multiInput = () => ({
     }),
     getInputProps: () => ({
       onBlur: inCapture,
-      onKeyDown: e => !e.target.value && e.key === 'Backspace' && (removeSelect == null ? void 0 : removeSelect())
+      onKeyDown: e => !e.target.value && e.key === 'Backspace' && removeSelect?.()
     })
   };
 };
