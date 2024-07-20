@@ -23,7 +23,7 @@ const useAutocomplete = ({
     id: useId(),
     tmpValue,
     setTmpValue,
-    onChange: newValue => passthrough.value != newValue && (onChange == null ? void 0 : onChange(newValue)),
+    onChange: newValue => passthrough.value != newValue && onChange?.(newValue),
     ...passthrough,
     ...state
   });

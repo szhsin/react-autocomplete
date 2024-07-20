@@ -45,7 +45,7 @@ export interface PassthroughProps<T> {
   isItemDisabled?: (item: T) => boolean;
   isItemAction?: (item: T) => boolean;
   onAction?: (item: T) => void;
-  value?: string | undefined;
+  value: string | undefined;
   onChange: (value?: string | undefined) => void;
   items: T[];
 }

@@ -15,13 +15,9 @@ const dropdownToggle = ({
   const toggleRef = useRef(null);
   const inputValue = tmpValue || value || '';
   useEffect(() => {
-    var _inputRef$current;
-    if (open) (_inputRef$current = inputRef.current) == null || _inputRef$current.focus();
+    if (open) inputRef.current?.focus();
   }, [open, inputRef]);
-  const focusToggle = () => setTimeout(() => {
-    var _toggleRef$current;
-    return (_toggleRef$current = toggleRef.current) == null ? void 0 : _toggleRef$current.focus();
-  }, 0);
+  const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
   return {
     isInputEmpty: !inputValue,
     getToggleProps: () => ({

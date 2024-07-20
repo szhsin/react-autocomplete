@@ -19,9 +19,9 @@ const useCombobox = ({
     getSelectedValue: () => getItemValue(selected),
     onSelectChange: newItem => {
       if (!isEqual(newItem, selected)) {
-        onSelectChange == null || onSelectChange(newItem);
+        onSelectChange?.(newItem);
       } else if (flipOnSelect) {
-        onSelectChange == null || onSelectChange();
+        onSelectChange?.();
       }
     }
   });
