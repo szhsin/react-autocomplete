@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useMultiSelect, multiSelect, getGroupedItems } from '@szhsin/react-autocomplete';
+import { useMultiSelect, multiSelect, mergeGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
 
@@ -40,7 +40,7 @@ export default function Home() {
     getClearProps,
     getInputWrapperProps,
     open,
-    focusItem,
+    focusIndex,
     isInputEmpty,
     removeSelect,
     focused
@@ -64,7 +64,7 @@ export default function Home() {
     },
 
     feature: multiSelect({ rovingText, closeOnSelect }),
-    items: getGroupedItems({
+    items: mergeGroupedItems({
       groups: groupedItems,
       getItemsInGroup: (group) => group.states
     })
@@ -76,7 +76,7 @@ export default function Home() {
   return (
     <div className={styles.wrapper}>
       <div>value: {value}</div>
-      <div>Focus item: {focusItem?.name}</div>
+      <div>focusIndex: {focusIndex}</div>
 
       <div>
         <label>
@@ -174,7 +174,7 @@ export default function Home() {
                 className={isItemDisabled(item) ? styles.disabled : styles.option}
                 key={item.abbr}
                 style={{
-                  background: focusItem === item ? '#0a0' : 'none',
+                  background: focusIndex === itemIndex ? '#0a0' : 'none',
                   textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
                 }}
                 {...getItemProps({ item, index: itemIndex++ })}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   useCombobox,
   dropdown,
-  getGroupedItems,
+  mergeGroupedItems,
   useAutoHeight
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
@@ -37,7 +37,7 @@ export default function Dropdown() {
     getClearProps,
     isInputEmpty,
     open,
-    focusItem,
+    focusIndex,
     inputRef
     // inlineComplete
   } = useCombobox({
@@ -63,7 +63,7 @@ export default function Dropdown() {
     onSelectChange: setSelectedItem,
     // feature: autocomplete({ constricted, rovingText }),
     feature: dropdown({ rovingText, selectOnBlur, closeOnSelect }),
-    items: getGroupedItems({
+    items: mergeGroupedItems({
       groups: groupedItems,
       getItemsInGroup: (group) => group.states
     })
@@ -76,7 +76,7 @@ export default function Dropdown() {
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
       <div>Selected item: {selectedItem?.name}</div>
-      <div>Focus item: {focusItem?.name}</div>
+      <div>focusIndex: {focusIndex}</div>
       <input placeholder="test" />
 
       <div>
@@ -164,8 +164,8 @@ export default function Dropdown() {
                   className={isItemDisabled(item) ? styles.disabled : styles.option}
                   key={item.abbr}
                   style={{
-                    background: focusItem === item ? '#0a0' : 'none',
-                    textDecoration: item === selectedItem ? 'underline' : 'none'
+                    background: focusIndex === itemIndex ? '#0a0' : 'none',
+                    textDecoration: selectedItem === item ? 'underline' : 'none'
                   }}
                   {...getItemProps({ item, index: itemIndex++ })}
                 >

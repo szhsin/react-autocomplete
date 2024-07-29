@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useId } from './useId.js';
+import { defaultFocusIndex } from '../common.js';
 
 const useAutocomplete = ({
   onChange,
@@ -10,12 +11,12 @@ const useAutocomplete = ({
   const inputRef = useRef(null);
   const [tmpValue, setTmpValue] = useState();
   const [open, setOpen] = useState(false);
-  const [focusItem, setFocusItem] = useState();
+  const [focusIndex, setFocusIndex] = useState(defaultFocusIndex);
   const state = {
     isItemSelected,
     inputRef,
-    focusItem,
-    setFocusItem,
+    focusIndex,
+    setFocusIndex,
     open,
     setOpen
   };

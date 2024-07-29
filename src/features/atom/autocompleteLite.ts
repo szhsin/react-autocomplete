@@ -1,17 +1,19 @@
 import type {
   Feature,
-  GetPropsFunctions,
-  GetPropsWithRefFunctions,
+  GetProps,
+  GetPropsWithRef,
+  GetPropsWithOptionalRef,
   AutocompleteFeatureProps,
   FeatureState
 } from '../../types';
-import { getId, ButtonProps } from '../../common';
+import { getId, buttonProps, defaultFocusIndex } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
   T,
-  Pick<GetPropsFunctions<T>, 'getListProps' | 'getItemProps' | 'getClearProps'> &
-    Pick<GetPropsWithRefFunctions<T>, 'getInputProps'> &
+  Pick<GetProps<T>, 'getListProps' | 'getClearProps'> &
+    Pick<GetPropsWithRef<T>, 'getInputProps'> &
+    Pick<GetPropsWithOptionalRef<T>, 'getItemProps'> &
     FeatureState
 >;
 
@@ -31,7 +33,6 @@ const autocompleteLite =
     getItemValue,
     getSelectedValue,
     onSelectChange,
-    isEqual,
     isItemSelected,
     isItemDisabled,
     isItemAction,
@@ -40,8 +41,8 @@ const autocompleteLite =
     onChange,
     tmpValue,
     setTmpValue,
-    focusItem,
-    setFocusItem,
+    focusIndex,
+    setFocusIndex,
     open,
     setOpen,
     inputRef,
@@ -51,6 +52,8 @@ const autocompleteLite =
     const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
     const inputValue = (tmpValue || value) ?? getSelectedValue();
+    const focusItem = items[focusIndex];
+    const listId = getId(id, 'l');
 
     const selectItemOrAction = (item: T, noAction?: boolean) => {
       if (isItemAction?.(item)) {
@@ -68,7 +71,7 @@ const autocompleteLite =
     };
 
     const resetState = (shouldClose?: boolean) => {
-      setFocusItem();
+      setFocusIndex(defaultFocusIndex);
       setTmpValue();
       if (shouldClose || closeOnSelect) {
         setOpen(false);
@@ -79,36 +82,29 @@ const autocompleteLite =
     const traverse = (isForward: boolean) => {
       const baseIndex = rovingText ? -1 : 0;
       let newItem: T | undefined,
-        nextIndex = items.findIndex((item) => isEqual(focusItem, item)),
+        newIndex = focusIndex,
         itemCounter = 0;
       const itemLength = items.length;
       for (;;) {
         if (isForward) {
-          if (++nextIndex >= itemLength) nextIndex = baseIndex;
+          if (++newIndex >= itemLength) newIndex = baseIndex;
         } else {
-          if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+          if (--newIndex < baseIndex) newIndex = itemLength - 1;
         }
-        newItem = items[nextIndex];
+        newItem = items[newIndex];
         if (!newItem || !isItemDisabled?.(newItem)) break;
         if (++itemCounter >= itemLength) return;
       }
 
-      setFocusItem(newItem);
+      setFocusIndex(newIndex);
       if (rovingText) setTmpValue(getItemValue(newItem));
     };
-
-    const listId = getId(id, 'l');
-    let ariaActivedescendant: string | undefined;
-    if (focusItem) {
-      const activeIndex = items.findIndex((item) => isEqual(item, focusItem));
-      if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
-    }
 
     return {
       isInputEmpty: !inputValue,
 
       getClearProps: () => ({
-        ...ButtonProps,
+        ...buttonProps,
 
         onMouseDown: startCapture,
 
@@ -116,7 +112,7 @@ const autocompleteLite =
           stopCapture();
           setOpen(true);
           setTmpValue();
-          setFocusItem();
+          setFocusIndex(defaultFocusIndex);
           onChange('');
           if (deselectOnClear) onSelectChange();
         }
@@ -132,8 +128,8 @@ const autocompleteLite =
       getItemProps: ({ item, index }) => ({
         id: getId(id, index),
         role: 'option',
-        'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
-        ref: isEqual(item, focusItem) ? scrollIntoView : null,
+        'aria-selected': select ? isItemSelected(item) : index === focusIndex,
+        ref: index === focusIndex ? scrollIntoView : undefined,
         onClick: () => {
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));
@@ -148,13 +144,13 @@ const autocompleteLite =
         'aria-autocomplete': 'list',
         'aria-expanded': open,
         'aria-controls': listId,
-        'aria-activedescendant': ariaActivedescendant,
+        'aria-activedescendant': focusIndex >= 0 ? getId(id, focusIndex) : undefined,
         ref: inputRef,
         value: inputValue,
 
         onChange: (e) => {
           setOpen(true);
-          setFocusItem();
+          setFocusIndex(defaultFocusIndex);
           setTmpValue();
 
           const newValue = e.target.value;

@@ -8,6 +8,6 @@ export { type DropdownFeature, dropdown } from './features/molecule/dropdown';
 export { type MultiSelectFeature, multiSelect } from './features/molecule/multiSelect';
 export { type MultiSelectDropdownFeature, multiSelectDropdown } from './features/molecule/multiSelectDropdown';
 export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
-export { getGroupedItems } from './utils/getGroupedItems';
+export { mergeGroupedItems } from './utils/mergeGroupedItems';
 export { mergeModules } from './utils/mergeModules';
 export type { ComboboxProps, MultiSelectProps, Feature, MergedFeature, FeatureProps } from './types';

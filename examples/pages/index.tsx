@@ -3,7 +3,7 @@ import {
   useCombobox,
   autocomplete,
   supercomplete,
-  getGroupedItems
+  mergeGroupedItems
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
@@ -59,7 +59,7 @@ export default function Home() {
     getToggleProps,
     getClearProps,
     open,
-    focusItem,
+    focusIndex,
     isInputEmpty,
     isItemSelected
   } = useCombobox({
@@ -84,25 +84,30 @@ export default function Home() {
       selectedFeature === 'supercomplete'
         ? supercomplete({
             ...featureProps,
-            getFocusItem: (newValue) =>
-              filterGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
-            // getInlineItem: (newValue) =>
-            //   new Promise((res) =>
-            //     setTimeout(
-            //       () => res(filterGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))),
-            //       1000
-            //     )
-            //   )
+            requestItem: (newValue) => {
+              const items = mergeGroupedItems({
+                groups: filterGroupedItems(newValue),
+                getItemsInGroup: (group) => group.states
+              });
+              const index = items.findIndex((item) => !isItemDisabled(item));
+              if (index >= 0) return { index, item: items[index] };
+            }
           })
         : selectedFeature === 'autocompleteFocus'
         ? autocompleteFocus({
             ...featureProps,
-            getFocusItem: (newValue) =>
-              filterGroupedItems(newValue)[0]?.states.find((item) => !isItemDisabled(item))
+            requestItem: (newValue) => {
+              const items = mergeGroupedItems({
+                groups: filterGroupedItems(newValue),
+                getItemsInGroup: (group) => group.states
+              });
+              const index = items.findIndex((item) => !isItemDisabled(item));
+              if (index >= 0) return { index, item: items[index] };
+            }
           })
         : autocomplete(featureProps),
 
-    items: getGroupedItems({
+    items: mergeGroupedItems({
       groups: groupedItems,
       getItemsInGroup: (group) => group.states
     })
@@ -115,7 +120,7 @@ export default function Home() {
     <div className={styles.wrapper}>
       <div>value: {value}</div>
       <div>Selected item: {selectedItem?.name}</div>
-      <div>Focus item: {focusItem?.name}</div>
+      <div>focusIndex: {focusIndex}</div>
 
       <select
         value={selectedFeature} // ...force the select's value to match the state variable...
@@ -256,7 +261,7 @@ export default function Home() {
                 className={isItemDisabled(item) ? styles.disabled : styles.option}
                 key={item.abbr}
                 style={{
-                  background: focusItem === item ? '#0a0' : 'none',
+                  background: focusIndex === itemIndex ? '#0a0' : 'none',
                   textDecoration: isItemSelected(item) ? 'underline' : 'none'
                 }}
                 {...getItemProps({ item, index: itemIndex++ })}

@@ -1,9 +1,9 @@
-import type { Feature, GetPropsFunctions } from '../../types';
+import type { Feature, GetProps } from '../../types';
 import { getId } from '../../common';
 
 type LabelFeature<T> = Feature<
   T,
-  Pick<GetPropsFunctions<T>, 'getLabelProps' | 'getInputProps' | 'getListProps'>
+  Pick<GetProps<T>, 'getLabelProps' | 'getInputProps' | 'getListProps'>
 >;
 
 const label =

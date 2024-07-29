@@ -2,16 +2,16 @@ import { useEffect, useRef } from 'react';
 import type {
   Feature,
   FeatureProps,
-  GetPropsFunctions,
-  GetPropsWithRefFunctions,
+  GetProps,
+  GetPropsWithRef,
   FeatureState
 } from '../../types';
 import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<
   T,
-  Pick<GetPropsWithRefFunctions<T>, 'getToggleProps'> &
-    Pick<GetPropsFunctions<T>, 'getInputProps'> &
+  Pick<GetPropsWithRef<T>, 'getToggleProps'> &
+    Pick<GetProps<T>, 'getInputProps'> &
     FeatureState
 >;
 
@@ -19,7 +19,7 @@ const dropdownToggle =
   <T>({
     closeOnSelect = true
   }: Pick<FeatureProps<T>, 'closeOnSelect'>): DropdownToggleFeature<T> =>
-  ({ inputRef, open, setOpen, focusItem, value, tmpValue }) => {
+  ({ inputRef, open, setOpen, focusIndex, value, tmpValue }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
     const toggleRef = useRef<HTMLButtonElement>(null);
     const inputValue = tmpValue || value || '';
@@ -58,7 +58,7 @@ const dropdownToggle =
         value: inputValue,
         onKeyDown: (e) => {
           const { key } = e;
-          if (key === 'Escape' || (closeOnSelect && focusItem && key === 'Enter')) {
+          if (key === 'Escape' || (closeOnSelect && focusIndex >= 0 && key === 'Enter')) {
             focusToggle();
           }
         }

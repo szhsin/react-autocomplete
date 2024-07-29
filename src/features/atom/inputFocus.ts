@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import type { Feature, GetPropsFunctions } from '../../types';
+import type { Feature, GetProps } from '../../types';
 
 type InputFocusFeature<T> = Feature<
   T,
-  Pick<GetPropsFunctions<T>, 'getInputProps'> & { focused: boolean }
+  Pick<GetProps<T>, 'getInputProps'> & { focused: boolean }
 >;
 
 const inputFocus =

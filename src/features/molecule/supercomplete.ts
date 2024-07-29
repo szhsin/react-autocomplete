@@ -11,7 +11,7 @@ type SupercompleteFeature<T> = MergedFeature<
 const supercomplete = <T>(
   props: Pick<
     FeatureProps<T>,
-    | 'getFocusItem'
+    | 'requestItem'
     | 'select'
     | 'selectOnBlur'
     | 'deselectOnClear'

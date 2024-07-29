@@ -7,7 +7,7 @@ const dropdownToggle = ({
   inputRef,
   open,
   setOpen,
-  focusItem,
+  focusIndex,
   value,
   tmpValue
 }) => {
@@ -43,7 +43,7 @@ const dropdownToggle = ({
         const {
           key
         } = e;
-        if (key === 'Escape' || closeOnSelect && focusItem && key === 'Enter') {
+        if (key === 'Escape' || closeOnSelect && focusIndex >= 0 && key === 'Enter') {
           focusToggle();
         }
       }

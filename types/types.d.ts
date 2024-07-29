@@ -1,8 +1,11 @@
 import type { HTMLAttributes, InputHTMLAttributes, ButtonHTMLAttributes, LabelHTMLAttributes } from 'react';
-export type GetPropsWithRef<T> = T extends (...args: infer P) => infer R ? R extends HTMLAttributes<infer E> ? (...args: P) => R & {
+type WithRef<T> = T extends (...args: infer P) => infer R ? R extends HTMLAttributes<infer E> ? (...args: P) => R & {
     ref: React.RefObject<E>;
 } : never : never;
-export interface GetPropsFunctions<T> {
+type WithOptionalRef<T> = T extends (...args: infer P) => infer R ? R extends HTMLAttributes<infer E> ? (...args: P) => R & {
+    ref?: React.Ref<E>;
+} : never : never;
+export interface GetProps<T> {
     getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
     getLabelProps: () => LabelHTMLAttributes<HTMLLabelElement>;
     getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
@@ -10,20 +13,23 @@ export interface GetPropsFunctions<T> {
     getInputWrapperProps: () => HTMLAttributes<HTMLElement>;
     getListProps: () => HTMLAttributes<HTMLElement>;
     getItemProps: (option: {
-        item: T;
         index: number;
+        item: T;
     }) => HTMLAttributes<HTMLElement>;
 }
-export type GetPropsWithRefFunctions<T> = {
-    [P in keyof GetPropsFunctions<T>]: GetPropsWithRef<GetPropsFunctions<T>[P]>;
+export type GetPropsWithRef<T> = {
+    [P in keyof GetProps<T>]: WithRef<GetProps<T>[P]>;
+};
+export type GetPropsWithOptionalRef<T> = {
+    [P in keyof GetProps<T>]: WithOptionalRef<GetProps<T>[P]>;
 };
 export interface ContextualOrReturn<T> {
     isItemSelected: (item: T) => boolean;
 }
 export interface AutocompleteReturn<T> extends ContextualOrReturn<T> {
     inputRef: React.RefObject<HTMLInputElement>;
-    focusItem: T | undefined;
-    setFocusItem: (item?: T | undefined) => void;
+    focusIndex: number;
+    setFocusIndex: (index: number) => void;
     open: boolean;
     setOpen: (value: boolean) => void;
 }
@@ -52,6 +58,10 @@ export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equ
 export interface FeatureState {
     isInputEmpty: boolean;
 }
+type RequestItemResult<T> = {
+    index: number;
+    item: T;
+} | null | undefined | void;
 export interface FeatureProps<T> {
     rovingText?: boolean;
     select?: boolean;
@@ -59,7 +69,7 @@ export interface FeatureProps<T> {
     deselectOnClear?: boolean;
     deselectOnChange?: boolean;
     closeOnSelect?: boolean;
-    getFocusItem: (value: string) => T | undefined | null | void | Promise<T | undefined | null | void>;
+    requestItem: (value: string) => RequestItemResult<T> | Promise<RequestItemResult<T>>;
 }
 export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'>;
 export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;
@@ -84,3 +94,4 @@ export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProp
     selected: T[];
     onSelectChange?: (items: T[]) => void;
 };
+export {};

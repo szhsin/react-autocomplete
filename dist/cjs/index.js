@@ -2,9 +2,10 @@
 
 var React = require('react');
 
+const defaultFocusIndex = -1;
 const defaultEqual = (itemA, itemB) => itemA === itemB;
 const getId = (prefix, suffix) => prefix && prefix + suffix;
-const ButtonProps = {
+const buttonProps = {
   tabIndex: -1,
   type: 'button'
 };
@@ -28,12 +29,12 @@ const useAutocomplete = ({
   const inputRef = React.useRef(null);
   const [tmpValue, setTmpValue] = React.useState();
   const [open, setOpen] = React.useState(false);
-  const [focusItem, setFocusItem] = React.useState();
+  const [focusIndex, setFocusIndex] = React.useState(defaultFocusIndex);
   const state = {
     isItemSelected,
     inputRef,
-    focusItem,
-    setFocusItem,
+    focusIndex,
+    setFocusIndex,
     open,
     setOpen
   };
@@ -92,16 +93,17 @@ const useMultiSelect = ({
       selected.length && onSelectChange?.(selected.slice(0, selected.length - 1));
     }
   };
+  const isItemSelected = item => selected.findIndex(s => isEqual(item, s)) >= 0;
   return {
     ...useAutocomplete({
       ...passthrough,
       isEqual,
-      isItemSelected: item => selected.findIndex(s => isEqual(item, s)) >= 0,
+      isItemSelected,
       getItemValue: adaptGetItemValue(getItemValue),
       getSelectedValue: () => '',
       onSelectChange: newItem => {
         if (!newItem) return;
-        if (selected.findIndex(item => isEqual(item, newItem)) < 0) {
+        if (!isItemSelected(newItem)) {
           onSelectChange?.([...selected, newItem]);
         } else if (flipOnSelect) {
           removeItem(newItem);
@@ -175,7 +177,6 @@ const autocompleteLite = ({
   getItemValue,
   getSelectedValue,
   onSelectChange,
-  isEqual,
   isItemSelected,
   isItemDisabled,
   isItemAction,
@@ -184,8 +185,8 @@ const autocompleteLite = ({
   onChange,
   tmpValue,
   setTmpValue,
-  focusItem,
-  setFocusItem,
+  focusIndex,
+  setFocusIndex,
   open,
   setOpen,
   inputRef,
@@ -194,6 +195,8 @@ const autocompleteLite = ({
 }) => {
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   const inputValue = (tmpValue || value) ?? getSelectedValue();
+  const focusItem = items[focusIndex];
+  const listId = getId(id, 'l');
   const selectItemOrAction = (item, noAction) => {
     if (isItemAction?.(item)) {
       !noAction && onAction?.(item);
@@ -206,7 +209,7 @@ const autocompleteLite = ({
     onSelectChange(item);
   };
   const resetState = shouldClose => {
-    setFocusItem();
+    setFocusIndex(defaultFocusIndex);
     setTmpValue();
     if (shouldClose || closeOnSelect) {
       setOpen(false);
@@ -216,38 +219,32 @@ const autocompleteLite = ({
   const traverse = isForward => {
     const baseIndex = rovingText ? -1 : 0;
     let newItem,
-      nextIndex = items.findIndex(item => isEqual(focusItem, item)),
+      newIndex = focusIndex,
       itemCounter = 0;
     const itemLength = items.length;
     for (;;) {
       if (isForward) {
-        if (++nextIndex >= itemLength) nextIndex = baseIndex;
+        if (++newIndex >= itemLength) newIndex = baseIndex;
       } else {
-        if (--nextIndex < baseIndex) nextIndex = itemLength - 1;
+        if (--newIndex < baseIndex) newIndex = itemLength - 1;
       }
-      newItem = items[nextIndex];
+      newItem = items[newIndex];
       if (!newItem || !isItemDisabled?.(newItem)) break;
       if (++itemCounter >= itemLength) return;
     }
-    setFocusItem(newItem);
+    setFocusIndex(newIndex);
     if (rovingText) setTmpValue(getItemValue(newItem));
   };
-  const listId = getId(id, 'l');
-  let ariaActivedescendant;
-  if (focusItem) {
-    const activeIndex = items.findIndex(item => isEqual(item, focusItem));
-    if (activeIndex >= 0) ariaActivedescendant = getId(id, activeIndex);
-  }
   return {
     isInputEmpty: !inputValue,
     getClearProps: () => ({
-      ...ButtonProps,
+      ...buttonProps,
       onMouseDown: startCapture,
       onClick: () => {
         stopCapture();
         setOpen(true);
         setTmpValue();
-        setFocusItem();
+        setFocusIndex(defaultFocusIndex);
         onChange('');
         if (deselectOnClear) onSelectChange();
       }
@@ -264,8 +261,8 @@ const autocompleteLite = ({
     }) => ({
       id: getId(id, index),
       role: 'option',
-      'aria-selected': select ? isItemSelected(item) : isEqual(item, focusItem),
-      ref: isEqual(item, focusItem) ? scrollIntoView : null,
+      'aria-selected': select ? isItemSelected(item) : index === focusIndex,
+      ref: index === focusIndex ? scrollIntoView : undefined,
       onClick: () => {
         if (!isItemDisabled?.(item)) {
           resetState(selectItemOrAction(item));
@@ -279,12 +276,12 @@ const autocompleteLite = ({
       'aria-autocomplete': 'list',
       'aria-expanded': open,
       'aria-controls': listId,
-      'aria-activedescendant': ariaActivedescendant,
+      'aria-activedescendant': focusIndex >= 0 ? getId(id, focusIndex) : undefined,
       ref: inputRef,
       value: inputValue,
       onChange: e => {
         setOpen(true);
-        setFocusItem();
+        setFocusIndex(defaultFocusIndex);
         setTmpValue();
         const newValue = e.target.value;
         onChange(newValue);
@@ -337,16 +334,16 @@ const autocompleteLite = ({
 };
 
 const autoFocus = ({
-  getFocusItem
+  requestItem
 }) => ({
-  setFocusItem
+  setFocusIndex
 }) => ({
   getInputProps: () => ({
     onChange: async e => {
       const nextValue = e.target.value;
       if (nextValue) {
-        const item = await getFocusItem(nextValue);
-        item && setFocusItem(item);
+        const result = await requestItem(nextValue);
+        result && setFocusIndex(result.index);
       }
     }
   })
@@ -396,7 +393,7 @@ const inputToggle = () => ({
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
-      ...ButtonProps,
+      ...buttonProps,
       'aria-expanded': open,
       'aria-controls': getId(id, 'l'),
       onMouseDown: () => {
@@ -441,7 +438,7 @@ const dropdownToggle = ({
   inputRef,
   open,
   setOpen,
-  focusItem,
+  focusIndex,
   value,
   tmpValue
 }) => {
@@ -477,7 +474,7 @@ const dropdownToggle = ({
         const {
           key
         } = e;
-        if (key === 'Escape' || closeOnSelect && focusItem && key === 'Enter') {
+        if (key === 'Escape' || closeOnSelect && focusIndex >= 0 && key === 'Enter') {
           focusToggle();
         }
       }
@@ -532,11 +529,11 @@ const multiSelectDropdown = (props = {}) => mergeModules(autocompleteLite({
 }), dropdownToggle(props), multiInput());
 
 const autoInline = ({
-  getFocusItem
+  requestItem
 }) => ({
   getItemValue,
   setTmpValue,
-  setFocusItem
+  setFocusIndex
 }) => ({
   getInputProps: () => ({
     'aria-autocomplete': 'both',
@@ -548,10 +545,10 @@ const autoInline = ({
         return;
       }
       const nextValue = target.value;
-      const item = await getFocusItem(nextValue);
-      if (!item) return;
-      setFocusItem(item);
-      const itemValue = getItemValue(item);
+      const result = await requestItem(nextValue);
+      if (!result) return;
+      setFocusIndex(result.index);
+      const itemValue = getItemValue(result.item);
       const start = nextValue.length;
       const end = itemValue.length;
       setTmpValue(nextValue + itemValue.slice(start));
@@ -566,7 +563,7 @@ const supercomplete = props => mergeModules(autocomplete({
 }), autoInline(props));
 
 const isArray = Array.isArray;
-const getGroupedItems = ({
+const mergeGroupedItems = ({
   groups,
   getItemsInGroup
 }) => {
@@ -578,7 +575,7 @@ exports.autoFocus = autoFocus;
 exports.autocomplete = autocomplete;
 exports.autocompleteLite = autocompleteLite;
 exports.dropdown = dropdown;
-exports.getGroupedItems = getGroupedItems;
+exports.mergeGroupedItems = mergeGroupedItems;
 exports.mergeModules = mergeModules;
 exports.multiSelect = multiSelect;
 exports.multiSelectDropdown = multiSelectDropdown;

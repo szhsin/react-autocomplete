@@ -1,16 +1,16 @@
-import type { Feature, GetPropsFunctions, FeatureProps } from '../../types';
+import type { Feature, GetProps, FeatureProps } from '../../types';
 
-type AutoFocusFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'>>;
+type AutoFocusFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps'>>;
 
 const autoFocus =
-  <T>({ getFocusItem }: Pick<FeatureProps<T>, 'getFocusItem'>): AutoFocusFeature<T> =>
-  ({ setFocusItem }) => ({
+  <T>({ requestItem }: Pick<FeatureProps<T>, 'requestItem'>): AutoFocusFeature<T> =>
+  ({ setFocusIndex }) => ({
     getInputProps: () => ({
       onChange: async (e) => {
         const nextValue = e.target.value;
         if (nextValue) {
-          const item = await getFocusItem(nextValue);
-          item && setFocusItem(item);
+          const result = await requestItem(nextValue);
+          result && setFocusIndex(result.index);
         }
       }
     })

@@ -1,5 +1,5 @@
 const isArray = Array.isArray;
-const getGroupedItems = ({
+const mergeGroupedItems = ({
   groups,
   getItemsInGroup
 }) => {
@@ -7,4 +7,4 @@ const getGroupedItems = ({
   return groupArray.reduce((accu, group) => accu.concat(isArray(group) ? group : getItemsInGroup ? getItemsInGroup(group) : []), []);
 };
 
-export { getGroupedItems };
+export { mergeGroupedItems };

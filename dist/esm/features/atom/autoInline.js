@@ -1,9 +1,9 @@
 const autoInline = ({
-  getFocusItem
+  requestItem
 }) => ({
   getItemValue,
   setTmpValue,
-  setFocusItem
+  setFocusIndex
 }) => ({
   getInputProps: () => ({
     'aria-autocomplete': 'both',
@@ -15,10 +15,10 @@ const autoInline = ({
         return;
       }
       const nextValue = target.value;
-      const item = await getFocusItem(nextValue);
-      if (!item) return;
-      setFocusItem(item);
-      const itemValue = getItemValue(item);
+      const result = await requestItem(nextValue);
+      if (!result) return;
+      setFocusIndex(result.index);
+      const itemValue = getItemValue(result.item);
       const start = nextValue.length;
       const end = itemValue.length;
       setTmpValue(nextValue + itemValue.slice(start));
