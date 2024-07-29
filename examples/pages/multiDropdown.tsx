@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   useMultiSelect,
   multiSelectDropdown,
-  getGroupedItems,
+  mergeGroupedItems,
   useAutoHeight
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
@@ -37,7 +37,7 @@ export default function Dropdown() {
     getClearProps,
     isInputEmpty,
     open,
-    focusItem,
+    focusIndex,
     removeSelect
     // inlineComplete
   } = useMultiSelect({
@@ -63,7 +63,7 @@ export default function Dropdown() {
     onSelectChange: setSelectedItems,
     // feature: autocomplete({ constricted, rovingText }),
     feature: multiSelectDropdown({ rovingText, closeOnSelect }),
-    items: getGroupedItems({
+    items: mergeGroupedItems({
       groups: groupedItems,
       getItemsInGroup: (group) => group.states
     })
@@ -86,7 +86,7 @@ export default function Dropdown() {
   return (
     <div className={styles.wrapper}>
       <div>Current value: {value}</div>
-      <div>Focus item: {focusItem?.name}</div>
+      <div>focusIndex: {focusIndex}</div>
       <input placeholder="test" />
 
       <div>
@@ -166,7 +166,7 @@ export default function Dropdown() {
                   className={isItemDisabled(item) ? styles.disabled : styles.option}
                   key={item.abbr}
                   style={{
-                    background: focusItem === item ? '#0a0' : 'none',
+                    background: focusIndex === itemIndex ? '#0a0' : 'none',
                     textDecoration: selectedItems.includes(item) ? 'underline' : 'none'
                   }}
                   {...getItemProps({ item, index: itemIndex++ })}

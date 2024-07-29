@@ -21,7 +21,7 @@ export default function Home() {
     getToggleProps,
     getClearProps,
     open,
-    focusItem,
+    focusIndex,
     isInputEmpty
   } = useCombobox({
     onSelectChange: (selected) => search(selected?.name),
@@ -30,10 +30,12 @@ export default function Home() {
     onChange: setValue,
     feature: supercomplete({
       selectOnBlur: false,
-      getFocusItem: (newValue) =>
-        US_STATES.filter((item) =>
+      requestItem: (newValue) => ({
+        index: 0,
+        item: US_STATES.filter((item) =>
           item.name.toLowerCase().startsWith(newValue.toLowerCase())
         )[0]
+      })
     }),
 
     items
@@ -42,7 +44,7 @@ export default function Home() {
   return (
     <div className={styles.wrapper}>
       <div>value: {value}</div>
-      <div>Focus item: {focusItem?.name}</div>
+      <div>focusIndex: {focusIndex}</div>
 
       <form
         onSubmit={(e) => {
@@ -80,7 +82,7 @@ export default function Home() {
             className={styles.option}
             key={item.abbr}
             style={{
-              background: focusItem === item ? '#0a0' : 'none'
+              background: focusIndex === index ? '#0a0' : 'none'
             }}
             {...getItemProps({ item, index })}
           >
