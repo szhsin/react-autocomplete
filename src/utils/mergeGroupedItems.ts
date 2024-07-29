@@ -5,7 +5,10 @@ export interface GroupedItemsProps<G, T> {
 
 const isArray = Array.isArray;
 
-const getGroupedItems = <G, T>({ groups, getItemsInGroup }: GroupedItemsProps<G, T>): T[] => {
+const mergeGroupedItems = <G, T>({
+  groups,
+  getItemsInGroup
+}: GroupedItemsProps<G, T>): T[] => {
   const groupArray = isArray(groups) ? groups : Object.values(groups);
   return groupArray.reduce<T[]>(
     (accu, group) =>
@@ -14,4 +17,4 @@ const getGroupedItems = <G, T>({ groups, getItemsInGroup }: GroupedItemsProps<G,
   );
 };
 
-export { getGroupedItems };
+export { mergeGroupedItems };

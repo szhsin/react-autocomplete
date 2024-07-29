@@ -14,7 +14,7 @@ export {
   multiSelectDropdown
 } from './features/molecule/multiSelectDropdown';
 export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
-export { getGroupedItems } from './utils/getGroupedItems';
+export { mergeGroupedItems } from './utils/mergeGroupedItems';
 export { mergeModules } from './utils/mergeModules';
 export type {
   ComboboxProps,
