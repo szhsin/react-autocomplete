@@ -1,9 +1,9 @@
-import type { Feature, GetPropsFunctions } from '../../types';
+import type { Feature, GetProps } from '../../types';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type MultiInputFeature<T> = Feature<
   T,
-  Pick<GetPropsFunctions<T>, 'getInputProps' | 'getInputWrapperProps'>
+  Pick<GetProps<T>, 'getInputProps' | 'getInputWrapperProps'>
 >;
 
 const multiInput =

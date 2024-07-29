@@ -5,13 +5,19 @@ import type {
   LabelHTMLAttributes
 } from 'react';
 
-export type GetPropsWithRef<T> = T extends (...args: infer P) => infer R
+type WithRef<T> = T extends (...args: infer P) => infer R
   ? R extends HTMLAttributes<infer E>
     ? (...args: P) => R & { ref: React.RefObject<E> }
     : never
   : never;
 
-export interface GetPropsFunctions<T> {
+type WithOptionalRef<T> = T extends (...args: infer P) => infer R
+  ? R extends HTMLAttributes<infer E>
+    ? (...args: P) => R & { ref?: React.Ref<E> }
+    : never
+  : never;
+
+export interface GetProps<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
   getLabelProps: () => LabelHTMLAttributes<HTMLLabelElement>;
   getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
@@ -21,8 +27,12 @@ export interface GetPropsFunctions<T> {
   getItemProps: (option: { index: number; item: T }) => HTMLAttributes<HTMLElement>;
 }
 
-export type GetPropsWithRefFunctions<T> = {
-  [P in keyof GetPropsFunctions<T>]: GetPropsWithRef<GetPropsFunctions<T>[P]>;
+export type GetPropsWithRef<T> = {
+  [P in keyof GetProps<T>]: WithRef<GetProps<T>[P]>;
+};
+
+export type GetPropsWithOptionalRef<T> = {
+  [P in keyof GetProps<T>]: WithOptionalRef<GetProps<T>[P]>;
 };
 
 export interface ContextualOrReturn<T> {

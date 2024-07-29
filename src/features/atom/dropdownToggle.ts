@@ -2,16 +2,16 @@ import { useEffect, useRef } from 'react';
 import type {
   Feature,
   FeatureProps,
-  GetPropsFunctions,
-  GetPropsWithRefFunctions,
+  GetProps,
+  GetPropsWithRef,
   FeatureState
 } from '../../types';
 import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<
   T,
-  Pick<GetPropsWithRefFunctions<T>, 'getToggleProps'> &
-    Pick<GetPropsFunctions<T>, 'getInputProps'> &
+  Pick<GetPropsWithRef<T>, 'getToggleProps'> &
+    Pick<GetProps<T>, 'getInputProps'> &
     FeatureState
 >;
 
