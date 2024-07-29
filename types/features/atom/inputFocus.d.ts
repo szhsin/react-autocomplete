@@ -1,5 +1,5 @@
-import type { Feature, GetPropsFunctions } from '../../types';
-type InputFocusFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'> & {
+import type { Feature, GetProps } from '../../types';
+type InputFocusFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps'> & {
     focused: boolean;
 }>;
 declare const inputFocus: <T>() => InputFocusFeature<T>;

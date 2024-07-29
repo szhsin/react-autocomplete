@@ -18,16 +18,17 @@ const useMultiSelect = ({
       selected.length && onSelectChange?.(selected.slice(0, selected.length - 1));
     }
   };
+  const isItemSelected = item => selected.findIndex(s => isEqual(item, s)) >= 0;
   return {
     ...useAutocomplete({
       ...passthrough,
       isEqual,
-      isItemSelected: item => selected.findIndex(s => isEqual(item, s)) >= 0,
+      isItemSelected,
       getItemValue: adaptGetItemValue(getItemValue),
       getSelectedValue: () => '',
       onSelectChange: newItem => {
         if (!newItem) return;
-        if (selected.findIndex(item => isEqual(item, newItem)) < 0) {
+        if (!isItemSelected(newItem)) {
           onSelectChange?.([...selected, newItem]);
         } else if (flipOnSelect) {
           removeItem(newItem);

@@ -1,4 +1,4 @@
-import type { Feature, GetPropsFunctions, FeatureProps } from '../../types';
-type AutoInlineFeature<T> = Feature<T, Pick<GetPropsFunctions<T>, 'getInputProps'>>;
-declare const autoInline: <T>({ getFocusItem }: Pick<FeatureProps<T>, "getFocusItem">) => AutoInlineFeature<T>;
+import type { Feature, GetProps, FeatureProps } from '../../types';
+type AutoInlineFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps'>>;
+declare const autoInline: <T>({ requestItem }: Pick<FeatureProps<T>, "requestItem">) => AutoInlineFeature<T>;
 export { type AutoInlineFeature, autoInline };

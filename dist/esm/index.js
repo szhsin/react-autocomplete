@@ -8,5 +8,5 @@ export { dropdown } from './features/molecule/dropdown.js';
 export { multiSelect } from './features/molecule/multiSelect.js';
 export { multiSelectDropdown } from './features/molecule/multiSelectDropdown.js';
 export { supercomplete } from './features/molecule/supercomplete.js';
-export { getGroupedItems } from './utils/getGroupedItems.js';
+export { mergeGroupedItems } from './utils/mergeGroupedItems.js';
 export { mergeModules } from './utils/mergeModules.js';
