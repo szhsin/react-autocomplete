@@ -1,5 +1,5 @@
 import type { Feature, GetPropsFunctions } from '../../types';
-import { getId, ButtonProps } from '../../common';
+import { getId, buttonProps } from '../../common';
 import { useToggle } from '../../hooks/useToggle';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
@@ -16,7 +16,7 @@ const inputToggle =
 
     return {
       getToggleProps: () => ({
-        ...ButtonProps,
+        ...buttonProps,
         'aria-expanded': open,
         'aria-controls': getId(id, 'l'),
 

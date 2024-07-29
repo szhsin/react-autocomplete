@@ -18,7 +18,7 @@ export interface GetPropsFunctions<T> {
   getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
   getInputWrapperProps: () => HTMLAttributes<HTMLElement>;
   getListProps: () => HTMLAttributes<HTMLElement>;
-  getItemProps: (option: { item: T; index: number }) => HTMLAttributes<HTMLElement>;
+  getItemProps: (option: { index: number; item: T }) => HTMLAttributes<HTMLElement>;
 }
 
 export type GetPropsWithRefFunctions<T> = {
@@ -31,8 +31,8 @@ export interface ContextualOrReturn<T> {
 
 export interface AutocompleteReturn<T> extends ContextualOrReturn<T> {
   inputRef: React.RefObject<HTMLInputElement>;
-  focusItem: T | undefined;
-  setFocusItem: (item?: T | undefined) => void;
+  focusIndex: number;
+  setFocusIndex: (index: number) => void;
   open: boolean;
   setOpen: (value: boolean) => void;
 }
@@ -71,6 +71,8 @@ export interface FeatureState {
   isInputEmpty: boolean;
 }
 
+type RequestItemResult<T> = { index: number; item: T } | null | undefined | void;
+
 export interface FeatureProps<T> {
   rovingText?: boolean;
   select?: boolean;
@@ -78,9 +80,7 @@ export interface FeatureProps<T> {
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
   closeOnSelect?: boolean;
-  getFocusItem: (
-    value: string
-  ) => T | undefined | null | void | Promise<T | undefined | null | void>;
+  requestItem: (value: string) => RequestItemResult<T> | Promise<RequestItemResult<T>>;
 }
 
 export type AutocompleteFeatureProps<T> = Pick<

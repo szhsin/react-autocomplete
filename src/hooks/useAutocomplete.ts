@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useId } from './useId';
+import { defaultFocusIndex } from '../common';
 import type { AutocompleteProps, AutocompleteReturn } from '../types';
 
 const useAutocomplete = <T, FeatureYield extends object>({
@@ -11,13 +12,13 @@ const useAutocomplete = <T, FeatureYield extends object>({
   const inputRef = useRef<HTMLInputElement>(null);
   const [tmpValue, setTmpValue] = useState<string | undefined>();
   const [open, setOpen] = useState(false);
-  const [focusItem, setFocusItem] = useState<T | undefined>();
+  const [focusIndex, setFocusIndex] = useState(defaultFocusIndex);
 
   const state: AutocompleteReturn<T> = {
     isItemSelected,
     inputRef,
-    focusItem,
-    setFocusItem,
+    focusIndex,
+    setFocusIndex,
     open,
     setOpen
   };
