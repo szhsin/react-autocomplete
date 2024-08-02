@@ -21,7 +21,10 @@ module.exports = {
       '@babel/preset-env',
       {
         bugfixes: true,
-        include: ['@babel/plugin-transform-optional-catch-binding'],
+        include: [
+          '@babel/plugin-transform-nullish-coalescing-operator',
+          '@babel/plugin-transform-optional-catch-binding'
+        ],
         exclude: ['@babel/plugin-transform-typeof-symbol']
       }
     ],

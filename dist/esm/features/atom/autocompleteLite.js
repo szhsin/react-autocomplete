@@ -31,8 +31,9 @@ const autocompleteLite = ({
   items,
   id
 }) => {
+  var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
-  const inputValue = (tmpValue || value) ?? getSelectedValue();
+  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
   const focusItem = items[focusIndex];
   const listId = getId(id, 'l');
   const selectItemOrAction = (item, noAction) => {
