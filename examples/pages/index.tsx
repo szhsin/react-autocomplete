@@ -94,18 +94,18 @@ export default function Home() {
             }
           })
         : selectedFeature === 'autocompleteFocus'
-        ? autocompleteFocus({
-            ...featureProps,
-            requestItem: (newValue) => {
-              const items = mergeGroupedItems({
-                groups: filterGroupedItems(newValue),
-                getItemsInGroup: (group) => group.states
-              });
-              const index = items.findIndex((item) => !isItemDisabled(item));
-              if (index >= 0) return { index, item: items[index] };
-            }
-          })
-        : autocomplete(featureProps),
+          ? autocompleteFocus({
+              ...featureProps,
+              requestItem: (newValue) => {
+                const items = mergeGroupedItems({
+                  groups: filterGroupedItems(newValue),
+                  getItemsInGroup: (group) => group.states
+                });
+                const index = items.findIndex((item) => !isItemDisabled(item));
+                if (index >= 0) return { index, item: items[index] };
+              }
+            })
+          : autocomplete(featureProps),
 
     items: mergeGroupedItems({
       groups: groupedItems,
