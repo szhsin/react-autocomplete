@@ -108,8 +108,8 @@ export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;
 export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>]
   ? S
   : Features extends readonly [Feature<T, infer F>, ...infer R]
-  ? F & MergedFeatureYield<T, R>
-  : never;
+    ? F & MergedFeatureYield<T, R>
+    : never;
 
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 
