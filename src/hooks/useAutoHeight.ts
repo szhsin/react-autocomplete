@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useLayoutEffect as _useLayoutEffect } from 'react';
 
 const useLayoutEffect =
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   typeof window !== 'undefined' && window.document && window.document.createElement!
     ? _useLayoutEffect
     : useEffect;

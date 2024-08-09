@@ -5,5 +5,5 @@ type SupercompleteFeature<T> = MergedFeature<T, [
     AutocompleteFeature<T>,
     AutoInlineFeature<T>
 ]>;
-declare const supercomplete: <T>(props: Pick<FeatureProps<T>, "select" | "selectOnBlur" | "deselectOnClear" | "deselectOnChange" | "closeOnSelect" | "requestItem">) => SupercompleteFeature<T>;
+declare const supercomplete: <T>(props: Pick<FeatureProps<T>, "requestItem" | "select" | "selectOnBlur" | "deselectOnClear" | "deselectOnChange" | "closeOnSelect">) => SupercompleteFeature<T>;
 export { type SupercompleteFeature, supercomplete };

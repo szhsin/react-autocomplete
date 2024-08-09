@@ -32,7 +32,7 @@
     "lint:fix": "eslint --fix .",
     "pret": "prettier -c .",
     "pret:fix": "prettier -w .",
-    "build": "run-s pret clean lint types bundle",
+    "build": "run-s pret clean types lint bundle",
     "test": "jest",
     "test:watch": "jest --watch",
     "eg": "npm run dev --prefix examples"
