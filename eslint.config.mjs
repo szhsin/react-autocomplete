@@ -12,11 +12,15 @@ import reactHooksAddons from 'eslint-plugin-react-hooks-addons';
 
 export default tseslint.config(
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
   prettier,
   jest.configs['flat/recommended'],
   jest.configs['flat/style'],
   react.configs.flat.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  {
+    files: ['**/*.js', '**/*.mjs'],
+    ...tseslint.configs.disableTypeChecked
+  },
   {
     ignores: [
       '**/examples/',
@@ -32,6 +36,10 @@ export default tseslint.config(
       ecmaVersion: 'latest',
       sourceType: 'module',
       parserOptions: {
+        projectService: {
+          allowDefaultProject: ['*.js', '*.mjs']
+        },
+        tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true
         }
@@ -60,7 +68,16 @@ export default tseslint.config(
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks-addons/no-unused-deps': 'error',
       '@typescript-eslint/ban-ts-comment': 0,
-      '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true }]
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        { allowShortCircuit: true, allowTernary: true }
+      ],
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: false
+        }
+      ]
     }
   }
 );
