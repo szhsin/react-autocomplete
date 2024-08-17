@@ -24,15 +24,16 @@ const useAutocomplete = ({
   onChange,
   feature: useFeature,
   isItemSelected,
+  inputRef: externalInputRef,
   ...passthrough
 }) => {
-  const inputRef = React.useRef(null);
+  const internalInputRef = React.useRef(null);
   const [tmpValue, setTmpValue] = React.useState();
   const [open, setOpen] = React.useState(false);
   const [focusIndex, setFocusIndex] = React.useState(defaultFocusIndex);
   const state = {
     isItemSelected,
-    inputRef,
+    inputRef: externalInputRef || internalInputRef,
     focusIndex,
     setFocusIndex,
     open,
@@ -434,7 +435,8 @@ const label = () => ({
 const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle(), label());
 
 const dropdownToggle = ({
-  closeOnSelect = true
+  closeOnSelect = true,
+  toggleRef: externalToggleRef
 }) => ({
   inputRef,
   open,
@@ -444,13 +446,15 @@ const dropdownToggle = ({
   tmpValue
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const toggleRef = React.useRef(null);
+  const internalToggleRef = React.useRef(null);
+  const toggleRef = externalToggleRef || internalToggleRef;
   const inputValue = tmpValue || value || '';
   React.useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open, inputRef]);
   const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
   return {
+    toggleRef,
     isInputEmpty: !inputValue,
     getToggleProps: () => ({
       type: 'button',

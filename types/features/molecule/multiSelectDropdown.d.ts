@@ -7,5 +7,5 @@ type MultiSelectDropdownFeature<T> = MergedFeature<T, [
     DropdownToggleFeature<T>,
     MultiInputFeature<T>
 ]>;
-declare const multiSelectDropdown: <T>(props?: Pick<FeatureProps<T>, "rovingText" | "closeOnSelect">) => MultiSelectDropdownFeature<T>;
+declare const multiSelectDropdown: <T>(props?: Pick<FeatureProps<T>, "rovingText" | "closeOnSelect" | "toggleRef">) => MultiSelectDropdownFeature<T>;
 export { type MultiSelectDropdownFeature, multiSelectDropdown };

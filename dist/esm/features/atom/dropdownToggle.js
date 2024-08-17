@@ -2,7 +2,8 @@ import { useRef, useEffect } from 'react';
 import { useToggle } from '../../hooks/useToggle.js';
 
 const dropdownToggle = ({
-  closeOnSelect = true
+  closeOnSelect = true,
+  toggleRef: externalToggleRef
 }) => ({
   inputRef,
   open,
@@ -12,13 +13,15 @@ const dropdownToggle = ({
   tmpValue
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const toggleRef = useRef(null);
+  const internalToggleRef = useRef(null);
+  const toggleRef = externalToggleRef || internalToggleRef;
   const inputValue = tmpValue || value || '';
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open, inputRef]);
   const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
   return {
+    toggleRef,
     isInputEmpty: !inputValue,
     getToggleProps: () => ({
       type: 'button',

@@ -1,19 +1,10 @@
-import type {
-  Feature,
-  GetProps,
-  GetPropsWithRef,
-  GetPropsWithOptionalRef,
-  AutocompleteFeatureProps,
-  FeatureState
-} from '../../types';
+import type { Feature, GetProps, AutocompleteFeatureProps, FeatureState } from '../../types';
 import { getId, buttonProps, defaultFocusIndex } from '../../common';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
   T,
-  Pick<GetProps<T>, 'getListProps' | 'getClearProps'> &
-    Pick<GetPropsWithRef<T>, 'getInputProps'> &
-    Pick<GetPropsWithOptionalRef<T>, 'getItemProps'> &
+  Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps' | 'getClearProps'> &
     FeatureState
 >;
 

@@ -7,16 +7,17 @@ const useAutocomplete = <T, FeatureYield extends object>({
   onChange,
   feature: useFeature,
   isItemSelected,
+  inputRef: externalInputRef,
   ...passthrough
 }: AutocompleteProps<T, FeatureYield>) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const internalInputRef = useRef<HTMLInputElement>(null);
   const [tmpValue, setTmpValue] = useState<string | undefined>();
   const [open, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(defaultFocusIndex);
 
   const state: AutocompleteReturn<T> = {
     isItemSelected,
-    inputRef,
+    inputRef: externalInputRef || internalInputRef,
     focusIndex,
     setFocusIndex,
     open,

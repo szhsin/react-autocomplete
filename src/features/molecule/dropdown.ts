@@ -9,7 +9,10 @@ type DropdownFeature<T> = MergedFeature<
 >;
 
 const dropdown = <T>(
-  props: Pick<FeatureProps<T>, 'rovingText' | 'selectOnBlur' | 'closeOnSelect'> = {}
+  props: Pick<
+    FeatureProps<T>,
+    'rovingText' | 'selectOnBlur' | 'closeOnSelect' | 'toggleRef'
+  > = {}
 ): DropdownFeature<T> =>
   mergeModules(
     autocompleteLite<T>({

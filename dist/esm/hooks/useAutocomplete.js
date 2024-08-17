@@ -6,15 +6,16 @@ const useAutocomplete = ({
   onChange,
   feature: useFeature,
   isItemSelected,
+  inputRef: externalInputRef,
   ...passthrough
 }) => {
-  const inputRef = useRef(null);
+  const internalInputRef = useRef(null);
   const [tmpValue, setTmpValue] = useState();
   const [open, setOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(defaultFocusIndex);
   const state = {
     isItemSelected,
-    inputRef,
+    inputRef: externalInputRef || internalInputRef,
     focusIndex,
     setFocusIndex,
     open,

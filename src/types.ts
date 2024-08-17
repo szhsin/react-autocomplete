@@ -5,18 +5,6 @@ import type {
   LabelHTMLAttributes
 } from 'react';
 
-type WithRef<T> = T extends (...args: infer P) => infer R
-  ? R extends HTMLAttributes<infer E>
-    ? (...args: P) => R & { ref: React.RefObject<E> }
-    : never
-  : never;
-
-type WithOptionalRef<T> = T extends (...args: infer P) => infer R
-  ? R extends HTMLAttributes<infer E>
-    ? (...args: P) => R & { ref?: React.Ref<E> }
-    : never
-  : never;
-
 export interface GetProps<T> {
   getInputProps: () => InputHTMLAttributes<HTMLInputElement>;
   getLabelProps: () => LabelHTMLAttributes<HTMLLabelElement>;
@@ -26,14 +14,6 @@ export interface GetProps<T> {
   getListProps: () => HTMLAttributes<HTMLElement>;
   getItemProps: (option: { index: number; item: T }) => HTMLAttributes<HTMLElement>;
 }
-
-export type GetPropsWithRef<T> = {
-  [P in keyof GetProps<T>]: WithRef<GetProps<T>[P]>;
-};
-
-export type GetPropsWithOptionalRef<T> = {
-  [P in keyof GetProps<T>]: WithOptionalRef<GetProps<T>[P]>;
-};
 
 export interface ContextualOrReturn<T> {
   isItemSelected: (item: T) => boolean;
@@ -90,6 +70,7 @@ export interface FeatureProps<T> {
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
   closeOnSelect?: boolean;
+  toggleRef?: React.RefObject<HTMLButtonElement>;
   requestItem: (value: string) => RequestItemResult<T> | Promise<RequestItemResult<T>>;
 }
 
@@ -115,6 +96,7 @@ export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Featur
 
 export interface BaseProps<T, FeatureYield extends object> extends PassthroughProps<T> {
   feature: Feature<T, FeatureYield>;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
 export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> &

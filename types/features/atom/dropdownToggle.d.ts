@@ -1,4 +1,6 @@
-import type { Feature, FeatureProps, GetProps, GetPropsWithRef, FeatureState } from '../../types';
-type DropdownToggleFeature<T> = Feature<T, Pick<GetPropsWithRef<T>, 'getToggleProps'> & Pick<GetProps<T>, 'getInputProps'> & FeatureState>;
-declare const dropdownToggle: <T>({ closeOnSelect }: Pick<FeatureProps<T>, "closeOnSelect">) => DropdownToggleFeature<T>;
+import type { Feature, FeatureProps, GetProps, FeatureState } from '../../types';
+type DropdownToggleFeature<T> = Feature<T, Pick<GetProps<T>, 'getToggleProps' | 'getInputProps'> & FeatureState & {
+    toggleRef: React.RefObject<HTMLButtonElement>;
+}>;
+declare const dropdownToggle: <T>({ closeOnSelect, toggleRef: externalToggleRef }: Pick<FeatureProps<T>, "closeOnSelect" | "toggleRef">) => DropdownToggleFeature<T>;
 export { type DropdownToggleFeature, dropdownToggle };
