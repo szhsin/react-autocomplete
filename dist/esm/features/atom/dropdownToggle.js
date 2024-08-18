@@ -4,7 +4,7 @@ import { useToggle } from '../../hooks/useToggle.js';
 const dropdownToggle = ({
   closeOnSelect = true,
   toggleRef: externalToggleRef
-}) => ({
+} = {}) => ({
   inputRef,
   open,
   setOpen,

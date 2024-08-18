@@ -10,7 +10,7 @@ type MultiSelectFeature<T> = MergedFeature<
 >;
 
 const multiSelect = <T>(
-  props: Pick<FeatureProps<T>, 'rovingText' | 'closeOnSelect'> = {}
+  props?: Pick<FeatureProps<T>, 'rovingText' | 'closeOnSelect'>
 ): MultiSelectFeature<T> =>
   mergeModules(
     autocomplete<T>({ ...props, select: true, selectOnBlur: false }),

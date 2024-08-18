@@ -9,7 +9,7 @@ type AutocompleteFeature<T> = MergedFeature<
   [AutocompleteLiteFeature<T>, InputToggleFeature<T>, LabelFeature<T>]
 >;
 
-const autocomplete = <T>(props: AutocompleteFeatureProps<T> = {}): AutocompleteFeature<T> =>
+const autocomplete = <T>(props?: AutocompleteFeatureProps<T>): AutocompleteFeature<T> =>
   mergeModules(autocompleteLite<T>(props), inputToggle<T>(), label<T>());
 
 export { type AutocompleteFeature, autocomplete };

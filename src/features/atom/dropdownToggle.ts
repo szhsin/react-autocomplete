@@ -12,7 +12,7 @@ const dropdownToggle =
   <T>({
     closeOnSelect = true,
     toggleRef: externalToggleRef
-  }: Pick<FeatureProps<T>, 'closeOnSelect' | 'toggleRef'>): DropdownToggleFeature<T> =>
+  }: Pick<FeatureProps<T>, 'closeOnSelect' | 'toggleRef'> = {}): DropdownToggleFeature<T> =>
   ({ inputRef, open, setOpen, focusIndex, value, tmpValue }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
     const internalToggleRef = useRef<HTMLButtonElement>(null);

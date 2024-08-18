@@ -432,12 +432,12 @@ const label = () => ({
   };
 };
 
-const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle(), label());
+const autocomplete = props => mergeModules(autocompleteLite(props), inputToggle(), label());
 
 const dropdownToggle = ({
   closeOnSelect = true,
   toggleRef: externalToggleRef
-}) => ({
+} = {}) => ({
   inputRef,
   open,
   setOpen,
@@ -487,7 +487,7 @@ const dropdownToggle = ({
   };
 };
 
-const dropdown = (props = {}) => mergeModules(autocompleteLite({
+const dropdown = props => mergeModules(autocompleteLite({
   ...props,
   select: true,
   deselectOnClear: false
@@ -521,13 +521,13 @@ const multiInput = () => ({
   };
 };
 
-const multiSelect = (props = {}) => mergeModules(autocomplete({
+const multiSelect = props => mergeModules(autocomplete({
   ...props,
   select: true,
   selectOnBlur: false
 }), inputFocus(), multiInput());
 
-const multiSelectDropdown = (props = {}) => mergeModules(autocompleteLite({
+const multiSelectDropdown = props => mergeModules(autocompleteLite({
   ...props,
   select: true,
   selectOnBlur: false
