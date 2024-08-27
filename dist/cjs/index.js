@@ -24,15 +24,16 @@ const useAutocomplete = ({
   onChange,
   feature: useFeature,
   isItemSelected,
+  inputRef: externalInputRef,
   ...passthrough
 }) => {
-  const inputRef = React.useRef(null);
+  const internalInputRef = React.useRef(null);
   const [tmpValue, setTmpValue] = React.useState();
   const [open, setOpen] = React.useState(false);
   const [focusIndex, setFocusIndex] = React.useState(defaultFocusIndex);
   const state = {
     isItemSelected,
-    inputRef,
+    inputRef: externalInputRef || internalInputRef,
     focusIndex,
     setFocusIndex,
     open,
@@ -431,11 +432,12 @@ const label = () => ({
   };
 };
 
-const autocomplete = (props = {}) => mergeModules(autocompleteLite(props), inputToggle(), label());
+const autocomplete = props => mergeModules(autocompleteLite(props), inputToggle(), label());
 
 const dropdownToggle = ({
-  closeOnSelect = true
-}) => ({
+  closeOnSelect = true,
+  toggleRef: externalToggleRef
+} = {}) => ({
   inputRef,
   open,
   setOpen,
@@ -444,13 +446,15 @@ const dropdownToggle = ({
   tmpValue
 }) => {
   const [startToggle, stopToggle] = useToggle(open, setOpen);
-  const toggleRef = React.useRef(null);
+  const internalToggleRef = React.useRef(null);
+  const toggleRef = externalToggleRef || internalToggleRef;
   const inputValue = tmpValue || value || '';
   React.useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open, inputRef]);
   const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
   return {
+    toggleRef,
     isInputEmpty: !inputValue,
     getToggleProps: () => ({
       type: 'button',
@@ -483,7 +487,7 @@ const dropdownToggle = ({
   };
 };
 
-const dropdown = (props = {}) => mergeModules(autocompleteLite({
+const dropdown = props => mergeModules(autocompleteLite({
   ...props,
   select: true,
   deselectOnClear: false
@@ -517,13 +521,13 @@ const multiInput = () => ({
   };
 };
 
-const multiSelect = (props = {}) => mergeModules(autocomplete({
+const multiSelect = props => mergeModules(autocomplete({
   ...props,
   select: true,
   selectOnBlur: false
 }), inputFocus(), multiInput());
 
-const multiSelectDropdown = (props = {}) => mergeModules(autocompleteLite({
+const multiSelectDropdown = props => mergeModules(autocompleteLite({
   ...props,
   select: true,
   selectOnBlur: false

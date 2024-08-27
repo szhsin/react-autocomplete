@@ -1,27 +1,22 @@
 import { useEffect, useRef } from 'react';
-import type {
-  Feature,
-  FeatureProps,
-  GetProps,
-  GetPropsWithRef,
-  FeatureState
-} from '../../types';
+import type { Feature, FeatureProps, GetProps, FeatureState } from '../../types';
 import { useToggle } from '../../hooks/useToggle';
 
 type DropdownToggleFeature<T> = Feature<
   T,
-  Pick<GetPropsWithRef<T>, 'getToggleProps'> &
-    Pick<GetProps<T>, 'getInputProps'> &
-    FeatureState
+  Pick<GetProps<T>, 'getToggleProps' | 'getInputProps'> &
+    FeatureState & { toggleRef: React.RefObject<HTMLButtonElement> }
 >;
 
 const dropdownToggle =
   <T>({
-    closeOnSelect = true
-  }: Pick<FeatureProps<T>, 'closeOnSelect'>): DropdownToggleFeature<T> =>
+    closeOnSelect = true,
+    toggleRef: externalToggleRef
+  }: Pick<FeatureProps<T>, 'closeOnSelect' | 'toggleRef'> = {}): DropdownToggleFeature<T> =>
   ({ inputRef, open, setOpen, focusIndex, value, tmpValue }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
-    const toggleRef = useRef<HTMLButtonElement>(null);
+    const internalToggleRef = useRef<HTMLButtonElement>(null);
+    const toggleRef = externalToggleRef || internalToggleRef;
     const inputValue = tmpValue || value || '';
 
     useEffect(() => {
@@ -33,6 +28,7 @@ const dropdownToggle =
     const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
 
     return {
+      toggleRef,
       isInputEmpty: !inputValue,
 
       getToggleProps: () => ({
