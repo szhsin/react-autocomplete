@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useCombobox, autocomplete, dropdown } from '@szhsin/react-autocomplete';
-import { useFloating, autoUpdate } from '@floating-ui/react-dom';
+import { useFloating, autoUpdate, size, flip } from '@floating-ui/react-dom';
 import styles from '@/styles/Home.module.css';
 import { US_STATES_PLAIN } from '../data';
 
@@ -12,7 +12,16 @@ function Combobox() {
     : US_STATES_PLAIN;
 
   const { refs, floatingStyles } = useFloating<HTMLInputElement>({
-    placement: 'top-end'
+    placement: 'bottom-end',
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      size({
+        padding: 10,
+        apply({ availableHeight, elements }) {
+          elements.floating.style.maxHeight = `${availableHeight}px`;
+        }
+      })
+    ]
   });
 
   const {
@@ -91,12 +100,26 @@ function Combobox() {
 
 function Dropdown() {
   const [value, setValue] = useState<string | undefined>();
+  const listRef = useRef<HTMLUListElement>(null);
+  const inputWrapRef = useRef<HTMLDivElement>(null);
+
   const items = value
     ? US_STATES_PLAIN.filter((item) => item.toLowerCase().startsWith(value.toLowerCase()))
     : US_STATES_PLAIN;
 
   const { refs, floatingStyles, elements, update } = useFloating<HTMLButtonElement>({
-    placement: 'top-end'
+    placement: 'bottom-end',
+    middleware: [
+      flip(),
+      size({
+        padding: 10,
+        apply({ availableHeight }) {
+          if (listRef.current && inputWrapRef.current) {
+            listRef.current.style.maxHeight = `${availableHeight - inputWrapRef.current.offsetHeight}px`;
+          }
+        }
+      })
+    ]
   });
 
   const {
@@ -139,7 +162,7 @@ function Dropdown() {
             display: open ? 'block' : 'none'
           }}
         >
-          <div style={{ padding: 10 }}>
+          <div ref={inputWrapRef} style={{ padding: 10 }}>
             <input className={styles.input} {...getInputProps()} />
             {!isInputEmpty && (
               <button
@@ -156,7 +179,7 @@ function Dropdown() {
             </button>
           </div>
 
-          <ul className={styles.list}>
+          <ul ref={listRef} style={{ overflow: 'auto' }}>
             {items.map((item, index) => (
               <li
                 className={styles.option}
@@ -178,7 +201,7 @@ function Dropdown() {
 
 export default function () {
   return (
-    <div style={{ display: 'flex', marginTop: 500 }}>
+    <div style={{ display: 'flex', marginTop: 500, height: 2000 }}>
       <Combobox />
       <Dropdown />
     </div>
