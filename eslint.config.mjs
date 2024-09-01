@@ -64,6 +64,7 @@ export default tseslint.config(
     },
     rules: {
       'no-console': ['error', { allow: ['warn', 'error'] }],
+      'jest/expect-expect': 0,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks-addons/no-unused-deps': 'error',
@@ -78,6 +79,12 @@ export default tseslint.config(
           checksVoidReturn: false
         }
       ]
+    }
+  },
+  {
+    files: ['src/__tests__/**/*'],
+    rules: {
+      'react/react-in-jsx-scope': 0
     }
   }
 );
