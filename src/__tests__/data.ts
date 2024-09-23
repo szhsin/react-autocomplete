@@ -255,3 +255,5 @@ export const US_STATES_STRING = [
   'Wisconsin',
   'Wyoming'
 ];
+
+export const TOTAL_DATA_COUNT = US_STATES.length;

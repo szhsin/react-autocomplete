@@ -1,19 +1,24 @@
 import { useState } from 'react';
-import { type ComboboxProps, useCombobox, autocomplete } from '..';
+import { type ComboboxProps, useCombobox, autocomplete, supercomplete } from '..';
 import type { AutocompleteFeatureProps } from '../types';
 import { US_STATES } from './data';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
 
-export default function Autocomplete(
-  props: Partial<ComboboxProps<Item>> & AutocompleteFeatureProps<Item>
-) {
-  const [value, setValue] = useState<string>();
-  const [selected, setSelected] = useState<Item>();
-  const items = value
+const filterItems = (value?: string) =>
+  value
     ? US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
     : US_STATES;
+
+export const Autocomplete = ({
+  isSupercomplete,
+  ...props
+}: Partial<ComboboxProps<Item>> &
+  AutocompleteFeatureProps<Item> & { isSupercomplete?: boolean }) => {
+  const [value, setValue] = useState<string>();
+  const [selected, setSelected] = useState<Item>();
+  const items = filterItems(value);
 
   const {
     getLabelProps,
@@ -34,7 +39,15 @@ export default function Autocomplete(
     onChange: setValue,
     selected,
     onSelectChange: setSelected,
-    feature: autocomplete(props)
+    feature: isSupercomplete
+      ? supercomplete({
+          ...props,
+          requestItem: (newValue) => {
+            const items = filterItems(newValue);
+            if (items.length) return { index: 0, item: items[0] };
+          }
+        })
+      : autocomplete(props)
   });
 
   const displayList = !!(open && items.length);
@@ -81,4 +94,4 @@ export default function Autocomplete(
       </ul>
     </div>
   );
-}
+};

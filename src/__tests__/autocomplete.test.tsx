@@ -1,12 +1,9 @@
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { autocomplete } from '..';
-import Autocomplete from './Autocomplete';
-import { US_STATES } from './data';
-
-const totalOptionCount = US_STATES.length;
-const scrollIntoView = jest.fn();
-Element.prototype.scrollIntoView = scrollIntoView;
+import { scrollIntoView } from './scrollIntoView';
+import { TOTAL_DATA_COUNT } from './data';
+import { Autocomplete } from './Autocomplete';
 
 describe('autocomplete', () => {
   test('select mode', async () => {
@@ -35,7 +32,7 @@ describe('autocomplete', () => {
     expect(combobox).toHaveAttribute('aria-expanded', 'true');
     expect(combobox).toHaveAttribute('aria-controls', listbox.id);
     expect(listbox).toHaveAttribute('aria-labelledby', label.id);
-    expect(screen.getAllByRole('option')).toHaveLength(totalOptionCount);
+    expect(screen.getAllByRole('option')).toHaveLength(TOTAL_DATA_COUNT);
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
 
@@ -127,7 +124,7 @@ describe('autocomplete', () => {
     // Test toggle button
     await user.click(screen.getByRole('button', { name: 'Open' }));
     expect(screen.getByRole('listbox')).toBeInTheDocument();
-    expect(screen.getAllByRole('option')).toHaveLength(totalOptionCount);
+    expect(screen.getAllByRole('option')).toHaveLength(TOTAL_DATA_COUNT);
     expect(screen.getByRole('option', { name: 'Colorado' })).toHaveStyle({
       textDecoration: 'underline'
     });
@@ -161,7 +158,7 @@ describe('autocomplete', () => {
     expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
-    expect(screen.getAllByRole('option')).toHaveLength(totalOptionCount);
+    expect(screen.getAllByRole('option')).toHaveLength(TOTAL_DATA_COUNT);
 
     // Focus an item and blur input
     await user.keyboard('{ArrowDown>3/}');
