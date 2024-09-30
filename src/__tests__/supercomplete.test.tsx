@@ -4,7 +4,7 @@ import './scrollIntoView';
 import { Autocomplete } from './Autocomplete';
 
 describe('supercomplete', () => {
-  test('supercomplete', async () => {
+  test('continuous interactions', async () => {
     const user = userEvent.setup();
     render(<Autocomplete isSupercomplete />);
     const combobox = screen.getByRole<HTMLInputElement>('combobox');

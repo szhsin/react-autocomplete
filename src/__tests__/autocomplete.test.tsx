@@ -1,6 +1,5 @@
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { autocomplete } from '..';
 import { scrollIntoView } from './scrollIntoView';
 import { TOTAL_DATA_COUNT } from './data';
 import { Autocomplete } from './Autocomplete';
@@ -37,7 +36,7 @@ describe('autocomplete', () => {
     expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
 
     // type a character and show filtered result
-    await user.type(combobox, 'c');
+    await user.keyboard('c');
     expect(combobox).toHaveValue('c');
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Clear' })).toBeInTheDocument();
@@ -87,7 +86,7 @@ describe('autocomplete', () => {
     expect(combobox).toHaveFocus();
 
     // type a character and select with keyboard
-    await user.type(combobox, 'c');
+    await user.keyboard('c');
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     await user.keyboard('{Enter}'); // should do nothing
     scrollIntoView.mockClear();
@@ -376,9 +375,5 @@ describe('autocomplete', () => {
     expect(onAction).toHaveBeenCalledWith({ abbr: 'CA', name: 'California' });
     expect(screen.queryByRole('listbox')).toBeNull();
     expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
-  });
-
-  test('no options', () => {
-    autocomplete();
   });
 });
