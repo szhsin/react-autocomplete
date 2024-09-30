@@ -1,8 +1,8 @@
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { scrollIntoView } from './scrollIntoView';
-import { TOTAL_DATA_COUNT } from './data';
-import { Autocomplete } from './Autocomplete';
+import { scrollIntoView } from './utils/scrollIntoView';
+import { TOTAL_DATA_COUNT } from './utils/data';
+import { Autocomplete } from './utils/Autocomplete';
 
 describe('autocomplete', () => {
   test('select mode', async () => {

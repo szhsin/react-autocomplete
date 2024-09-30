@@ -1,7 +1,7 @@
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import './scrollIntoView';
-import { Autocomplete } from './Autocomplete';
+import './utils/scrollIntoView';
+import { Autocomplete } from './utils/Autocomplete';
 
 describe('supercomplete', () => {
   test('continuous interactions', async () => {

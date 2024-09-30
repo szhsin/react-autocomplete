@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { type ComboboxProps, useCombobox, autocomplete, supercomplete } from '..';
-import type { AutocompleteFeatureProps } from '../types';
+import { type ComboboxProps, useCombobox, autocomplete, supercomplete } from '../..';
+import type { AutocompleteFeatureProps } from '../../types';
 import { US_STATES } from './data';
 
 type Item = { name: string; abbr: string };

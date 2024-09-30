@@ -1,7 +1,7 @@
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import './scrollIntoView';
-import { Dropdown } from './Dropdown';
+import './utils/scrollIntoView';
+import { Dropdown } from './utils/Dropdown';
 
 describe('dropdown', () => {
   test('continuous interactions', async () => {
