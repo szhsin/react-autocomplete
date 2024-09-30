@@ -373,6 +373,7 @@ describe('autocomplete', () => {
     onAction.mockClear();
     await user.keyboard('{ArrowDown>2}{Enter}');
     expect(onAction).toHaveBeenCalledWith({ abbr: 'CA', name: 'California' });
+    // always close list on action even if closeOnSelect is false
     expect(screen.queryByRole('listbox')).toBeNull();
     expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
   });
