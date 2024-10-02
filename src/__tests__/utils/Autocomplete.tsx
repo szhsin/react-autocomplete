@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { type ComboboxProps, useCombobox, autocomplete, supercomplete } from '../..';
 import type { AutocompleteFeatureProps } from '../../types';
+import { autocompleteFocus } from './autocompleteFocus';
 import { US_STATES } from './data';
 
 type Item = { name: string; abbr: string };
@@ -13,9 +14,10 @@ const filterItems = (value?: string) =>
 
 export const Autocomplete = ({
   isSupercomplete,
+  isAutoFocus,
   ...props
 }: Partial<ComboboxProps<Item>> &
-  AutocompleteFeatureProps<Item> & { isSupercomplete?: boolean }) => {
+  AutocompleteFeatureProps<Item> & { isSupercomplete?: boolean; isAutoFocus?: boolean }) => {
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<Item>();
   const items = filterItems(value);
@@ -39,15 +41,16 @@ export const Autocomplete = ({
     onChange: setValue,
     selected,
     onSelectChange: setSelected,
-    feature: isSupercomplete
-      ? supercomplete({
-          ...props,
-          requestItem: (newValue) => {
-            const items = filterItems(newValue);
-            if (items.length) return { index: 0, item: items[0] };
-          }
-        })
-      : autocomplete(props)
+    feature:
+      isSupercomplete || isAutoFocus
+        ? (isSupercomplete ? supercomplete : autocompleteFocus)({
+            ...props,
+            requestItem: (newValue) => {
+              const items = filterItems(newValue);
+              if (items.length) return { index: 0, item: items[0] };
+            }
+          })
+        : autocomplete(props)
   });
 
   const displayList = !!(open && items.length);
