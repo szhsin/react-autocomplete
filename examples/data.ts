@@ -61,10 +61,6 @@ const US_STATES = [
     abbr: 'AK'
   },
   {
-    name: 'American Samoa',
-    abbr: 'AS'
-  },
-  {
     name: 'Arizona',
     abbr: 'AZ'
   },
@@ -89,24 +85,12 @@ const US_STATES = [
     abbr: 'DE'
   },
   {
-    name: 'District Of Columbia',
-    abbr: 'DC'
-  },
-  {
-    name: 'Micronesia',
-    abbr: 'FM'
-  },
-  {
     name: 'Florida',
     abbr: 'FL'
   },
   {
     name: 'Georgia',
     abbr: 'GA'
-  },
-  {
-    name: 'Guam',
-    abbr: 'GU'
   },
   {
     name: 'Hawaii',
@@ -143,10 +127,6 @@ const US_STATES = [
   {
     name: 'Maine',
     abbr: 'ME'
-  },
-  {
-    name: 'Marshall Islands',
-    abbr: 'MH'
   },
   {
     name: 'Maryland',
@@ -209,10 +189,6 @@ const US_STATES = [
     abbr: 'ND'
   },
   {
-    name: 'Northern Mariana Islands',
-    abbr: 'MP'
-  },
-  {
     name: 'Ohio',
     abbr: 'OH'
   },
@@ -225,16 +201,8 @@ const US_STATES = [
     abbr: 'OR'
   },
   {
-    name: 'Palau',
-    abbr: 'PW'
-  },
-  {
     name: 'Pennsylvania',
     abbr: 'PA'
-  },
-  {
-    name: 'Puerto Rico',
-    abbr: 'PR'
   },
   {
     name: 'Rhode Island',
@@ -265,10 +233,6 @@ const US_STATES = [
     abbr: 'VT'
   },
   {
-    name: 'Virgin Islands',
-    abbr: 'VI'
-  },
-  {
     name: 'Virginia',
     abbr: 'VA'
   },
@@ -289,7 +253,6 @@ const US_STATES = [
     abbr: 'WY'
   }
 ];
-
 const KEYED_GROUP = {
   A: [
     {
