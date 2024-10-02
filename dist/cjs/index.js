@@ -116,39 +116,6 @@ const useMultiSelect = ({
   };
 };
 
-const useLayoutEffect = typeof window !== 'undefined' && window.document && window.document.createElement ? React.useLayoutEffect : React.useEffect;
-const findOverflowAncestor = element => {
-  while (element) {
-    element = element.parentElement;
-    if (!element || element === document.body) return;
-    const {
-      overflow,
-      overflowX,
-      overflowY
-    } = getComputedStyle(element);
-    if (/auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX)) return element;
-  }
-};
-const useAutoHeight = ({
-  anchorRef,
-  show,
-  margin = 0
-}) => {
-  const [height, setHeight] = React.useState();
-  const computeHeight = React.useCallback(() => {
-    const anchor = anchorRef.current;
-    if (!anchor) return;
-    const overflowAncestor = findOverflowAncestor(anchor);
-    const bottomBoundary = overflowAncestor ? overflowAncestor.getBoundingClientRect().bottom : window.innerHeight;
-    const newHeight = bottomBoundary - anchor.getBoundingClientRect().bottom - margin;
-    setHeight(Math.max(newHeight, 0));
-  }, [anchorRef, margin]);
-  useLayoutEffect(() => {
-    show && computeHeight();
-  }, [show, computeHeight]);
-  return [height, computeHeight];
-};
-
 const useMutableState = stateContainer => React.useState(stateContainer)[0];
 
 const useFocusCapture = focusRef => {
@@ -585,6 +552,5 @@ exports.mergeModules = mergeModules;
 exports.multiSelect = multiSelect;
 exports.multiSelectDropdown = multiSelectDropdown;
 exports.supercomplete = supercomplete;
-exports.useAutoHeight = useAutoHeight;
 exports.useCombobox = useCombobox;
 exports.useMultiSelect = useMultiSelect;

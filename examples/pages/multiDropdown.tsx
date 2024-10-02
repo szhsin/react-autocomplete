@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   useMultiSelect,
   multiSelectDropdown,
-  mergeGroupedItems,
-  useAutoHeight
+  mergeGroupedItems
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
@@ -68,18 +67,6 @@ export default function Dropdown() {
       getItemsInGroup: (group) => group.states
     })
   });
-
-  const inputProps = getInputProps();
-
-  const [maxHeight, computeHeight] = useAutoHeight({
-    anchorRef: inputProps.ref,
-    show: open,
-    margin: 30
-  });
-
-  useEffect(() => {
-    computeHeight();
-  }, [selectedItems, computeHeight]);
 
   let itemIndex = 0;
 
@@ -152,7 +139,7 @@ export default function Dropdown() {
           </li>
         ))} */}
 
-        <ul style={{ overflow: 'auto', maxHeight }}>
+        <ul style={{ overflow: 'auto', maxHeight: 500 }}>
           <li>
             <h3>US STATES</h3>
           </li>

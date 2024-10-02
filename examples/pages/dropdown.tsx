@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  useCombobox,
-  dropdown,
-  mergeGroupedItems,
-  useAutoHeight
-} from '@szhsin/react-autocomplete';
+import { useCombobox, dropdown, mergeGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
 import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
 
@@ -69,7 +64,6 @@ export default function Dropdown() {
     })
   });
 
-  const [maxHeight] = useAutoHeight({ anchorRef: inputRef, show: open, margin: 30 });
   let itemIndex = 0;
 
   return (
@@ -150,7 +144,7 @@ export default function Dropdown() {
           </li>
         ))} */}
 
-        <ul style={{ overflow: 'auto', maxHeight }}>
+        <ul style={{ overflow: 'auto', maxHeight: 500 }}>
           <li>
             <h3>US STATES</h3>
           </li>
