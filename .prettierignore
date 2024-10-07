@@ -6,3 +6,4 @@ types/
 examples/out/
 .next/
 _next/
+.docusaurus/
