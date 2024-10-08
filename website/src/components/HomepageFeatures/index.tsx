@@ -9,29 +9,26 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Modular',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and used to get your
-        website up and running quickly.
+        Modular architecture and composable features that minimize the amount of code bundled
+        into your production website.
       </>
     )
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Lightweight',
     description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go ahead and move
-        your docs into the <code>docs</code> directory.
-      </>
+      <>Just 1.4 kB for a fully functional and accessible autocomplete solution in React.</>
     )
   },
   {
-    title: 'Powered by React',
+    title: 'Headless',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended
-        while reusing the same header and footer.
+        Providing behavior and data/state management without imposing any specific markup or
+        styling.
       </>
     )
   }

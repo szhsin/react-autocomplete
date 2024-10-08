@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'React Autocomplete',
-  tagline: 'A modular, lightweight solution',
+  tagline: 'A modular, lightweight, and headless solution',
   favicon: 'img/favicon.ico',
   url: 'https://szhsin.github.io',
   baseUrl: '/react-autocomplete/',
