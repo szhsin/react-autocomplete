@@ -17,7 +17,6 @@ const filterGroupedItems = (value: string = '') =>
 
 export default function Dropdown() {
   const [rovingText, setRovingText] = useState(false);
-  const [selectOnBlur, setSelectOnBlur] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(true);
   const [value, setValue] = useState<string | undefined>('');
   const [selectedItem, setSelectedItem] = useState<Item | undefined>();
@@ -57,7 +56,7 @@ export default function Dropdown() {
     selected: selectedItem,
     onSelectChange: setSelectedItem,
     // feature: autocomplete({ constricted, rovingText }),
-    feature: dropdown({ rovingText, selectOnBlur, closeOnSelect }),
+    feature: dropdown({ rovingText, closeOnSelect }),
     items: mergeGroupedItems({
       groups: groupedItems,
       getItemsInGroup: (group) => group.states
@@ -80,17 +79,6 @@ export default function Dropdown() {
             type="checkbox"
             checked={rovingText}
             onChange={(e) => setRovingText(e.target.checked)}
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          selectOnBlur
-          <input
-            type="checkbox"
-            checked={selectOnBlur}
-            onChange={(e) => setSelectOnBlur(e.target.checked)}
           />
         </label>
       </div>

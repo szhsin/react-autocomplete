@@ -66,7 +66,6 @@ type RequestItemResult<T> = { index: number; item: T } | null | undefined | void
 export interface FeatureProps<T> {
   rovingText?: boolean;
   select?: boolean;
-  selectOnBlur?: boolean;
   deselectOnClear?: boolean;
   deselectOnChange?: boolean;
   closeOnSelect?: boolean;
@@ -76,12 +75,7 @@ export interface FeatureProps<T> {
 
 export type AutocompleteFeatureProps<T> = Pick<
   FeatureProps<T>,
-  | 'rovingText'
-  | 'select'
-  | 'selectOnBlur'
-  | 'deselectOnClear'
-  | 'deselectOnChange'
-  | 'closeOnSelect'
+  'rovingText' | 'select' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'
 >;
 
 export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;

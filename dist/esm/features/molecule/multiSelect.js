@@ -5,8 +5,7 @@ import { multiInput } from '../atom/multiInput.js';
 
 const multiSelect = props => mergeModules(autocomplete({
   ...props,
-  select: true,
-  selectOnBlur: false
+  select: true
 }), inputFocus(), multiInput());
 
 export { multiSelect };

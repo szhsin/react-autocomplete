@@ -29,7 +29,6 @@ export default function Home() {
     value,
     onChange: setValue,
     feature: supercomplete({
-      selectOnBlur: false,
       requestItem: (newValue) => ({
         index: 0,
         item: US_STATES.filter((item) =>
