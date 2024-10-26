@@ -5,5 +5,5 @@ type DropdownFeature<T> = MergedFeature<T, [
     AutocompleteLiteFeature<T>,
     DropdownToggleFeature<T>
 ]>;
-declare const dropdown: <T>(props?: Pick<FeatureProps<T>, "rovingText" | "selectOnBlur" | "closeOnSelect" | "toggleRef">) => DropdownFeature<T>;
+declare const dropdown: <T>(props?: Pick<FeatureProps<T>, "rovingText" | "closeOnSelect" | "toggleRef">) => DropdownFeature<T>;
 export { type DropdownFeature, dropdown };

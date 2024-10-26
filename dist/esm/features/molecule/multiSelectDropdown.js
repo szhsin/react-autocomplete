@@ -5,8 +5,7 @@ import { multiInput } from '../atom/multiInput.js';
 
 const multiSelectDropdown = props => mergeModules(autocompleteLite({
   ...props,
-  select: true,
-  selectOnBlur: false
+  select: true
 }), dropdownToggle(props), multiInput());
 
 export { multiSelectDropdown };

@@ -1,4 +1,4 @@
 import type { Feature, GetProps, AutocompleteFeatureProps, FeatureState } from '../../types';
 type AutocompleteLiteFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps' | 'getClearProps'> & FeatureState>;
-declare const autocompleteLite: <T>({ rovingText, select, selectOnBlur, deselectOnClear, deselectOnChange, closeOnSelect }?: AutocompleteFeatureProps<T>) => AutocompleteLiteFeature<T>;
+declare const autocompleteLite: <T>({ select, rovingText, deselectOnClear, deselectOnChange, closeOnSelect }?: AutocompleteFeatureProps<T>) => AutocompleteLiteFeature<T>;
 export { type AutocompleteLiteFeature, autocompleteLite };

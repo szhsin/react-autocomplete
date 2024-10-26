@@ -5,9 +5,8 @@ const scrollIntoView = element => element?.scrollIntoView({
   block: 'nearest'
 });
 const autocompleteLite = ({
-  rovingText,
   select,
-  selectOnBlur = rovingText,
+  rovingText = !select,
   deselectOnClear = true,
   deselectOnChange = true,
   closeOnSelect = true
@@ -36,15 +35,17 @@ const autocompleteLite = ({
   const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
   const focusItem = items[focusIndex];
   const listId = getId(id, 'l');
-  const selectItemOrAction = (item, noAction) => {
+  const applyValue = newValue => {
+    if (!select) onChange(newValue);
+    const endIndex = newValue.length;
+    inputRef.current?.setSelectionRange(endIndex, endIndex);
+  };
+  const selectItemOrAction = item => {
     if (isItemAction?.(item)) {
-      !noAction && onAction?.(item);
+      onAction?.(item);
       return true;
     }
-    const itemValue = getItemValue(item);
-    if (!select) onChange(itemValue);
-    const endIndex = itemValue.length;
-    inputRef.current?.setSelectionRange(endIndex, endIndex);
+    applyValue(getItemValue(item));
     onSelectChange(item);
   };
   const resetState = shouldClose => {
@@ -106,7 +107,8 @@ const autocompleteLite = ({
         if (!isItemDisabled?.(item)) {
           resetState(selectItemOrAction(item));
         }
-      }
+      },
+      onPointerMove: () => setFocusIndex(index)
     }),
     getInputProps: () => ({
       type: 'text',
@@ -130,9 +132,7 @@ const autocompleteLite = ({
       },
       onBlur: () => {
         if (inCapture()) return;
-        if (selectOnBlur && focusItem) {
-          selectItemOrAction(focusItem, true);
-        }
+        applyValue(inputValue);
         resetState(true);
       },
       onKeyDown: e => {

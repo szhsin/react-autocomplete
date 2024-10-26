@@ -25,7 +25,6 @@ export default function Home() {
   const [selectedFeature, setSelectedFeature] = useState('supercomplete');
   const [select, setselect] = useState(false);
   const [rovingText, setRovingText] = useState(true);
-  const [selectOnBlur, setSelectOnBlur] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
   const [deselectOnChange, setDeselectOnChange] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(true);
@@ -42,7 +41,6 @@ export default function Home() {
 
   const featureProps = {
     select,
-    selectOnBlur,
     deselectOnClear,
     deselectOnChange,
     closeOnSelect,
@@ -153,16 +151,6 @@ export default function Home() {
           </label>
         </div>
       )}
-      <div>
-        <label>
-          selectOnBlur
-          <input
-            type="checkbox"
-            checked={selectOnBlur}
-            onChange={(e) => setSelectOnBlur(e.target.checked)}
-          />
-        </label>
-      </div>
       <div>
         <label>
           deselectOnClear

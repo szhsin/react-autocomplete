@@ -53,14 +53,13 @@ type RequestItemResult<T> = {
 export interface FeatureProps<T> {
     rovingText?: boolean;
     select?: boolean;
-    selectOnBlur?: boolean;
     deselectOnClear?: boolean;
     deselectOnChange?: boolean;
     closeOnSelect?: boolean;
     toggleRef?: React.RefObject<HTMLButtonElement>;
     requestItem: (value: string) => RequestItemResult<T> | Promise<RequestItemResult<T>>;
 }
-export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'select' | 'selectOnBlur' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'>;
+export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'select' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'>;
 export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;
 export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>] ? S : Features extends readonly [Feature<T, infer F>, ...infer R] ? F & MergedFeatureYield<T, R> : never;
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;

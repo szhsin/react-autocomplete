@@ -159,27 +159,30 @@ describe('autocomplete', () => {
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
     expect(screen.getAllByRole('option')).toHaveLength(TOTAL_DATA_COUNT);
 
-    // Focus an item and blur input
-    await user.keyboard('{ArrowDown>3/}');
-    expect(screen.getByRole('option', { name: 'Arizona' })).toHaveStyle({
-      backgroundColor: 'red'
-    });
-    await user.click(screen.getByTestId('value'));
-    expect(screen.queryByRole('listbox')).toBeNull();
-    expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
-
     /* { rovingText: true } */
     // Focus an item and blur input
     rerender(<Autocomplete select rovingText />);
-    await user.type(combobox, 'c');
-    expect(combobox).toHaveValue('c');
-    await user.keyboard('{ArrowDown}');
-    expect(combobox).toHaveValue('California');
-    await user.keyboard('{ArrowUp}');
-    expect(combobox).toHaveValue('c');
-    await user.keyboard('{ArrowUp>2/}');
+    await user.keyboard('c{ArrowDown>2/}{Enter}');
+    expect(screen.getByTestId('selected')).toHaveTextContent(/^Colorado$/);
     expect(combobox).toHaveValue('Colorado');
+    await user.keyboard('{ArrowDown>3}');
+    expect(combobox).toHaveValue('Alaska');
+    await user.keyboard('{ArrowUp>2}');
+    expect(combobox).toHaveValue('Colorado');
+    await user.keyboard('{ArrowUp>2/}');
+    expect(combobox).toHaveValue('Wisconsin');
+    await user.hover(screen.getByRole('option', { name: 'Texas' }));
+    expect(screen.getByRole('option', { name: 'Texas' })).toHaveStyle({
+      backgroundColor: 'red'
+    });
+    expect(combobox).toHaveValue('Wisconsin');
+    await user.keyboard('{ArrowDown}');
+    expect(combobox).toHaveValue('Utah');
+    expect(screen.getByRole('option', { name: 'Texas' })).toHaveStyle({
+      backgroundColor: 'Utah'
+    });
     await user.click(screen.getByTestId('value'));
+    expect(combobox).toHaveValue('Colorado');
     expect(screen.getByTestId('selected')).toHaveTextContent(/^Colorado$/);
 
     /* { deselectOnClear: false } */
@@ -252,7 +255,7 @@ describe('autocomplete', () => {
 
   test('search mode', async () => {
     const user = userEvent.setup();
-    const { rerender } = render(<Autocomplete deselectOnChange={false} />);
+    const { rerender } = render(<Autocomplete deselectOnChange={false} rovingText={false} />);
     const combobox = screen.getByRole('combobox');
 
     // select an option with keyboard
@@ -284,7 +287,7 @@ describe('autocomplete', () => {
     expect(screen.getByTestId('value')).toHaveTextContent(/^Colorad$/);
     expect(screen.getByTestId('selected')).toHaveTextContent(/^Colorado$/);
 
-    /* { deselectOnChange: true } */
+    /* { deselectOnChange: true, rovingText: true } */
     // Deleting a character should clear selection
     rerender(<Autocomplete />);
     await user.keyboard('{Backspace}');
@@ -299,12 +302,22 @@ describe('autocomplete', () => {
     expect(combobox).toHaveValue('Colora');
     expect(screen.getByTestId('value')).toHaveTextContent(/^Colora$/);
     expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
+
+    // Apply the temp value on input blur
+    await user.keyboard('{Backspace}{ArrowDown}');
+    expect(combobox).toHaveValue('Colorado');
+    expect(screen.getByTestId('value')).toHaveTextContent(/^Color$/);
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+    expect(combobox).toHaveFocus();
+    expect(combobox).toHaveValue('Colorado');
+    expect(screen.getByTestId('value')).toHaveTextContent(/^Colorado$/);
+    expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
   });
 
   test('disabled items', async () => {
     const user = userEvent.setup();
     const { rerender } = render(
-      <Autocomplete isItemDisabled={(item) => item.name === 'California'} />
+      <Autocomplete isItemDisabled={(item) => item.name === 'California'} rovingText={false} />
     );
     const combobox = screen.getByRole('combobox');
 
@@ -327,7 +340,9 @@ describe('autocomplete', () => {
     });
     await user.keyboard('{Escape}');
 
-    rerender(<Autocomplete isItemDisabled={(item) => item.name !== 'California'} />);
+    rerender(
+      <Autocomplete isItemDisabled={(item) => item.name !== 'California'} rovingText={false} />
+    );
     await user.keyboard('{ArrowDown}');
     expect(screen.getByRole('option', { name: 'California' })).toHaveStyle({
       color: 'white',

@@ -13,9 +13,8 @@ const scrollIntoView = (element: HTMLElement | null) =>
 
 const autocompleteLite =
   <T>({
-    rovingText,
     select,
-    selectOnBlur = rovingText,
+    rovingText = !select,
     deselectOnClear = true,
     deselectOnChange = true,
     closeOnSelect = true
@@ -46,16 +45,19 @@ const autocompleteLite =
     const focusItem = items[focusIndex];
     const listId = getId(id, 'l');
 
-    const selectItemOrAction = (item: T, noAction?: boolean) => {
+    const applyValue = (newValue: string) => {
+      if (!select) onChange(newValue);
+      const endIndex = newValue.length;
+      inputRef.current?.setSelectionRange(endIndex, endIndex);
+    };
+
+    const selectItemOrAction = (item: T) => {
       if (isItemAction?.(item)) {
-        !noAction && onAction?.(item);
+        onAction?.(item);
         return true; // Always close list on action
       }
 
-      const itemValue = getItemValue(item);
-      if (!select) onChange(itemValue);
-      const endIndex = itemValue.length;
-      inputRef.current?.setSelectionRange(endIndex, endIndex);
+      applyValue(getItemValue(item));
       // We place onSelectChange after onChange to give user an opportunity
       // to manipulate the `value` state
       onSelectChange(item);
@@ -125,7 +127,8 @@ const autocompleteLite =
           if (!isItemDisabled?.(item)) {
             resetState(selectItemOrAction(item));
           }
-        }
+        },
+        onPointerMove: () => setFocusIndex(index)
       }),
 
       getInputProps: () => ({
@@ -153,11 +156,7 @@ const autocompleteLite =
 
         onBlur: () => {
           if (inCapture()) return;
-
-          if (selectOnBlur && focusItem) {
-            selectItemOrAction(focusItem, true);
-          }
-
+          applyValue(inputValue);
           resetState(true);
         },
 
