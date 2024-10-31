@@ -77,3 +77,9 @@
   color: var(--ifm-color-gray-600);
   cursor: default;
 }
+
+.modes {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
