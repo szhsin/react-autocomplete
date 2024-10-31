@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { clsx } from 'clsx';
 import { useCombobox, autocompleteLite } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
@@ -7,6 +7,7 @@ import styles from './styles.module.css';
 const FRUITS = ['Apple', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Pineapple', 'Strawberry'];
 
 const Autocomplete = () => {
+  const listRef = useRef<HTMLUListElement>(null);
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<string>();
   const items = value
@@ -30,6 +31,14 @@ const Autocomplete = () => {
     feature: autocompleteLite({ select: true })
   });
 
+  useEffect(() => {
+    if (open) {
+      if (listRef.current.getBoundingClientRect().bottom > window.innerHeight) {
+        listRef.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      }
+    }
+  }, [open, items.length]);
+
   return (
     <div>
       <div className={styles.inputWrap}>
@@ -42,6 +51,7 @@ const Autocomplete = () => {
       </div>
 
       <ul
+        ref={listRef}
         className={styles.list}
         {...getListProps()}
         style={{

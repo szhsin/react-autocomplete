@@ -53,6 +53,7 @@
   line-height: 1;
   padding: 6px 0;
   margin: 8px 0;
+  scroll-margin-bottom: 16px;
 }
 
 .item {
