@@ -1,0 +1,78 @@
+.block {
+  font-size: 16px;
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  width: 160px;
+}
+
+.input {
+  composes: block;
+  padding: 8px 10px;
+}
+
+.input:hover {
+  border-color: var(--ifm-color-primary-light);
+}
+
+.input:focus-visible,
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
+  border-color: var(--ifm-color-primary-light);
+}
+
+.clear {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 50%;
+  transform: translateX(-120%);
+}
+
+.clear svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.clear:hover {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+}
+
+.list {
+  composes: block;
+  list-style: none;
+  line-height: 1;
+  padding: 6px 0;
+  margin: 8px 0;
+}
+
+.item {
+  margin: 0 !important;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.selected {
+  color: var(--ifm-color-gray-900);
+  background-color: #cfe0fb;
+}
+
+.focused {
+  color: inherit;
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.noResult {
+  composes: item;
+  color: var(--ifm-color-gray-600);
+  cursor: default;
+}
