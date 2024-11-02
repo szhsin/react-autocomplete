@@ -3,13 +3,13 @@ import { clsx } from 'clsx';
 import { useCombobox, autocompleteLite } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
 import { RadioButton } from '../Radio';
-import styles from './styles.module.css';
+import styles from '@site/src/css/styles.module.css';
 
 const FRUITS = ['Apple', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Pineapple', 'Strawberry'];
 
 type Mode = 'select' | 'free';
 
-const Autocomplete = () => {
+const Intro = () => {
   const listRef = useRef<HTMLUListElement>(null);
   const [mode, setMode] = useState<Mode>('select');
   const [value, setValue] = useState<string>();
@@ -116,4 +116,4 @@ const Autocomplete = () => {
   );
 };
 
-export default Autocomplete;
+export { Intro };
