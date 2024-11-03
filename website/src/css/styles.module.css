@@ -1,14 +1,14 @@
 .block {
   font-size: 16px;
   background-color: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-300);
   border-radius: 4px;
-  width: 160px;
+  width: 192px;
 }
 
 .input {
   composes: block;
   padding: 8px 10px;
+  border: 1px solid var(--ifm-color-emphasis-500);
 }
 
 .input:hover {
@@ -22,29 +22,23 @@
   border-color: var(--ifm-color-primary-light);
 }
 
-.clear {
+.iconBtn {
   cursor: pointer;
   appearance: none;
   border: none;
   background: transparent;
   padding: 4px;
   border-radius: 50%;
-  transform: translateX(-120%);
 }
 
-.clear svg {
+.iconBtn svg {
   display: block;
   width: 16px;
   height: 16px;
 }
 
-.clear:hover {
+.iconBtn:hover {
   background-color: var(--ifm-color-emphasis-200);
-}
-
-.inputWrap {
-  display: flex;
-  align-items: center;
 }
 
 .list {
@@ -52,7 +46,8 @@
   list-style: none;
   line-height: 1;
   padding: 6px 0;
-  margin: 8px 0;
+  margin: 6px 0;
+  border: 1px solid var(--ifm-color-emphasis-300);
   scroll-margin-bottom: 16px;
 }
 

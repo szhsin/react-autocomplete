@@ -4,6 +4,7 @@ import { useCombobox, autocompleteLite } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
 import { RadioButton } from '../Radio';
 import styles from '@site/src/css/styles.module.css';
+import customStyles from './styles.module.css';
 
 const FRUITS = ['Apple', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Pineapple', 'Strawberry'];
 
@@ -72,14 +73,14 @@ const Intro = () => {
           onChange={handleModeChange}
         />
       </div>
-      <div className={styles.inputWrap}>
+      <div className={customStyles.inputWrap}>
         <input
           className={styles.input}
           placeholder={isSelectMode ? 'Pick a fruit...' : 'Type to search...'}
           {...getInputProps()}
         />
         {!isInputEmpty && (
-          <button className={styles.clear} {...getClearProps()}>
+          <button className={clsx(styles.iconBtn, customStyles.clear)} {...getClearProps()}>
             <ClearIcon />
           </button>
         )}

@@ -1,0 +1,8 @@
+.inputWrap {
+  display: flex;
+  align-items: center;
+}
+
+.clear {
+  transform: translateX(-120%);
+}
