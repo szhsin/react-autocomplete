@@ -45,19 +45,16 @@ const autocompleteLite =
     const focusItem = items[focusIndex];
     const listId = getId(id, 'l');
 
-    const applyValue = (newValue: string) => {
-      if (!select) onChange(newValue);
-      const endIndex = newValue.length;
-      inputRef.current?.setSelectionRange(endIndex, endIndex);
-    };
-
     const selectItemOrAction = (item: T) => {
       if (isItemAction?.(item)) {
         onAction?.(item);
         return true; // Always close list on action
       }
 
-      applyValue(getItemValue(item));
+      const itemValue = getItemValue(item);
+      if (!select) onChange(itemValue);
+      const endIndex = itemValue.length;
+      inputRef.current?.setSelectionRange(endIndex, endIndex);
       // We place onSelectChange after onChange to give user an opportunity
       // to manipulate the `value` state
       onSelectChange(item);
@@ -103,7 +100,6 @@ const autocompleteLite =
 
         onClick: () => {
           stopCapture();
-          setOpen(true);
           setTmpValue();
           setFocusIndex(defaultFocusIndex);
           onChange('');
@@ -156,7 +152,7 @@ const autocompleteLite =
 
         onBlur: () => {
           if (inCapture()) return;
-          applyValue(inputValue);
+          if (!select) onChange(inputValue);
           resetState(true);
         },
 

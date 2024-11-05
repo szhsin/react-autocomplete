@@ -155,9 +155,7 @@ describe('autocomplete', () => {
     expect(combobox).toHaveValue('');
     expect(screen.getByTestId('value')).toBeEmptyDOMElement();
     expect(screen.getByTestId('selected')).toBeEmptyDOMElement();
-    expect(screen.getByRole('listbox')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
-    expect(screen.getAllByRole('option')).toHaveLength(TOTAL_DATA_COUNT);
 
     /* { rovingText: true } */
     // Focus an item and blur input
