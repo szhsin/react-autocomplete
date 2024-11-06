@@ -1,0 +1,22 @@
+.wrap {
+  margin-bottom: 16px;
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 400px) {
+  .modes {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.desc {
+  color: var(--ifm-color-emphasis-800);
+}

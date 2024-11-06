@@ -18,3 +18,21 @@
   --ifm-color-primary-light: #69a6f8;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+.markdown h1:first-child {
+  --ifm-h1-font-size: 2.5rem;
+}
+
+@media (max-width: 576px) {
+  .markdown h1:first-child {
+    --ifm-h1-font-size: 2rem;
+  }
+}
+
+input::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}

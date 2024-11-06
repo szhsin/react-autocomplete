@@ -5,10 +5,22 @@
   width: 192px;
 }
 
+.inputWrap {
+  width: 192px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: 1fr 24px 24px 4px;
+  align-items: center;
+  justify-items: center;
+}
+
 .input {
   composes: block;
+  appearance: none;
   padding: 8px 10px;
   border: 1px solid var(--ifm-color-emphasis-500);
+  grid-column: 1 / -1;
+  grid-row: 1;
 }
 
 .input:hover {
@@ -32,6 +44,7 @@
 }
 
 .iconBtn svg {
+  pointer-events: none;
   display: block;
   width: 16px;
   height: 16px;
@@ -39,6 +52,18 @@
 
 .iconBtn:hover {
   background-color: var(--ifm-color-emphasis-200);
+}
+
+.clear {
+  composes: iconBtn;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.toggle {
+  composes: iconBtn;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .list {
@@ -71,10 +96,4 @@
   composes: item;
   color: var(--ifm-color-gray-600);
   cursor: default;
-}
-
-.modes {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 16px;
 }
