@@ -73,7 +73,17 @@
   padding: 6px 0;
   margin: 6px 0;
   border: 1px solid var(--ifm-color-emphasis-300);
+  position: absolute;
+  z-index: 1;
+}
+
+.listNoScroll {
   scroll-margin-bottom: 16px;
+}
+
+.listScroll {
+  overflow: auto;
+  max-height: 300px;
 }
 
 .item {

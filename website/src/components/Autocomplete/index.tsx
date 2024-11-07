@@ -9,6 +9,7 @@ import styles from '@site/src/css/styles.module.css';
 import customStyles from './styles.module.css';
 import { Checkbox } from '../Checkbox';
 import { RadioButton } from '../Radio';
+import { useAutoScroll } from '../../utils/useAutoScroll';
 
 type Mode = 'select' | 'free';
 
@@ -51,6 +52,8 @@ const Autocomplete = () => {
     selected,
     onSelectChange: setSelected
   });
+
+  const listRef = useAutoScroll(open, items);
 
   const handleModeChange = (mode: Mode) => {
     inputRef.current.focus();
@@ -129,15 +132,10 @@ const Autocomplete = () => {
       </div>
 
       <ul
-        className={styles.list}
+        ref={listRef}
+        className={clsx(styles.list, styles.listScroll)}
         {...getListProps()}
-        style={{
-          display: open ? 'block' : 'none',
-          position: 'absolute',
-          overflow: 'auto',
-          maxHeight: 300,
-          zIndex: 1
-        }}
+        style={{ display: open ? 'block' : 'none' }}
       >
         {items.length ? (
           items.map((item, index) => (

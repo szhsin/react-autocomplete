@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { clsx } from 'clsx';
 import { useCombobox, autocompleteLite } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
 import { RadioButton } from '../Radio';
+import { useAutoScroll } from '../../utils/useAutoScroll';
 import styles from '@site/src/css/styles.module.css';
 import customStyles from './styles.module.css';
 
@@ -11,7 +12,6 @@ const FRUITS = ['Apple', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Pineapple', 
 type Mode = 'select' | 'free';
 
 const Intro = () => {
-  const listRef = useRef<HTMLUListElement>(null);
   const [mode, setMode] = useState<Mode>('select');
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<string>();
@@ -40,13 +40,7 @@ const Intro = () => {
     })
   });
 
-  useEffect(() => {
-    if (open) {
-      if (listRef.current.getBoundingClientRect().bottom > window.innerHeight) {
-        listRef.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
-      }
-    }
-  }, [open, items.length]);
+  const listRef = useAutoScroll(open, items);
 
   const handleModeChange = (mode: Mode) => {
     setMode(mode);
@@ -88,12 +82,9 @@ const Intro = () => {
 
       <ul
         ref={listRef}
-        className={styles.list}
+        className={clsx(styles.list, styles.listNoScroll)}
         {...getListProps()}
-        style={{
-          display: open ? 'block' : 'none',
-          position: 'absolute'
-        }}
+        style={{ display: open ? 'block' : 'none' }}
       >
         {items.length ? (
           items.map((item, index) => (

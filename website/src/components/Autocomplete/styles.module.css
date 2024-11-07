@@ -27,6 +27,7 @@
 
 .info {
   color: var(--ifm-color-emphasis-700);
+  line-height: 1;
   font-size: 14px;
   margin-left: 24px;
 }
