@@ -1,5 +1,9 @@
 .wrap {
-  margin-bottom: 16px;
+  margin-bottom: 36px;
+}
+
+.desc {
+  color: var(--ifm-color-emphasis-800);
 }
 
 .modes {
@@ -7,7 +11,6 @@
   grid-template-columns: max-content 1fr;
   align-items: start;
   gap: 16px;
-  margin-bottom: 16px;
 }
 
 @media (max-width: 400px) {
@@ -17,6 +20,21 @@
   }
 }
 
-.desc {
-  color: var(--ifm-color-emphasis-800);
+.inputWrap {
+  display: flex;
+  align-items: center;
+}
+
+.info {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 14px;
+  margin-left: 24px;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0 24px;
 }
