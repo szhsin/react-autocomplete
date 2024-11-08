@@ -36,3 +36,15 @@ input::-webkit-contacts-auto-fill-button {
   position: absolute;
   right: 0;
 }
+
+.theme-code-block-highlighted-line {
+  box-shadow: inset 3px 0 0 0 var(--ifm-color-primary);
+}
+
+[data-theme='dark'] .theme-code-block-highlighted-line {
+  background-color: #242c37;
+}
+
+.tabs__item {
+  padding: 6px 16px;
+}
