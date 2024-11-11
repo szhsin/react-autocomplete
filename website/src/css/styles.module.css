@@ -112,7 +112,7 @@
 .dropdown {
   composes: block;
   composes: popup;
-  margin: 4px 0;
+  margin: 5px 0;
 }
 
 .dropdownClear {
@@ -163,12 +163,14 @@
   composes: block;
   appearance: none;
   cursor: pointer;
-  padding: 6px 12px;
-  border: 1px solid var(--ifm-color-emphasis-300);
+  padding: 8px 12px;
+  border: none;
+  color: var(--ifm-color-emphasis-0);
+  background-color: var(--ifm-color-primary);
 }
 
 .button:hover {
-  background-color: var(--ifm-color-emphasis-200);
+  opacity: 0.92;
 }
 
 .button:focus {
@@ -176,7 +178,6 @@
 }
 
 .button:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
-  border-color: var(--ifm-color-primary-light);
+  outline: 2px solid var(--ifm-color-primary) !important;
+  outline-offset: 2px;
 }
