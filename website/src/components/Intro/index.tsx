@@ -82,7 +82,7 @@ const Intro = () => {
 
       <ul
         ref={listRef}
-        className={clsx(styles.list, styles.listNoScroll)}
+        className={clsx(styles.list, styles.noScroll)}
         {...getListProps()}
         style={{ display: open ? 'block' : 'none' }}
       >

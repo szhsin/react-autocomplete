@@ -31,6 +31,7 @@ const Autocomplete = () => {
       // The `select` option controls autocomplete in free or select mode
       // highlight-next-line
       select: true // or false
+      // Other options: rovingText, deselectOnClear, deselectOnChange, closeOnSelect
     })
   });
 

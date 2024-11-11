@@ -1,13 +1,20 @@
+.wrap {
+  margin-bottom: 40px;
+}
+
 .block {
   font-size: 16px;
   background-color: var(--ifm-background-surface-color);
   border-radius: 4px;
-  width: 192px;
+}
+
+.label {
+  display: inline-block;
+  margin-bottom: 4px;
 }
 
 .inputWrap {
   width: 192px;
-  margin-top: 4px;
   display: grid;
   grid-template-columns: 1fr 24px 24px 4px;
   align-items: center;
@@ -17,6 +24,7 @@
 .input {
   composes: block;
   appearance: none;
+  width: 192px;
   padding: 8px 10px;
   border: 1px solid var(--ifm-color-emphasis-500);
   grid-column: 1 / -1;
@@ -32,6 +40,16 @@
   outline: none;
   box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
   border-color: var(--ifm-color-primary-light);
+}
+
+.inputBorderless {
+  border: none;
+  padding: 10px;
+}
+
+.inputBorderless:focus-visible,
+.inputBorderless:focus {
+  box-shadow: none;
 }
 
 .iconBtn {
@@ -66,24 +84,49 @@
   grid-row: 1;
 }
 
-.list {
-  composes: block;
-  list-style: none;
-  line-height: 1;
-  padding: 6px 0;
-  margin: 6px 0;
+.popup {
   border: 1px solid var(--ifm-color-emphasis-300);
   position: absolute;
   z-index: 1;
 }
 
-.listNoScroll {
+.list {
+  composes: block;
+  composes: popup;
+  width: 192px;
+  list-style: none;
+  line-height: 1;
+  padding: 6px 0;
+  margin: 6px 0;
+}
+
+.noScroll {
   scroll-margin-bottom: 16px;
 }
 
-.listScroll {
+.scroll {
   overflow: auto;
   max-height: 300px;
+}
+
+.dropdown {
+  composes: block;
+  composes: popup;
+  margin: 4px 0;
+}
+
+.dropdownClear {
+  composes: iconBtn;
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.dropdownList {
+  list-style: none;
+  line-height: 1;
+  padding: 6px 0;
+  margin: 0;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .item {
@@ -106,4 +149,34 @@
   composes: item;
   color: var(--ifm-color-gray-600);
   cursor: default;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.button {
+  composes: block;
+  appearance: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.button:hover {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
+  border-color: var(--ifm-color-primary-light);
 }

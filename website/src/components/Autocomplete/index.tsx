@@ -42,15 +42,15 @@ const Autocomplete = () => {
     items,
     value,
     onChange: setValue,
+    selected,
+    onSelectChange: setSelected,
     feature: autocomplete({
       select: isSelectMode,
       rovingText,
       deselectOnClear,
       deselectOnChange,
       closeOnSelect
-    }),
-    selected,
-    onSelectChange: setSelected
+    })
   });
 
   const listRef = useAutoScroll(open, items);
@@ -67,7 +67,7 @@ const Autocomplete = () => {
   };
 
   return (
-    <div className={customStyles.wrap}>
+    <div className={styles.wrap}>
       <div className={customStyles.modes}>
         <RadioButton
           name="mode"
@@ -91,7 +91,7 @@ const Autocomplete = () => {
           The allowed text in the input field is restricted to the items in the dropdown list.
         </div>
       </div>
-      <div className={customStyles.options}>
+      <div className={styles.options}>
         <Checkbox label="rovingText" checked={rovingText} onChange={setRovingText} />
         <Checkbox
           label="deselectOnClear"
@@ -107,7 +107,9 @@ const Autocomplete = () => {
         )}
         <Checkbox label="closeOnSelect" checked={closeOnSelect} onChange={setCloseOnSelect} />
       </div>
-      <label {...getLabelProps()}>State</label>
+      <label className={styles.label} {...getLabelProps()}>
+        State
+      </label>
       <div className={customStyles.inputWrap}>
         <div className={styles.inputWrap}>
           <input
@@ -133,7 +135,7 @@ const Autocomplete = () => {
 
       <ul
         ref={listRef}
-        className={clsx(styles.list, styles.listScroll)}
+        className={clsx(styles.list, styles.scroll)}
         {...getListProps()}
         style={{ display: open ? 'block' : 'none' }}
       >
