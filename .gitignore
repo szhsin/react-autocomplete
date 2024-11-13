@@ -5,6 +5,7 @@ node_modules/
 build/
 .next/
 _next/
+.docusaurus/
 examples/out/
 
 # tests

@@ -4,7 +4,14 @@ import { useFocusCapture } from '../../hooks/useFocusCapture';
 
 type AutocompleteLiteFeature<T> = Feature<
   T,
-  Pick<GetProps<T>, 'getInputProps' | 'getListProps' | 'getItemProps' | 'getClearProps'> &
+  Pick<
+    GetProps<T>,
+    | 'getInputProps'
+    | 'getListProps'
+    | 'getItemProps'
+    | 'getClearProps'
+    | 'getFocusCaptureProps'
+  > &
     FeatureState
 >;
 
@@ -90,8 +97,15 @@ const autocompleteLite =
       if (rovingText) setTmpValue(getItemValue(newItem));
     };
 
+    const focusCaptureProps: ReturnType<GetProps<T>['getFocusCaptureProps']> = {
+      onMouseDown: startCapture,
+      onClick: stopCapture
+    };
+
     return {
       isInputEmpty: !inputValue,
+
+      getFocusCaptureProps: () => focusCaptureProps,
 
       getClearProps: () => ({
         ...buttonProps,
@@ -108,10 +122,9 @@ const autocompleteLite =
       }),
 
       getListProps: () => ({
+        ...focusCaptureProps,
         id: listId,
-        role: 'listbox',
-        onMouseDown: startCapture,
-        onClick: stopCapture
+        role: 'listbox'
       }),
 
       getItemProps: ({ item, index }) => ({

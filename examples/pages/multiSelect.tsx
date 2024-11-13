@@ -38,7 +38,7 @@ export default function Home() {
     getItemProps,
     getToggleProps,
     getClearProps,
-    getInputWrapperProps,
+    getFocusCaptureProps,
     open,
     focusIndex,
     isInputEmpty,
@@ -117,10 +117,12 @@ export default function Home() {
         </button>
       </div>
 
-      <label {...getLabelProps()}>States</label>
+      <label {...getLabelProps()} {...getFocusCaptureProps()}>
+        States
+      </label>
       <div
         className={styles.multiInputWrapper + (focused ? ` ${styles.focused}` : '')}
-        {...getInputWrapperProps()}
+        {...getFocusCaptureProps()}
       >
         {selectedItems.map((item) => (
           <div className={styles.selectedItem} key={item.abbr}>

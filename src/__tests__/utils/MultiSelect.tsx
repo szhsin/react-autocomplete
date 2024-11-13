@@ -25,7 +25,7 @@ export const MultiSelect = (
     getItemProps,
     getToggleProps,
     getClearProps,
-    getInputWrapperProps,
+    getFocusCaptureProps,
     removeSelect,
     isItemSelected,
     open,
@@ -55,7 +55,7 @@ export const MultiSelect = (
         <label {...getLabelProps()}>State</label>
       </div>
       <div
-        {...getInputWrapperProps()}
+        {...getFocusCaptureProps()}
         data-testid="input-wrapper"
         style={{ border: '1px solid', borderColor: focused ? 'red' : 'white' }}
       >
