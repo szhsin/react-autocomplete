@@ -73,8 +73,13 @@ const autocompleteLite = ({
     setFocusIndex(newIndex);
     if (rovingText) setTmpValue(getItemValue(newItem));
   };
+  const focusCaptureProps = {
+    onMouseDown: startCapture,
+    onClick: stopCapture
+  };
   return {
     isInputEmpty: !inputValue,
+    getFocusCaptureProps: () => focusCaptureProps,
     getClearProps: () => ({
       ...buttonProps,
       onMouseDown: startCapture,
@@ -87,10 +92,9 @@ const autocompleteLite = ({
       }
     }),
     getListProps: () => ({
+      ...focusCaptureProps,
       id: listId,
-      role: 'listbox',
-      onMouseDown: startCapture,
-      onClick: stopCapture
+      role: 'listbox'
     }),
     getItemProps: ({
       item,

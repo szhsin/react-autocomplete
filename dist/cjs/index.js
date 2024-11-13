@@ -203,8 +203,13 @@ const autocompleteLite = ({
     setFocusIndex(newIndex);
     if (rovingText) setTmpValue(getItemValue(newItem));
   };
+  const focusCaptureProps = {
+    onMouseDown: startCapture,
+    onClick: stopCapture
+  };
   return {
     isInputEmpty: !inputValue,
+    getFocusCaptureProps: () => focusCaptureProps,
     getClearProps: () => ({
       ...buttonProps,
       onMouseDown: startCapture,
@@ -217,10 +222,9 @@ const autocompleteLite = ({
       }
     }),
     getListProps: () => ({
+      ...focusCaptureProps,
       id: listId,
-      role: 'listbox',
-      onMouseDown: startCapture,
-      onClick: stopCapture
+      role: 'listbox'
     }),
     getItemProps: ({
       item,
@@ -469,17 +473,10 @@ const inputFocus = () => () => {
 };
 
 const multiInput = () => ({
-  inputRef,
   removeSelect
 }) => {
-  const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
-    getInputWrapperProps: () => ({
-      onMouseDown: startCapture,
-      onClick: stopCapture
-    }),
     getInputProps: () => ({
-      onBlur: inCapture,
       onKeyDown: e => !e.target.value && e.key === 'Backspace' && removeSelect?.()
     })
   };

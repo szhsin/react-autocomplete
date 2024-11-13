@@ -45,14 +45,23 @@ describe('multiSelect', () => {
     expect(selected).toHaveLength(0);
 
     // Clicking a selected item will focus input
-    await user.keyboard('{ArrowDown}{Enter}{ArrowDown>3/}{Enter}');
+    await user.keyboard('{ArrowDown}{Enter}{ArrowDown>3/}{Enter}{ArrowDown>4/}{Enter}');
     await user.click(screen.getByTestId('value'));
     expect(combobox).not.toHaveFocus();
     expect(inputWrapper).toHaveStyle({ borderColor: 'white' });
-    expect(screen.getAllByTestId('selected')).toHaveLength(2);
+    expect(screen.getAllByTestId('selected')).toHaveLength(3);
     await user.click(screen.getByRole('button', { name: 'Alabama' }));
     expect(combobox).toHaveFocus();
     expect(inputWrapper).toHaveStyle({ borderColor: 'red' });
+    expect(screen.getAllByTestId('selected')).toHaveLength(2);
+
+    // Clicking a selected item will keep list open and input focused
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Arizona' }));
+    expect(combobox).toHaveFocus();
+    expect(inputWrapper).toHaveStyle({ borderColor: 'red' });
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
     expect(screen.getAllByTestId('selected')).toHaveLength(1);
 
     /* { closeOnSelect: false, flipOnSelect: true } */

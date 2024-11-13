@@ -4,7 +4,7 @@ export interface GetProps<T> {
     getLabelProps: () => LabelHTMLAttributes<HTMLLabelElement>;
     getToggleProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
     getClearProps: () => ButtonHTMLAttributes<HTMLButtonElement>;
-    getInputWrapperProps: () => HTMLAttributes<HTMLElement>;
+    getFocusCaptureProps: () => HTMLAttributes<HTMLElement>;
     getListProps: () => HTMLAttributes<HTMLElement>;
     getItemProps: (option: {
         index: number;
