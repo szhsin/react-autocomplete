@@ -138,10 +138,10 @@ export default function Home() {
               ❎
             </button>
           )}
+          <button {...getToggleProps()}>{open ? '⬆️' : '⬇️'}</button>
         </div>
       </div>
 
-      <button {...getToggleProps()}>{open ? '⬆️' : '⬇️'}</button>
       <button>next</button>
       <input type="search" />
       <ul

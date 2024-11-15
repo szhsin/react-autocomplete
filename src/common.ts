@@ -9,3 +9,12 @@ export const buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> = {
   tabIndex: -1,
   type: 'button'
 };
+
+export const getInputToggleProps = (
+  id: string | undefined,
+  open: boolean
+): React.ButtonHTMLAttributes<HTMLButtonElement> => ({
+  ...buttonProps,
+  'aria-expanded': open,
+  'aria-controls': getId(id, 'l')
+});
