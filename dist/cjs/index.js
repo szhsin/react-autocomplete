@@ -9,6 +9,11 @@ const buttonProps = {
   tabIndex: -1,
   type: 'button'
 };
+const getInputToggleProps = (id, open) => ({
+  ...buttonProps,
+  'aria-expanded': open,
+  'aria-controls': getId(id, 'l')
+});
 
 const adaptGetItemValue = getItemValue => item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString();
 
@@ -363,9 +368,7 @@ const inputToggle = () => ({
   const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
   return {
     getToggleProps: () => ({
-      ...buttonProps,
-      'aria-expanded': open,
-      'aria-controls': getId(id, 'l'),
+      ...getInputToggleProps(id, open),
       onMouseDown: () => {
         startToggle();
         startCapture();
@@ -461,6 +464,17 @@ const dropdown = props => mergeModules(autocompleteLite({
   deselectOnClear: false
 }), dropdownToggle(props));
 
+const nonblurToggle = () => ({
+  id,
+  open,
+  setOpen
+}) => ({
+  getToggleProps: () => ({
+    ...getInputToggleProps(id, open),
+    onClick: () => setOpen(!open)
+  })
+});
+
 const inputFocus = () => () => {
   const [focused, setFocused] = React.useState(false);
   return {
@@ -474,23 +488,18 @@ const inputFocus = () => () => {
 
 const multiInput = () => ({
   removeSelect
-}) => {
-  return {
-    getInputProps: () => ({
-      onKeyDown: e => !e.target.value && e.key === 'Backspace' && removeSelect?.()
-    })
-  };
-};
+}) => ({
+  getInputProps: () => ({
+    onKeyDown: e => !e.target.value && e.key === 'Backspace' && removeSelect?.()
+  })
+});
 
-const multiSelect = props => mergeModules(autocomplete({
+const multiSelect = props => mergeModules(autocompleteLite({
   ...props,
   select: true
-}), inputFocus(), multiInput());
+}), nonblurToggle(), label(), inputFocus(), multiInput());
 
-const multiSelectDropdown = props => mergeModules(autocompleteLite({
-  ...props,
-  select: true
-}), dropdownToggle(props), multiInput());
+const multiSelectDropdown = props => mergeModules(dropdown(props), multiInput());
 
 const autoInline = ({
   requestItem

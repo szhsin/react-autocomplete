@@ -64,6 +64,12 @@ describe('multiSelect', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     expect(screen.getAllByTestId('selected')).toHaveLength(1);
 
+    // Open and close with toggle
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('listbox')).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
     /* { closeOnSelect: false, flipOnSelect: true } */
     rerender(<MultiSelect closeOnSelect={false} flipOnSelect />);
     await user.keyboard('c{ArrowUp}{Enter}');

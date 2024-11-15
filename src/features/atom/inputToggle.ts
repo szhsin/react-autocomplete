@@ -1,5 +1,5 @@
 import type { Feature, GetProps } from '../../types';
-import { getId, buttonProps } from '../../common';
+import { getInputToggleProps } from '../../common';
 import { useToggle } from '../../hooks/useToggle';
 import { useFocusCapture } from '../../hooks/useFocusCapture';
 
@@ -13,9 +13,7 @@ const inputToggle =
 
     return {
       getToggleProps: () => ({
-        ...buttonProps,
-        'aria-expanded': open,
-        'aria-controls': getId(id, 'l'),
+        ...getInputToggleProps(id, open),
 
         onMouseDown: () => {
           startToggle();

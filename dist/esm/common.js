@@ -5,5 +5,10 @@ const buttonProps = {
   tabIndex: -1,
   type: 'button'
 };
+const getInputToggleProps = (id, open) => ({
+  ...buttonProps,
+  'aria-expanded': open,
+  'aria-controls': getId(id, 'l')
+});
 
-export { buttonProps, defaultEqual, defaultFocusIndex, getId };
+export { buttonProps, defaultEqual, defaultFocusIndex, getId, getInputToggleProps };

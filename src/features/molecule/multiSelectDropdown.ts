@@ -1,21 +1,15 @@
 import type { MergedFeature, FeatureProps } from '../../types';
 import { mergeModules } from '../../utils/mergeModules';
-import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite';
-import { type DropdownToggleFeature, dropdownToggle } from '../atom/dropdownToggle';
 import { type MultiInputFeature, multiInput } from '../atom/multiInput';
+import { type DropdownFeature, dropdown } from './dropdown';
 
 type MultiSelectDropdownFeature<T> = MergedFeature<
   T,
-  [AutocompleteLiteFeature<T>, DropdownToggleFeature<T>, MultiInputFeature<T>]
+  [DropdownFeature<T>, MultiInputFeature<T>]
 >;
 
 const multiSelectDropdown = <T>(
   props?: Pick<FeatureProps<T>, 'rovingText' | 'closeOnSelect' | 'toggleRef'>
-): MultiSelectDropdownFeature<T> =>
-  mergeModules(
-    autocompleteLite<T>({ ...props, select: true }),
-    dropdownToggle<T>(props),
-    multiInput<T>()
-  );
+): MultiSelectDropdownFeature<T> => mergeModules(dropdown<T>(props), multiInput<T>());
 
 export { type MultiSelectDropdownFeature, multiSelectDropdown };
