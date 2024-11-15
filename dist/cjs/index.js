@@ -499,10 +499,7 @@ const multiSelect = props => mergeModules(autocompleteLite({
   select: true
 }), nonblurToggle(), label(), inputFocus(), multiInput());
 
-const multiSelectDropdown = props => mergeModules(autocompleteLite({
-  ...props,
-  select: true
-}), dropdownToggle(props), multiInput());
+const multiSelectDropdown = props => mergeModules(dropdown(props), multiInput());
 
 const autoInline = ({
   requestItem

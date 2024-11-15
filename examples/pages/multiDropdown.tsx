@@ -28,7 +28,6 @@ export default function Dropdown() {
   const groupedItems = filterGroupedItems(value);
 
   const {
-    getInputWrapperProps,
     getInputProps,
     getListProps,
     getItemProps,
