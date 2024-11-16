@@ -8,7 +8,7 @@ import { Checkbox } from '../Checkbox';
 import { useAutoScroll } from '../../utils/useAutoScroll';
 
 const Dropdown = () => {
-  const [rovingText, setRovingText] = useState(false);
+  const [rovingText, setRovingText] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(true);
   const [flipOnSelect, setFlipOnSelect] = useState(true);
 
@@ -62,7 +62,7 @@ const Dropdown = () => {
         >
           <div className={styles.inputWrap}>
             <input
-              className={clsx(styles.input, styles.inputBorderless)}
+              className={styles.inputBorderless}
               placeholder="Type to search..."
               {...getInputProps()}
             />

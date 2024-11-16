@@ -8,6 +8,38 @@
   border-radius: 4px;
 }
 
+.iconBtn {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.iconBtn svg {
+  pointer-events: none;
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.iconBtn:hover {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.clear {
+  composes: iconBtn;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.toggle {
+  composes: iconBtn;
+  grid-column: 3;
+  grid-row: 1;
+}
+
 .label {
   display: inline-block;
   margin-bottom: 4px;
@@ -43,6 +75,7 @@
 }
 
 .inputBorderless {
+  composes: input;
   border: none;
   padding: 10px;
 }
@@ -52,36 +85,66 @@
   box-shadow: none;
 }
 
-.iconBtn {
-  cursor: pointer;
+.multiInput {
+  composes: block;
   appearance: none;
   border: none;
-  background: transparent;
-  padding: 4px;
-  border-radius: 50%;
+  border-radius: 0;
+  padding: 0;
+  width: 0;
+  min-width: 48px;
+  flex-grow: 1;
 }
 
-.iconBtn svg {
-  pointer-events: none;
-  display: block;
-  width: 16px;
-  height: 16px;
+.multiInput:focus-visible,
+.multiInput:focus {
+  outline: none;
 }
 
-.iconBtn:hover {
+.multiInputWrap {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  height: 24px;
+}
+
+.multiInputRoot {
+  composes: block;
+  display: flex;
+  align-items: center;
+  padding: 6px 4px 6px 10px;
+  width: 320px;
+  border: 1px solid var(--ifm-color-emphasis-500);
+}
+
+.multiInputRoot:hover {
+  border-color: var(--ifm-color-primary-light);
+}
+
+.multiInputRootFocused {
+  box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
+  border-color: var(--ifm-color-primary-light);
+}
+
+.selectedItem {
+  display: flex;
+  align-items: center;
   background-color: var(--ifm-color-emphasis-200);
+  line-height: 1;
+  font-size: 14px;
+  border-radius: 2px;
+  padding-left: 6px;
 }
 
-.clear {
+.removeItem {
   composes: iconBtn;
-  grid-column: 2;
-  grid-row: 1;
+  border-radius: 2px;
+  margin-left: 4px;
 }
 
-.toggle {
-  composes: iconBtn;
-  grid-column: 3;
-  grid-row: 1;
+.removeItem:hover {
+  background-color: var(--ifm-color-emphasis-400);
+  color: #000;
 }
 
 .popup {
@@ -98,6 +161,11 @@
   line-height: 1;
   padding: 6px 0;
   margin: 6px 0;
+}
+
+.multiList {
+  composes: list;
+  width: 320px;
 }
 
 .noScroll {
@@ -135,9 +203,26 @@
   cursor: pointer;
 }
 
+.itemCheckable {
+  composes: item;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.itemCheckable svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
 .selected {
   color: var(--ifm-color-gray-900);
   background-color: #cfe0fb;
+}
+
+.checked {
+  background-color: var(--ifm-color-emphasis-100);
 }
 
 .focused {

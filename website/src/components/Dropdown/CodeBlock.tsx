@@ -29,6 +29,7 @@ const Dropdown = () => {
     // highlight-next-line
     feature: dropdown({
       // Options: rovingText, closeOnSelect
+      rovingText: true
     })
   });
 
