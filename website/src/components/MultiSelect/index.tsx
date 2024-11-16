@@ -59,7 +59,10 @@ const MultiSelect = () => {
         State
       </label>
       <div
-        className={clsx(styles.multiInputRoot, focused && styles.multiInputRootFocused)}
+        className={clsx(
+          customStyles.multiInputRoot,
+          focused && customStyles.multiInputRootFocused
+        )}
         {...getFocusCaptureProps()}
       >
         <div className={customStyles.multiInputWrap}>

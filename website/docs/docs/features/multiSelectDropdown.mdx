@@ -1,0 +1,25 @@
+---
+sidebar_position: 4
+sidebar_label: Multi-select Dropdown
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/MultiSelectDropdown/CodeBlock';
+import data from '!!raw-loader!@site/src/data/states';
+import { MultiSelectDropdown } from '@site/src/components/MultiSelectDropdown';
+
+# Multiple Selection in Dropdown
+
+<MultiSelectDropdown />
+
+<Tabs>
+  <TabItem value="ts" label="MultiSelectDropdown.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/states.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>

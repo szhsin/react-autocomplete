@@ -1,0 +1,7 @@
+.multiInputWrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 6px 8px 10px;
+}

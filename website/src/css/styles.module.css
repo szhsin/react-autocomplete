@@ -108,24 +108,6 @@
   height: 24px;
 }
 
-.multiInputRoot {
-  composes: block;
-  display: flex;
-  align-items: center;
-  padding: 6px 4px 6px 10px;
-  width: 320px;
-  border: 1px solid var(--ifm-color-emphasis-500);
-}
-
-.multiInputRoot:hover {
-  border-color: var(--ifm-color-primary-light);
-}
-
-.multiInputRootFocused {
-  box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
-  border-color: var(--ifm-color-primary-light);
-}
-
 .selectedItem {
   display: flex;
   align-items: center;
@@ -181,6 +163,11 @@
   composes: block;
   composes: popup;
   margin: 5px 0;
+}
+
+.multiDropdown {
+  composes: dropdown;
+  width: 296px;
 }
 
 .dropdownClear {

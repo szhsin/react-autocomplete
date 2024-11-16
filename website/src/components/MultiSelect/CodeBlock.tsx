@@ -53,6 +53,7 @@ const MultiSelect = () => {
           borderRadius: 4,
           display: 'flex',
           flexWrap: 'wrap',
+          maxWidth: 320,
           gap: 6,
           padding: 6
         }}
