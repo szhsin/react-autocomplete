@@ -46,7 +46,7 @@ const Intro = () => {
     setMode(mode);
     setValue(undefined);
     setSelected(undefined);
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
 
   return (

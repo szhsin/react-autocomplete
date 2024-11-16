@@ -70,7 +70,7 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
   const listRef = useAutoScroll(open, items);
 
   const handleModeChange = (mode: Mode) => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
     setMode(mode);
     setValue(undefined);
     setSelected(undefined);
