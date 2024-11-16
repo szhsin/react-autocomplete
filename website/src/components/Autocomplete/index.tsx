@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
-import { useCombobox, autocomplete } from '@szhsin/react-autocomplete';
+import { useCombobox, autocomplete, supercomplete } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
 import ChevronDown from '@site/static/img/chevron-down.svg';
 import ChevronUp from '@site/static/img/chevron-up.svg';
@@ -13,7 +13,10 @@ import { useAutoScroll } from '../../utils/useAutoScroll';
 
 type Mode = 'select' | 'free';
 
-const Autocomplete = () => {
+const filterItems = (value?: string) =>
+  value ? STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase())) : STATES;
+
+const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
   const [mode, setMode] = useState<Mode>('free');
   const [rovingText, setRovingText] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
@@ -23,9 +26,14 @@ const Autocomplete = () => {
 
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<string>();
-  const items = value
-    ? STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase()))
-    : STATES;
+  const items = filterItems(value);
+
+  const featureProps = {
+    select: isSelectMode,
+    deselectOnClear,
+    deselectOnChange,
+    closeOnSelect
+  };
 
   const {
     getLabelProps,
@@ -44,13 +52,18 @@ const Autocomplete = () => {
     onChange: setValue,
     selected,
     onSelectChange: setSelected,
-    feature: autocomplete({
-      select: isSelectMode,
-      rovingText,
-      deselectOnClear,
-      deselectOnChange,
-      closeOnSelect
-    })
+    feature: isSupercomplete
+      ? supercomplete({
+          ...featureProps,
+          requestItem: (newValue) => {
+            const items = filterItems(newValue);
+            if (items.length > 0) return { index: 0, item: items[0] };
+          }
+        })
+      : autocomplete({
+          ...featureProps,
+          rovingText
+        })
   });
 
   const listRef = useAutoScroll(open, items);
@@ -92,7 +105,9 @@ const Autocomplete = () => {
         </div>
       </div>
       <div className={styles.options}>
-        <Checkbox label="rovingText" checked={rovingText} onChange={setRovingText} />
+        {!isSupercomplete && (
+          <Checkbox label="rovingText" checked={rovingText} onChange={setRovingText} />
+        )}
         <Checkbox
           label="deselectOnClear"
           checked={deselectOnClear}

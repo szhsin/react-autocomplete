@@ -1,23 +1,23 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 
-import sourceCode from '!!raw-loader!@site/src/components/Autocomplete/CodeBlock';
+import sourceCode from '!!raw-loader!@site/src/components/Supercomplete/CodeBlock';
 import data from '!!raw-loader!@site/src/data/states';
 import { Autocomplete } from '@site/src/components/Autocomplete';
 
-# Autocomplete
+# Supercomplete
 
-The `autocomplete` feature supports two modes, each offering a few available options.
+The `supercomplete` feature supports everything provided by `autocomplete`, along with [inline text completion](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-both/).
 
-<Autocomplete />
+<Autocomplete isSupercomplete />
 
 <Tabs>
-  <TabItem value="ts" label="Autocomplete.tsx">
+  <TabItem value="ts" label="Supercomplete.tsx">
     <CodeBlock language="tsx">{sourceCode}</CodeBlock>
   </TabItem>
   <TabItem value="data" label="data/states.ts">
