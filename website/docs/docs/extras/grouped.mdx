@@ -1,0 +1,24 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/Grouped/CodeBlock';
+import data from '!!raw-loader!@site/src/data/states-grouped';
+import { Grouped } from '@site/src/components/Grouped';
+
+# Grouped items
+
+<Grouped />
+
+<Tabs>
+  <TabItem value="ts" label="Grouped.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/states-grouped.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>

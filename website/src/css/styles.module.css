@@ -253,3 +253,11 @@
   outline: 2px solid var(--ifm-color-primary) !important;
   outline-offset: 2px;
 }
+
+.groupHead {
+  font-weight: bold;
+  padding: 6px 8px;
+  margin: 0 !important;
+  color: var(--ifm-color-primary);
+  background-color: var(--ifm-color-emphasis-100);
+}

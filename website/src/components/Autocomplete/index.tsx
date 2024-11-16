@@ -36,6 +36,7 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
   };
 
   const {
+    getFocusCaptureProps,
     getLabelProps,
     getInputProps,
     getClearProps,
@@ -122,7 +123,7 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
         )}
         <Checkbox label="closeOnSelect" checked={closeOnSelect} onChange={setCloseOnSelect} />
       </div>
-      <label className={styles.label} {...getLabelProps()}>
+      <label className={styles.label} {...getLabelProps()} {...getFocusCaptureProps()}>
         State
       </label>
       <div className={customStyles.inputWrap}>
