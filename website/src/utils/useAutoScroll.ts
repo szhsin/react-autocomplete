@@ -7,10 +7,12 @@ const useAutoScroll = <E extends Element = HTMLUListElement>(
   const ref = useRef<E>(null);
   useEffect(() => {
     if (open) {
-      if (ref.current.getBoundingClientRect().bottom > window.innerHeight) {
-        ref.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      const elt = ref.current;
+      if (!elt) return;
+      if (elt.getBoundingClientRect().bottom > window.innerHeight) {
+        elt.scrollIntoView({ block: 'end', behavior: 'smooth' });
       }
-      ref.current.scrollTop = 0;
+      elt.scrollTop = 0;
     }
   }, [open, items.length]);
 

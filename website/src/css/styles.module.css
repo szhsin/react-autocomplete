@@ -217,6 +217,12 @@
   background-color: var(--ifm-color-emphasis-200);
 }
 
+.disabled {
+  cursor: default;
+  color: #999;
+  background-color: transparent;
+}
+
 .noResult {
   composes: item;
   color: var(--ifm-color-gray-600);

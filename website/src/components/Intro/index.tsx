@@ -4,10 +4,9 @@ import { useCombobox, autocompleteLite } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
 import { RadioButton } from '../Radio';
 import { useAutoScroll } from '../../utils/useAutoScroll';
+import FRUITS from '@site/src/data/fruits';
 import styles from '@site/src/css/styles.module.css';
 import customStyles from './styles.module.css';
-
-const FRUITS = ['Apple', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Pineapple', 'Strawberry'];
 
 type Mode = 'select' | 'free';
 

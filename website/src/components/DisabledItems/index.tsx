@@ -4,16 +4,18 @@ import { useCombobox, autocomplete } from '@szhsin/react-autocomplete';
 import ClearIcon from '@site/static/img/x.svg';
 import ChevronDown from '@site/static/img/chevron-down.svg';
 import ChevronUp from '@site/static/img/chevron-up.svg';
-import STATES from '@site/src/data/states-obj';
+import FRUITS from '@site/src/data/fruits';
 import styles from '@site/src/css/styles.module.css';
 import { useAutoScroll } from '../../utils/useAutoScroll';
 
-const ObjectItems = () => {
+const isItemDisabled = (item: string) => item.includes('berry');
+
+const DisabledItems = () => {
   const [value, setValue] = useState<string>();
-  const [selected, setSelected] = useState<{ name: string; abbr: string }>();
+  const [selected, setSelected] = useState<string>();
   const items = value
-    ? STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
-    : STATES;
+    ? FRUITS.filter((item) => item.toLowerCase().includes(value.toLowerCase()))
+    : FRUITS;
 
   const {
     getFocusCaptureProps,
@@ -23,14 +25,12 @@ const ObjectItems = () => {
     getToggleProps,
     getListProps,
     getItemProps,
-    isItemSelected,
     open,
     focusIndex,
     isInputEmpty
   } = useCombobox({
     items,
-    getItemValue: (item) => item.name,
-    isEqual: (item1, item2) => item1?.abbr === item2?.abbr,
+    isItemDisabled,
     value,
     onChange: setValue,
     selected,
@@ -43,7 +43,7 @@ const ObjectItems = () => {
   return (
     <div className={styles.wrap}>
       <label className={styles.label} {...getLabelProps()} {...getFocusCaptureProps()}>
-        State
+        Fruit (no berries)
       </label>
 
       <div className={styles.inputWrap}>
@@ -60,7 +60,7 @@ const ObjectItems = () => {
 
       <ul
         ref={listRef}
-        className={clsx(styles.list, styles.scroll)}
+        className={clsx(styles.list, styles.noScroll)}
         {...getListProps()}
         style={{ display: open ? 'block' : 'none' }}
       >
@@ -70,12 +70,13 @@ const ObjectItems = () => {
               className={clsx(
                 styles.item,
                 focusIndex === index && styles.focused,
-                isItemSelected(item) && styles.selected
+                selected === item && styles.selected,
+                isItemDisabled(item) && styles.disabled
               )}
-              key={item.abbr}
+              key={item}
               {...getItemProps({ item, index })}
             >
-              {item.name}
+              {item}
             </li>
           ))
         ) : (
@@ -86,4 +87,4 @@ const ObjectItems = () => {
   );
 };
 
-export { ObjectItems };
+export { DisabledItems };

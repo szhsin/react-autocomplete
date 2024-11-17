@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useCombobox, autocomplete } from '@szhsin/react-autocomplete';
-import STATES from '../../data/states-obj';
+import FRUITS from '../../data/fruits';
 
-const ObjectItems = () => {
+// highlight-next-line
+const isItemDisabled = (item: string) => item.includes('berry');
+
+const DisabledItems = () => {
   const [value, setValue] = useState<string>();
-  // highlight-next-line
-  const [selected, setSelected] = useState<{ name: string; abbr: string }>();
+  const [selected, setSelected] = useState<string>();
   const items = value
-    ? STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()))
-    : STATES;
+    ? FRUITS.filter((item) => item.toLowerCase().includes(value.toLowerCase()))
+    : FRUITS;
 
   const {
     getFocusCaptureProps,
@@ -18,22 +20,13 @@ const ObjectItems = () => {
     getToggleProps,
     getListProps,
     getItemProps,
-    // highlight-next-line
-    isItemSelected,
     open,
     focusIndex,
     isInputEmpty
   } = useCombobox({
     items,
-    // When items are objects, you must specify how to retrieve the text value from the item.
     // highlight-next-line
-    getItemValue: (item) => item.name,
-
-    // If item references change on each render, you should define how items are equal.
-    // By default, it compares object references if `isEqual` is not provided.
-    // highlight-next-line
-    isEqual: (item1, item2) => item1?.abbr === item2?.abbr,
-
+    isItemDisabled,
     value,
     onChange: setValue,
     selected,
@@ -44,7 +37,7 @@ const ObjectItems = () => {
   return (
     <div>
       <label {...getLabelProps()} {...getFocusCaptureProps()}>
-        State
+        Fruit (no berries)
       </label>
 
       <div>
@@ -70,14 +63,14 @@ const ObjectItems = () => {
             <li
               style={{
                 background: focusIndex === index ? '#ddd' : 'none',
-                // Use `isItemSelected` to check if an item has been selected
+                textDecoration: selected === item ? 'underline' : 'none',
                 // highlight-next-line
-                textDecoration: isItemSelected(item) ? 'underline' : 'none'
+                color: isItemDisabled(item) ? '#999' : '#000'
               }}
-              key={item.abbr}
+              key={item}
               {...getItemProps({ item, index })}
             >
-              {item.name}
+              {item}
             </li>
           ))
         ) : (
@@ -88,4 +81,4 @@ const ObjectItems = () => {
   );
 };
 
-export default ObjectItems;
+export default DisabledItems;
