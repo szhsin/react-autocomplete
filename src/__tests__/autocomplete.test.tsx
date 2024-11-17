@@ -1,4 +1,4 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { scrollIntoView } from './utils/scrollIntoView';
 import { TOTAL_DATA_COUNT } from './utils/data';
@@ -329,6 +329,10 @@ describe('autocomplete', () => {
     expect(combobox).toHaveValue('c');
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('option', { name: 'Colorado' })).toHaveStyle({
+      backgroundColor: 'red'
+    });
+    fireEvent.pointerMove(screen.getByRole('option', { name: 'California' }));
     expect(screen.getByRole('option', { name: 'Colorado' })).toHaveStyle({
       backgroundColor: 'red'
     });
