@@ -104,12 +104,8 @@ const autocompleteLite = ({
       role: 'option',
       'aria-selected': select ? isItemSelected(item) : index === focusIndex,
       ref: index === focusIndex ? scrollIntoView : undefined,
-      onClick: () => {
-        if (!isItemDisabled?.(item)) {
-          resetState(selectItemOrAction(item));
-        }
-      },
-      onPointerMove: () => setFocusIndex(index)
+      onClick: () => !isItemDisabled?.(item) && resetState(selectItemOrAction(item)),
+      onPointerMove: () => !isItemDisabled?.(item) && setFocusIndex(index)
     }),
     getInputProps: () => ({
       type: 'text',
