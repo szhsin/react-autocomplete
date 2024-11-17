@@ -46,6 +46,7 @@ const MultiSelectDropdown = () => {
           {...getListProps()}
           style={{
             position: 'absolute',
+            color: '#000',
             background: '#fff',
             maxWidth: 320
           }}

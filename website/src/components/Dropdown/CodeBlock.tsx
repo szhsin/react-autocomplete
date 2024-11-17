@@ -42,6 +42,7 @@ const Dropdown = () => {
           {...getListProps()}
           style={{
             position: 'absolute',
+            color: '#000',
             background: '#fff'
           }}
         >

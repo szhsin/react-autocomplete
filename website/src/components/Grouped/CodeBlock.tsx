@@ -58,6 +58,7 @@ const Grouped = () => {
           display: open ? 'block' : 'none',
           position: 'absolute',
           listStyle: 'none',
+          color: '#000',
           background: '#fff',
           overflow: 'auto',
           maxHeight: 300,
