@@ -1,0 +1,27 @@
+---
+sidebar_position: 5
+sidebar_label: Select-Only
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/SelectOnly/CodeBlock';
+import data from '!!raw-loader!@site/src/data/fruits';
+import { SelectOnly } from '@site/src/components/SelectOnly';
+
+# Select-Only Combobox
+
+This is not a separate feature, but it can be easily achieved by by making the input read-only.
+
+<SelectOnly />
+
+<Tabs>
+  <TabItem value="ts" label="SelectOnly.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/fruits.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>
