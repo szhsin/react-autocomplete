@@ -45,6 +45,10 @@ input::-webkit-contacts-auto-fill-button {
   background-color: #242c37;
 }
 
+[data-theme='light'] .token.comment {
+  color: #6a9955 !important;
+}
+
 .tabs__item {
   padding: 6px 16px;
 }

@@ -1,0 +1,26 @@
+---
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/AsyncExample/CodeBlock';
+import data from '!!raw-loader!@site/src/data/states';
+import { AsyncExample } from '@site/src/components/AsyncExample';
+
+# Async example
+
+When the list of items is fetched asynchronously, instead of computing them directly in the render body, the `items` should be stored in a local state, a global state store, or managed by a data-fetching library like React Query.
+
+<AsyncExample />
+
+<Tabs>
+  <TabItem value="ts" label="AsyncExample.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/states.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>
