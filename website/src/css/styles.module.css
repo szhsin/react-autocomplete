@@ -223,6 +223,11 @@
   background-color: transparent;
 }
 
+.creatable {
+  font-weight: bold;
+  color: var(--ifm-color-primary);
+}
+
 .noResult {
   composes: item;
   color: var(--ifm-color-gray-600);
