@@ -22,7 +22,10 @@ const useFocusCapture = (focusRef: React.RefObject<HTMLElement>) => {
         return true;
       }
     },
-    () => focusRef.current?.focus()
+    () => {
+      mutable.a = 0;
+      focusRef.current?.focus();
+    }
   ] as const;
 };
 

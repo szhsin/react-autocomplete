@@ -10,7 +10,10 @@ const useFocusCapture = focusRef => {
       focusRef.current?.focus();
       return true;
     }
-  }, () => focusRef.current?.focus()];
+  }, () => {
+    mutable.a = 0;
+    focusRef.current?.focus();
+  }];
 };
 
 export { useFocusCapture };

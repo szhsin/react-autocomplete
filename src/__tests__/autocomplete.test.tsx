@@ -201,7 +201,9 @@ describe('autocomplete', () => {
     expect(screen.getByTestId('selected')).toHaveTextContent(/^Colorado$/);
 
     // Clicking clear button will not clear selection
+    expect(combobox).not.toHaveFocus();
     await user.click(screen.getByRole('button', { name: 'Clear' }));
+    expect(combobox).toHaveFocus();
     expect(combobox).toHaveValue('');
     expect(screen.getByTestId('value')).toBeEmptyDOMElement();
     expect(screen.getByTestId('selected')).toHaveTextContent(/^Colorado$/);
