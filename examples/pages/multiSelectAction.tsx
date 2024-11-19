@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useMultiSelect, multiSelect, mergeGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
+import { LIST_GROUP } from '../data';
 
 type Item = { name: string; abbr: string };
 const isEqual = (itemA?: Item, itemB?: Item) =>
@@ -30,11 +30,6 @@ export default function Home() {
 
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
-  // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
-  // const [myinput, setmyinput] = useState('');
-  // const [items, setItems] = useState(US_STATES);
-  // const feature = supercomplete<{ name: string; abbr: string }>();
-
   const groupedItems = filterGroupedItems(value || '');
   if (value) {
     groupedItems.push({
@@ -49,7 +44,7 @@ export default function Home() {
     getItemProps,
     getToggleProps,
     getClearProps,
-    getInputWrapperProps,
+    getFocusCaptureProps,
     open,
     focusIndex,
     isInputEmpty,
@@ -57,10 +52,6 @@ export default function Home() {
     isItemSelected,
     focused
   } = useMultiSelect({
-    // traversal: linearTraversal({
-    //   items,
-    //   traverseInput: true
-    // }),
     getItemValue,
     isItemDisabled,
     flipOnSelect: true,
@@ -91,7 +82,6 @@ export default function Home() {
     })
   });
 
-  // getInputProps().ref.current
   let itemIndex = 0;
 
   return (
@@ -140,7 +130,7 @@ export default function Home() {
 
       <div
         className={styles.multiInputWrapper + (focused ? ` ${styles.focused}` : '')}
-        {...getInputWrapperProps()}
+        {...getFocusCaptureProps()}
       >
         {selectedItems.map((item) => (
           <div className={styles.selectedItem} key={item.abbr}>
@@ -168,21 +158,10 @@ export default function Home() {
         style={{
           position: 'absolute',
           border: '1px solid',
-          // display: open && items.length ? 'block' : 'none'
           display: open ? 'block' : 'none'
         }}
       >
         <h3>US STATES</h3>
-        {/* {items.map((item) => (
-          <li
-            className={isItemDisabled(item) ? styles.disabled : styles.option}
-            key={item.abbr}
-            style={{ background: focusItem === item ? '#0a0' : 'none' }}
-            {...getItemProps({ item })}
-          >
-            {item.name}
-          </li>
-        ))} */}
 
         {groupedItems.map(({ groupKey: key, states: group }) => (
           <React.Fragment key={key}>

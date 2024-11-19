@@ -24,7 +24,7 @@ const Item = ({
   data: ItemData;
 }) => {
   const item = items[index];
-  const { ref, ...itemProps } = getItemProps({ item, index });
+  const itemProps = getItemProps({ item, index });
   return (
     <li
       className={styles.option}
@@ -93,7 +93,6 @@ export default function Home() {
 
       <ul
         {...getListProps()}
-        // className={styles.list}
         style={{
           position: 'absolute',
           border: '1px solid',
@@ -110,18 +109,6 @@ export default function Home() {
         >
           {Item}
         </List>
-        {/* {items.map((item, index) => (
-          <li
-            className={styles.option}
-            key={item}
-            style={{
-              background: focusItem === item ? '#0a0' : 'none'
-            }}
-            {...getItemProps({ item, index })}
-          >
-            {item}
-          </li>
-        ))} */}
       </ul>
     </div>
   );

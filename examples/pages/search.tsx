@@ -29,12 +29,13 @@ export default function Home() {
     value,
     onChange: setValue,
     feature: supercomplete({
-      requestItem: (newValue) => ({
-        index: 0,
-        item: US_STATES.filter((item) =>
-          item.name.toLowerCase().startsWith(newValue.toLowerCase())
-        )[0]
-      })
+      onRequestItem: ({ value: newValue }, res) =>
+        res({
+          index: 0,
+          item: US_STATES.filter((item) =>
+            item.name.toLowerCase().startsWith(newValue.toLowerCase())
+          )[0]
+        })
     }),
 
     items
