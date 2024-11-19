@@ -23,10 +23,11 @@ export default tseslint.config(
   },
   {
     ignores: [
+      'features/',
+      'types/',
       '**/examples/',
       '**/coverage/',
       '**/dist/',
-      '**/types/',
       '**/build/',
       '**/static/',
       '**/.docusaurus/'

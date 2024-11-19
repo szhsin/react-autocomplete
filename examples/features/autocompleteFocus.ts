@@ -3,10 +3,9 @@ import {
   MergedFeature,
   FeatureProps,
   AutocompleteFeature,
-  AutoFocusFeature,
-  autocomplete,
-  autoFocus
+  autocomplete
 } from '@szhsin/react-autocomplete';
+import { AutoFocusFeature, autoFocus } from '@szhsin/react-autocomplete/features/atom';
 
 type AutocompleteFocusFeature<T> = MergedFeature<
   T,
