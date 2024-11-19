@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCombobox, dropdown, mergeGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
+import { LIST_GROUP } from '../data';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;
@@ -31,14 +31,8 @@ export default function Dropdown() {
     getClearProps,
     isInputEmpty,
     open,
-    focusIndex,
-    inputRef
-    // inlineComplete
+    focusIndex
   } = useCombobox({
-    // traversal: linearTraversal({
-    //   items,
-    //   traverseInput: true
-    // }),
     flipOnSelect: true,
     getItemValue,
     isItemDisabled,
@@ -46,16 +40,9 @@ export default function Dropdown() {
     onChange: (value) => {
       console.log('onChange', value);
       setValue(value);
-      // const item = US_STATES.filter((item) =>
-      //   item.name.toLowerCase().startsWith(value.toLowerCase())
-      // ).find((item) => !isItemDisabled(item));
-      // // setItems(items);
-      // const item = filterGroupedItems(value)[0]?.states.find((item) => !isItemDisabled(item));
-      // item && inlineComplete({ item });
     },
     selected: selectedItem,
     onSelectChange: setSelectedItem,
-    // feature: autocomplete({ constricted, rovingText }),
     feature: dropdown({ rovingText, closeOnSelect }),
     items: mergeGroupedItems({
       groups: groupedItems,
@@ -100,7 +87,6 @@ export default function Dropdown() {
         style={{
           position: 'absolute',
           border: '1px solid',
-          // display: open && items.length ? 'block' : 'none'
           display: open ? 'block' : 'none'
         }}
       >
@@ -120,17 +106,6 @@ export default function Dropdown() {
             </button>
           )}
         </div>
-
-        {/* {items.map((item) => (
-          <li
-            className={isItemDisabled(item) ? styles.disabled : styles.option}
-            key={item.abbr}
-            style={{ background: focusItem === item ? '#0a0' : 'none' }}
-            {...getItemProps({ item })}
-          >
-            {item.name}
-          </li>
-        ))} */}
 
         <ul style={{ overflow: 'auto', maxHeight: 500 }}>
           <li>

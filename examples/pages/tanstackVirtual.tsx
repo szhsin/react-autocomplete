@@ -43,7 +43,7 @@ export default function Home() {
       if (focusIndex >= 0) scrollToIndex(focusIndex);
       else scrollToOffset(0);
     }
-  }, [focusIndex, open, scrollToIndex]);
+  }, [focusIndex, open, scrollToIndex, scrollToOffset]);
 
   return (
     <div className={styles.wrapper}>
@@ -102,7 +102,6 @@ export default function Home() {
                   background: focusIndex === index ? '#0a0' : 'none'
                 }}
                 {...getItemProps({ item, index })}
-                // ref={null}
               >
                 {item}
               </li>

@@ -51,7 +51,6 @@ function Combobox() {
           style={{
             ...floatingStyles,
             border: '1px solid'
-            // display: open && items.length ? 'block' : 'none'
           }}
         >
           <h3>Select a state</h3>
@@ -199,11 +198,13 @@ function Dropdown() {
   );
 }
 
-export default function () {
+const Example = () => {
   return (
     <div style={{ display: 'flex', marginTop: 500, height: 2000 }}>
       <Combobox />
       <Dropdown />
     </div>
   );
-}
+};
+
+export default Example;

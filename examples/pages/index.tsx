@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   useCombobox,
   autocomplete,
@@ -6,7 +6,7 @@ import {
   mergeGroupedItems
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { LIST_GROUP_PLAIN, KEYED_GROUP_PLAIN, LIST_GROUP, KEYED_GROUP } from '../data';
+import { LIST_GROUP } from '../data';
 import { autocompleteFocus } from '../features/autocompleteFocus';
 
 type Item = { name: string; abbr: string };
@@ -34,10 +34,6 @@ export default function Home() {
 
   const [anotherValue, setAnotherValue] = useState('');
   const anotherRef = useRef(null);
-  // const items = US_STATES.filter((item) => item.name.toLowerCase().startsWith(value.toLowerCase()));
-  // const [myinput, setmyinput] = useState('');
-  // const [items, setItems] = useState(US_STATES);
-  // const feature = supercomplete<{ name: string; abbr: string }>();
 
   const featureProps = {
     select,
@@ -61,10 +57,6 @@ export default function Home() {
     isInputEmpty,
     isItemSelected
   } = useCombobox({
-    // traversal: linearTraversal({
-    //   items,
-    //   traverseInput: true
-    // }),
     getItemValue,
     isItemDisabled,
     value,
@@ -74,7 +66,6 @@ export default function Home() {
     },
     selected: selectedItem,
     onSelectChange: (item) => {
-      // console.log('onSelectedItemChange', item);
       setSelectedItem(item);
     },
 
@@ -111,7 +102,6 @@ export default function Home() {
     })
   });
 
-  // getInputProps().ref.current
   let itemIndex = 0;
 
   return (
@@ -120,10 +110,7 @@ export default function Home() {
       <div>Selected item: {selectedItem?.name}</div>
       <div>focusIndex: {focusIndex}</div>
 
-      <select
-        value={selectedFeature} // ...force the select's value to match the state variable...
-        onChange={(e) => setSelectedFeature(e.target.value)} // ... and update the state variable on any change!
-      >
+      <select value={selectedFeature} onChange={(e) => setSelectedFeature(e.target.value)}>
         <option value="supercomplete">supercomplete</option>
         <option value="autocomplete">autocomplete</option>
         <option value="autocompleteFocus">autocompleteFocus</option>
@@ -223,21 +210,10 @@ export default function Home() {
         style={{
           position: 'absolute',
           border: '1px solid',
-          // display: open && items.length ? 'block' : 'none'
           display: open ? 'block' : 'none'
         }}
       >
         <h3>US STATES</h3>
-        {/* {items.map((item) => (
-          <li
-            className={isItemDisabled(item) ? styles.disabled : styles.option}
-            key={item.abbr}
-            style={{ background: focusItem === item ? '#0a0' : 'none' }}
-            {...getItemProps({ item })}
-          >
-            {item.name}
-          </li>
-        ))} */}
 
         {groupedItems.map(({ groupKey: key, states: group }) => (
           <React.Fragment key={key}>
