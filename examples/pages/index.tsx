@@ -82,25 +82,25 @@ export default function Home() {
       selectedFeature === 'supercomplete'
         ? supercomplete({
             ...featureProps,
-            requestItem: (newValue) => {
+            onRequestItem: ({ value: newValue }, res) => {
               const items = mergeGroupedItems({
                 groups: filterGroupedItems(newValue),
                 getItemsInGroup: (group) => group.states
               });
               const index = items.findIndex((item) => !isItemDisabled(item));
-              if (index >= 0) return { index, item: items[index] };
+              if (index >= 0) res({ index, item: items[index] });
             }
           })
         : selectedFeature === 'autocompleteFocus'
           ? autocompleteFocus({
               ...featureProps,
-              requestItem: (newValue) => {
+              onRequestItem: ({ value: newValue }, res) => {
                 const items = mergeGroupedItems({
                   groups: filterGroupedItems(newValue),
                   getItemsInGroup: (group) => group.states
                 });
                 const index = items.findIndex((item) => !isItemDisabled(item));
-                if (index >= 0) return { index, item: items[index] };
+                if (index >= 0) res({ index, item: items[index] });
               }
             })
           : autocomplete(featureProps),

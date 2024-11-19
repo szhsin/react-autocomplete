@@ -1,12 +1,7 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { babel } from '@rollup/plugin-babel';
 
-const createBuild = ({
-  inPath = '',
-  outPath = inPath,
-  inFile = 'index.ts',
-  outFile = 'index.js'
-} = {}) => ({
+const config = {
   external: ['react', 'react-dom', 'react/jsx-runtime'],
   plugins: [
     nodeResolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
@@ -19,19 +14,20 @@ const createBuild = ({
     moduleSideEffects: false,
     propertyReadSideEffects: false
   },
-  input: `src/${inPath}${inFile}`,
+  input: ['src/index.ts', 'src/features/atom/index.ts', 'src/features/molecule/index.ts'],
   output: [
     {
-      file: `dist/${outPath}cjs/${outFile}`,
+      dir: 'dist/cjs',
       format: 'cjs',
-      interop: 'default'
+      interop: 'default',
+      preserveModules: true
     },
     {
-      dir: `dist/${outPath}esm`,
+      dir: 'dist/esm',
       format: 'es',
       preserveModules: true
     }
   ]
-});
+};
 
-export default [createBuild()];
+export default config;

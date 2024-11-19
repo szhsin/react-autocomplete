@@ -1,7 +1,6 @@
 export { useCombobox } from './hooks/useCombobox.js';
 export { useMultiSelect } from './hooks/useMultiSelect.js';
 export { autocompleteLite } from './features/atom/autocompleteLite.js';
-export { autoFocus } from './features/atom/autoFocus.js';
 export { autocomplete } from './features/molecule/autocomplete.js';
 export { dropdown } from './features/molecule/dropdown.js';
 export { multiSelect } from './features/molecule/multiSelect.js';

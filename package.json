@@ -1,6 +1,6 @@
 {
   "name": "@szhsin/react-autocomplete",
-  "version": "0.9.11",
+  "version": "1.0.0-alpha.0",
   "description": "",
   "author": "Zheng Song",
   "license": "MIT",
@@ -13,6 +13,7 @@
   },
   "files": [
     "dist/",
+    "features/",
     "types/"
   ],
   "keywords": [
@@ -42,6 +43,16 @@
       "types": "./types/index.d.ts",
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.js"
+    },
+    "./features/atom": {
+      "types": "./types/features/atom/index.d.ts",
+      "require": "./dist/cjs/features/atom/index.js",
+      "default": "./dist/esm/features/atom/index.js"
+    },
+    "./features/molecule": {
+      "types": "./types/features/molecule/index.d.ts",
+      "require": "./dist/cjs/features/molecule/index.js",
+      "default": "./dist/esm/features/molecule/index.js"
     }
   },
   "peerDependencies": {

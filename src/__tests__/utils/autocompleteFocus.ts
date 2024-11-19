@@ -2,11 +2,10 @@ import {
   MergedFeature,
   FeatureProps,
   AutocompleteFeature,
-  AutoFocusFeature,
   mergeModules,
-  autocomplete,
-  autoFocus
+  autocomplete
 } from '../..';
+import { AutoFocusFeature, autoFocus } from '../../features/atom';
 
 type AutocompleteFocusFeature<T> = MergedFeature<
   T,
