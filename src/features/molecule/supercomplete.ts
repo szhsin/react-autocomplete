@@ -11,7 +11,7 @@ type SupercompleteFeature<T> = MergedFeature<
 const supercomplete = <T>(
   props: Pick<
     FeatureProps<T>,
-    'requestItem' | 'select' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'
+    'onRequestItem' | 'select' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'
   >
 ): SupercompleteFeature<T> =>
   mergeModules(autocomplete<T>({ ...props, rovingText: true }), autoInline<T>(props));

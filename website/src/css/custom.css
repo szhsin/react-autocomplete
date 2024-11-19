@@ -46,7 +46,8 @@ input::-webkit-contacts-auto-fill-button {
 }
 
 [data-theme='light'] .token.comment {
-  color: #6a9955 !important;
+  color: #028000 !important;
+  font-style: normal !important;
 }
 
 .tabs__item {

@@ -46,10 +46,6 @@ export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equ
 export interface FeatureState {
     isInputEmpty: boolean;
 }
-type RequestItemResult<T> = {
-    index: number;
-    item: T;
-} | null | undefined | void;
 export interface FeatureProps<T> {
     rovingText?: boolean;
     select?: boolean;
@@ -57,7 +53,12 @@ export interface FeatureProps<T> {
     deselectOnChange?: boolean;
     closeOnSelect?: boolean;
     toggleRef?: React.RefObject<HTMLButtonElement>;
-    requestItem: (value: string) => RequestItemResult<T> | Promise<RequestItemResult<T>>;
+    onRequestItem: (event: {
+        value: string;
+    }, res: (data: {
+        index: number;
+        item: T;
+    }) => void) => void;
 }
 export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | 'select' | 'deselectOnClear' | 'deselectOnChange' | 'closeOnSelect'>;
 export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;
@@ -83,4 +84,3 @@ export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProp
     selected: T[];
     onSelectChange?: (items: T[]) => void;
 };
-export {};

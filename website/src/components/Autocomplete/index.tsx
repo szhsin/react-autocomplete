@@ -56,9 +56,9 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
     feature: isSupercomplete
       ? supercomplete({
           ...featureProps,
-          requestItem: (newValue) => {
+          onRequestItem: ({ value: newValue }, res) => {
             const items = filterItems(newValue);
-            if (items.length > 0) return { index: 0, item: items[0] };
+            if (items.length > 0) res({ index: 0, item: items[0] });
           }
         })
       : autocomplete({

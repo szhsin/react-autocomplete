@@ -3,26 +3,25 @@ import type { Feature, GetProps, FeatureProps } from '../../types';
 type AutoInlineFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps'>>;
 
 const autoInline =
-  <T>({ requestItem }: Pick<FeatureProps<T>, 'requestItem'>): AutoInlineFeature<T> =>
+  <T>({ onRequestItem }: Pick<FeatureProps<T>, 'onRequestItem'>): AutoInlineFeature<T> =>
   ({ getItemValue, setTmpValue, setFocusIndex }) => ({
     getInputProps: () => ({
       'aria-autocomplete': 'both',
 
-      onChange: async ({ target, nativeEvent }) => {
+      onChange: ({ target, nativeEvent }) => {
         if ((nativeEvent as unknown as { inputType: string }).inputType !== 'insertText') {
           return;
         }
 
-        const nextValue = target.value;
-        const result = await requestItem(nextValue);
-        if (!result) return;
-
-        setFocusIndex(result.index);
-        const itemValue = getItemValue(result.item);
-        const start = nextValue.length;
-        const end = itemValue.length;
-        setTmpValue(nextValue + itemValue.slice(start));
-        setTimeout(() => target.setSelectionRange(start, end), 0);
+        const value = target.value;
+        onRequestItem({ value }, (data) => {
+          setFocusIndex(data.index);
+          const itemValue = getItemValue(data.item);
+          const start = value.length;
+          const end = itemValue.length;
+          setTmpValue(value + itemValue.slice(start));
+          setTimeout(() => target.setSelectionRange(start, end), 0);
+        });
       }
     })
   });
