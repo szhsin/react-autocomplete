@@ -1,0 +1,274 @@
+.wrap {
+  margin-bottom: 40px;
+}
+
+.block {
+  font-size: 16px;
+  background-color: var(--ifm-background-surface-color);
+  border-radius: 4px;
+}
+
+.iconBtn {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.iconBtn svg {
+  pointer-events: none;
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.iconBtn:hover {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.clear {
+  composes: iconBtn;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.toggle {
+  composes: iconBtn;
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.label {
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.inputWrap {
+  width: 192px;
+  display: grid;
+  grid-template-columns: 1fr 24px 24px 4px;
+  align-items: center;
+  justify-items: center;
+}
+
+.input {
+  composes: block;
+  appearance: none;
+  width: 192px;
+  padding: 8px 10px;
+  border: 1px solid var(--ifm-color-emphasis-500);
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.input:hover {
+  border-color: var(--ifm-color-primary-light);
+}
+
+.input:focus-visible,
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
+  border-color: var(--ifm-color-primary-light);
+}
+
+.inputBorderless {
+  composes: input;
+  border: none;
+  padding: 10px;
+}
+
+.inputBorderless:focus-visible,
+.inputBorderless:focus {
+  box-shadow: none;
+}
+
+.multiInput {
+  composes: block;
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  width: 0;
+  min-width: 48px;
+  flex-grow: 1;
+}
+
+.multiInput:focus-visible,
+.multiInput:focus {
+  outline: none;
+}
+
+.multiInputWrap {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  height: 24px;
+}
+
+.selectedItem {
+  display: flex;
+  align-items: center;
+  background-color: var(--ifm-color-emphasis-200);
+  line-height: 1;
+  font-size: 14px;
+  border-radius: 2px;
+  padding-left: 6px;
+}
+
+.removeItem {
+  composes: iconBtn;
+  border-radius: 2px;
+  margin-left: 4px;
+}
+
+.removeItem:hover {
+  background-color: var(--ifm-color-emphasis-400);
+  color: #000;
+}
+
+.popup {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  position: absolute;
+  z-index: 1;
+}
+
+.list {
+  composes: block;
+  composes: popup;
+  width: 192px;
+  list-style: none;
+  line-height: 1;
+  padding: 6px 0;
+  margin: 6px 0;
+}
+
+.multiList {
+  composes: list;
+  width: 320px;
+}
+
+.noScroll {
+  scroll-margin-bottom: 16px;
+}
+
+.scroll {
+  overflow: auto;
+  max-height: 300px;
+}
+
+.dropdown {
+  composes: block;
+  composes: popup;
+  margin: 5px 0;
+}
+
+.multiDropdown {
+  composes: dropdown;
+  width: 296px;
+}
+
+.dropdownClear {
+  composes: iconBtn;
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.dropdownList {
+  list-style: none;
+  line-height: 1;
+  padding: 6px 0;
+  margin: 0;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.item {
+  margin: 0 !important;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.itemCheckable {
+  composes: item;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.itemCheckable svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.selected {
+  color: var(--ifm-color-gray-900);
+  background-color: #cfe0fb;
+}
+
+.checked {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.focused {
+  color: inherit;
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.disabled {
+  cursor: default;
+  color: #999;
+  background-color: transparent;
+}
+
+.creatable {
+  font-weight: bold;
+  color: var(--ifm-color-primary);
+}
+
+.noResult {
+  composes: item;
+  color: var(--ifm-color-gray-600);
+  cursor: default;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.button {
+  composes: block;
+  appearance: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: none;
+  color: var(--ifm-color-emphasis-0);
+  background-color: var(--ifm-color-primary);
+}
+
+.button:hover {
+  opacity: 0.92;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ifm-color-primary) !important;
+  outline-offset: 2px;
+}
+
+.groupHead {
+  font-weight: bold;
+  padding: 6px 8px;
+  margin: 0 !important;
+  color: var(--ifm-color-primary);
+  background-color: var(--ifm-color-emphasis-100);
+}

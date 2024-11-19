@@ -1,0 +1,26 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/ObjectItems/CodeBlock';
+import data from '!!raw-loader!@site/src/data/states-obj';
+import { ObjectItems } from '@site/src/components/ObjectItems';
+
+# Object items
+
+List items can be not only strings but also objects.
+
+<ObjectItems />
+
+<Tabs>
+  <TabItem value="ts" label="ObjectItems.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/states-obj.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>

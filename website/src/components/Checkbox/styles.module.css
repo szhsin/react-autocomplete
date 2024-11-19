@@ -1,0 +1,21 @@
+.label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.input {
+  appearance: none;
+  margin: 0;
+}
+
+.icon {
+  margin-right: 4px;
+  width: 20px;
+  height: 20px;
+}
+
+.checked {
+  color: var(--ifm-color-primary);
+}

@@ -1,0 +1,14 @@
+.inputWrap {
+  display: flex;
+  align-items: center;
+}
+
+.clear {
+  transform: translateX(-120%);
+}
+
+.modes {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}

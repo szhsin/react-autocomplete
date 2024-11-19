@@ -1,0 +1,29 @@
+.desc {
+  color: var(--ifm-color-emphasis-800);
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: start;
+  gap: 16px;
+}
+
+@media (max-width: 400px) {
+  .modes {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+}
+
+.info {
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1;
+  font-size: 14px;
+  margin-left: 24px;
+}

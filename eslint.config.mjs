@@ -28,7 +28,8 @@ export default tseslint.config(
       '**/dist/',
       '**/types/',
       '**/build/',
-      '**/static/'
+      '**/static/',
+      '**/.docusaurus/'
     ]
   },
   {
@@ -82,7 +83,7 @@ export default tseslint.config(
     }
   },
   {
-    files: ['src/__tests__/**/*'],
+    files: ['src/__tests__/**/*', 'website/**/*'],
     rules: {
       'react/react-in-jsx-scope': 0
     }

@@ -1,0 +1,26 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/DisabledItems/CodeBlock';
+import data from '!!raw-loader!@site/src/data/fruits';
+import { DisabledItems } from '@site/src/components/DisabledItems';
+
+# Disabled items
+
+Items can be disabled, preventing them from being interacted with or selected.
+
+<DisabledItems />
+
+<Tabs>
+  <TabItem value="ts" label="DisabledItems.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/fruits.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>

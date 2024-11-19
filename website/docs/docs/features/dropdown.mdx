@@ -1,0 +1,24 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/Dropdown/CodeBlock';
+import data from '!!raw-loader!@site/src/data/states';
+import { Dropdown } from '@site/src/components/Dropdown';
+
+# Dropdown
+
+<Dropdown />
+
+<Tabs>
+  <TabItem value="ts" label="Dropdown.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/states.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>

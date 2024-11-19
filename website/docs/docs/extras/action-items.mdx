@@ -1,0 +1,26 @@
+---
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import sourceCode from '!!raw-loader!@site/src/components/ActionItems/CodeBlock';
+import data from '!!raw-loader!@site/src/data/fruits';
+import { ActionItems } from '@site/src/components/ActionItems';
+
+# Action items
+
+You can specify items in the list as actions and define what happens after they are triggered. This is useful for extending functionality, such as building a **'creatable'** autocomplete feature.
+
+<ActionItems />
+
+<Tabs>
+  <TabItem value="ts" label="ActionItems.tsx">
+    <CodeBlock language="tsx">{sourceCode}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/fruits.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>
