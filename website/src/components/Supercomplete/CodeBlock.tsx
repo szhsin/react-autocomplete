@@ -28,9 +28,13 @@ const Supercomplete = () => {
     onSelectChange: setSelected,
     feature: supercomplete({
       // highlight-start
-      requestItem: (newValue) => {
+      // The `onRequestItem` event will be triggered with the updated input value.
+      // You should compute the item for inline text completion using the same filtering logic,
+      // and invoke the `res` function to complete.
+      // If no item matches for inline completion, do not call the `res` function.
+      onRequestItem: ({ value: newValue }, res) => {
         const items = filterItems(newValue);
-        if (items.length > 0) return { index: 0, item: items[0] };
+        if (items.length > 0) res({ index: 0, item: items[0] });
       },
       // highlight-end
 

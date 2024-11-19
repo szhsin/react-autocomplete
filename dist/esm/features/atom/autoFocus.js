@@ -1,14 +1,15 @@
 const autoFocus = ({
-  requestItem
+  onRequestItem
 }) => ({
   setFocusIndex
 }) => ({
   getInputProps: () => ({
-    onChange: async e => {
-      const nextValue = e.target.value;
-      if (nextValue) {
-        const result = await requestItem(nextValue);
-        result && setFocusIndex(result.index);
+    onChange: e => {
+      const value = e.target.value;
+      if (value) {
+        onRequestItem({
+          value
+        }, data => setFocusIndex(data.index));
       }
     }
   })

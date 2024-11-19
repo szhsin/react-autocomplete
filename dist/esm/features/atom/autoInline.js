@@ -1,5 +1,5 @@
 const autoInline = ({
-  requestItem
+  onRequestItem
 }) => ({
   getItemValue,
   setTmpValue,
@@ -7,22 +7,24 @@ const autoInline = ({
 }) => ({
   getInputProps: () => ({
     'aria-autocomplete': 'both',
-    onChange: async ({
+    onChange: ({
       target,
       nativeEvent
     }) => {
       if (nativeEvent.inputType !== 'insertText') {
         return;
       }
-      const nextValue = target.value;
-      const result = await requestItem(nextValue);
-      if (!result) return;
-      setFocusIndex(result.index);
-      const itemValue = getItemValue(result.item);
-      const start = nextValue.length;
-      const end = itemValue.length;
-      setTmpValue(nextValue + itemValue.slice(start));
-      setTimeout(() => target.setSelectionRange(start, end), 0);
+      const value = target.value;
+      onRequestItem({
+        value
+      }, data => {
+        setFocusIndex(data.index);
+        const itemValue = getItemValue(data.item);
+        const start = value.length;
+        const end = itemValue.length;
+        setTmpValue(value + itemValue.slice(start));
+        setTimeout(() => target.setSelectionRange(start, end), 0);
+      });
     }
   })
 });

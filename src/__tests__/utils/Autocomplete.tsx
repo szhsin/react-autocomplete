@@ -45,9 +45,11 @@ export const Autocomplete = ({
       isSupercomplete || isAutoFocus
         ? (isSupercomplete ? supercomplete : autocompleteFocus)({
             ...props,
-            requestItem: (newValue) => {
+            onRequestItem: ({ value: newValue }, res) => {
               const items = filterItems(newValue);
-              if (items.length) return { index: 0, item: items[0] };
+              if (items.length) {
+                res({ index: 0, item: items[0] });
+              }
             }
           })
         : autocomplete(props)
