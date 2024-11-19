@@ -133,7 +133,10 @@ const useFocusCapture = focusRef => {
       focusRef.current?.focus();
       return true;
     }
-  }, () => focusRef.current?.focus()];
+  }, () => {
+    mutable.a = 0;
+    focusRef.current?.focus();
+  }];
 };
 
 const scrollIntoView = element => element?.scrollIntoView({
@@ -210,16 +213,15 @@ const autocompleteLite = ({
   };
   const focusCaptureProps = {
     onMouseDown: startCapture,
-    onClick: stopCapture
+    onMouseUp: stopCapture
   };
   return {
     isInputEmpty: !inputValue,
     getFocusCaptureProps: () => focusCaptureProps,
     getClearProps: () => ({
       ...buttonProps,
-      onMouseDown: startCapture,
+      ...focusCaptureProps,
       onClick: () => {
-        stopCapture();
         setTmpValue();
         setFocusIndex(defaultFocusIndex);
         onChange('');

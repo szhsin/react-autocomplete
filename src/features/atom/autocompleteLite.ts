@@ -99,7 +99,7 @@ const autocompleteLite =
 
     const focusCaptureProps: ReturnType<GetProps<T>['getFocusCaptureProps']> = {
       onMouseDown: startCapture,
-      onClick: stopCapture
+      onMouseUp: stopCapture
     };
 
     return {
@@ -109,11 +109,9 @@ const autocompleteLite =
 
       getClearProps: () => ({
         ...buttonProps,
-
-        onMouseDown: startCapture,
+        ...focusCaptureProps,
 
         onClick: () => {
-          stopCapture();
           setTmpValue();
           setFocusIndex(defaultFocusIndex);
           onChange('');
