@@ -28,12 +28,12 @@ const autocompleteLite =
   }: AutocompleteFeatureProps<T> = {}): AutocompleteLiteFeature<T> =>
   ({
     getItemValue,
-    getSelectedValue,
     onSelectChange,
     isItemSelected,
     isItemDisabled,
     isItemAction,
     onAction,
+    selected,
     value,
     onChange,
     tmpValue,
@@ -48,7 +48,8 @@ const autocompleteLite =
   }) => {
     const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
-    const inputValue = (tmpValue || value) ?? getSelectedValue();
+    const inputValue =
+      (tmpValue || value) ?? (Array.isArray(selected) ? '' : getItemValue(selected));
     const focusItem = items[focusIndex];
     const listId = getId(id, 'l');
 

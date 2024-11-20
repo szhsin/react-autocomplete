@@ -17,6 +17,7 @@ describe('multiSelect', () => {
     await user.keyboard('{ArrowDown>2/}{Enter}');
     await user.keyboard('{ArrowDown>2/}{Enter}'); // select the same item again will not flip select
     await user.keyboard('c{ArrowUp>2/}{Enter}');
+    expect(combobox).toHaveValue('');
     let selected = screen.getAllByTestId('selected');
     expect(selected).toHaveLength(3);
     expect(selected[0]).toHaveTextContent(/^Alaska$/);

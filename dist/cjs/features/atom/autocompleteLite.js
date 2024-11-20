@@ -14,12 +14,12 @@ const autocompleteLite = ({
   closeOnSelect = true
 } = {}) => ({
   getItemValue,
-  getSelectedValue,
   onSelectChange,
   isItemSelected,
   isItemDisabled,
   isItemAction,
   onAction,
+  selected,
   value,
   onChange,
   tmpValue,
@@ -34,7 +34,7 @@ const autocompleteLite = ({
 }) => {
   var _ref;
   const [startCapture, inCapture, stopCapture] = useFocusCapture.useFocusCapture(inputRef);
-  const inputValue = (_ref = tmpValue || value) != null ? _ref : getSelectedValue();
+  const inputValue = (_ref = tmpValue || value) != null ? _ref : Array.isArray(selected) ? '' : getItemValue(selected);
   const focusItem = items[focusIndex];
   const listId = common.getId(id, 'l');
   const selectItemOrAction = item => {
