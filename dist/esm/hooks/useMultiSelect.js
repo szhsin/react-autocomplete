@@ -1,10 +1,8 @@
 import { defaultEqual } from '../common.js';
-import { adaptGetItemValue } from '../utils/adaptGetItemValue.js';
 import { useAutocomplete } from './useAutocomplete.js';
 
 const useMultiSelect = ({
   isEqual = defaultEqual,
-  getItemValue,
   selected,
   onSelectChange,
   flipOnSelect,
@@ -22,10 +20,9 @@ const useMultiSelect = ({
   return {
     ...useAutocomplete({
       ...passthrough,
+      selected,
       isEqual,
       isItemSelected,
-      getItemValue: adaptGetItemValue(getItemValue),
-      getSelectedValue: () => '',
       onSelectChange: newItem => {
         if (!newItem) return;
         if (!isItemSelected(newItem)) {

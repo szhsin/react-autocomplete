@@ -1,12 +1,10 @@
 'use strict';
 
 var common = require('../common.js');
-var adaptGetItemValue = require('../utils/adaptGetItemValue.js');
 var useAutocomplete = require('./useAutocomplete.js');
 
 const useMultiSelect = ({
   isEqual = common.defaultEqual,
-  getItemValue,
   selected,
   onSelectChange,
   flipOnSelect,
@@ -24,10 +22,9 @@ const useMultiSelect = ({
   return {
     ...useAutocomplete.useAutocomplete({
       ...passthrough,
+      selected,
       isEqual,
       isItemSelected,
-      getItemValue: adaptGetItemValue.adaptGetItemValue(getItemValue),
-      getSelectedValue: () => '',
       onSelectChange: newItem => {
         if (!newItem) return;
         if (!isItemSelected(newItem)) {

@@ -1,11 +1,9 @@
 import type { MultiSelectProps, AdapterProps } from '../types';
 import { defaultEqual } from '../common';
-import { adaptGetItemValue } from '../utils/adaptGetItemValue';
 import { useAutocomplete } from './useAutocomplete';
 
 const useMultiSelect = <T, FeatureYield extends object>({
   isEqual = defaultEqual,
-  getItemValue,
   selected,
   onSelectChange,
   flipOnSelect,
@@ -27,10 +25,9 @@ const useMultiSelect = <T, FeatureYield extends object>({
   return {
     ...useAutocomplete({
       ...passthrough,
+      selected,
       isEqual,
       isItemSelected,
-      getItemValue: adaptGetItemValue(getItemValue),
-      getSelectedValue: () => '',
       onSelectChange: (newItem) => {
         if (!newItem) return;
 

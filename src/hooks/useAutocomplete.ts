@@ -8,6 +8,7 @@ const useAutocomplete = <T, FeatureYield extends object>({
   feature: useFeature,
   isItemSelected,
   inputRef: externalInputRef,
+  getItemValue,
   ...passthrough
 }: AutocompleteProps<T, FeatureYield>) => {
   const internalInputRef = useRef<HTMLInputElement>(null);
@@ -29,6 +30,8 @@ const useAutocomplete = <T, FeatureYield extends object>({
     tmpValue,
     setTmpValue,
     onChange: (newValue) => passthrough.value != newValue && onChange?.(newValue),
+    getItemValue: (item) =>
+      item == null ? '' : getItemValue ? getItemValue(item) : item.toString(),
     ...passthrough,
     ...state
   });

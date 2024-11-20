@@ -41,8 +41,7 @@ export interface PassthroughProps<T> {
 }
 
 export interface AdapterProps<T> extends ContextualOrReturn<T> {
-  getItemValue: (item: T | undefined | null) => string;
-  getSelectedValue: () => string;
+  selected: T[] | T | undefined;
   onSelectChange: (item?: T | undefined) => void;
   removeSelect?: (item?: T | undefined) => void;
 }
@@ -55,6 +54,7 @@ export interface Contextual<T>
   id?: string;
   tmpValue?: string;
   setTmpValue: (value?: string | undefined) => void;
+  getItemValue: (item: T | undefined | null) => string;
 }
 
 export interface FeatureState {
@@ -89,13 +89,14 @@ export type MergedFeatureYield<T, Features> = Features extends readonly [Feature
 
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 
-export interface BaseProps<T, FeatureYield extends object> extends PassthroughProps<T> {
+export type BaseProps<T, FeatureYield extends object> = PassthroughProps<T> & {
   feature: Feature<T, FeatureYield>;
   inputRef?: React.RefObject<HTMLInputElement>;
-}
+};
 
 export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> &
   AdapterProps<T> &
+  Partial<GetItemValue<T>> &
   Equality<T>;
 
 export type GetItemValue<T> = {

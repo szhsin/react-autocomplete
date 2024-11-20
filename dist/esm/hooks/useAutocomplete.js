@@ -7,6 +7,7 @@ const useAutocomplete = ({
   feature: useFeature,
   isItemSelected,
   inputRef: externalInputRef,
+  getItemValue,
   ...passthrough
 }) => {
   const internalInputRef = useRef(null);
@@ -26,6 +27,7 @@ const useAutocomplete = ({
     tmpValue,
     setTmpValue,
     onChange: newValue => passthrough.value != newValue && onChange?.(newValue),
+    getItemValue: item => item == null ? '' : getItemValue ? getItemValue(item) : item.toString(),
     ...passthrough,
     ...state
   });

@@ -28,7 +28,7 @@
     "watch": "rollup -c -w",
     "clean": "rm -Rf dist types",
     "types": "tsc",
-    "posttypes": "rm -Rf types/__tests__",
+    "prepare": "rm -Rf types/__tests__",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "pret": "prettier -c .",

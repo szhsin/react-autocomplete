@@ -33,8 +33,7 @@ export interface PassthroughProps<T> {
     items: T[];
 }
 export interface AdapterProps<T> extends ContextualOrReturn<T> {
-    getItemValue: (item: T | undefined | null) => string;
-    getSelectedValue: () => string;
+    selected: T[] | T | undefined;
     onSelectChange: (item?: T | undefined) => void;
     removeSelect?: (item?: T | undefined) => void;
 }
@@ -42,6 +41,7 @@ export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equ
     id?: string;
     tmpValue?: string;
     setTmpValue: (value?: string | undefined) => void;
+    getItemValue: (item: T | undefined | null) => string;
 }
 export interface FeatureState {
     isInputEmpty: boolean;
@@ -64,11 +64,11 @@ export type AutocompleteFeatureProps<T> = Pick<FeatureProps<T>, 'rovingText' | '
 export type Feature<T, Yield extends object> = (cx: Contextual<T>) => Yield;
 export type MergedFeatureYield<T, Features> = Features extends readonly [Feature<T, infer S>] ? S : Features extends readonly [Feature<T, infer F>, ...infer R] ? F & MergedFeatureYield<T, R> : never;
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
-export interface BaseProps<T, FeatureYield extends object> extends PassthroughProps<T> {
+export type BaseProps<T, FeatureYield extends object> = PassthroughProps<T> & {
     feature: Feature<T, FeatureYield>;
     inputRef?: React.RefObject<HTMLInputElement>;
-}
-export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> & AdapterProps<T> & Equality<T>;
+};
+export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> & AdapterProps<T> & Partial<GetItemValue<T>> & Equality<T>;
 export type GetItemValue<T> = {
     getItemValue: (item: T) => string;
 };
