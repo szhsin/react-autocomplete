@@ -12,6 +12,7 @@
   cursor: pointer;
   appearance: none;
   border: none;
+  color: var(--ifm-color-emphasis-1000);
   background: transparent;
   padding: 4px;
   border-radius: 50%;
