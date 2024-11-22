@@ -1,9 +1,11 @@
 {
   "name": "@szhsin/react-autocomplete",
-  "version": "1.0.0-alpha.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "A modular, lightweight, and headless React autocomplete solution.",
   "author": "Zheng Song",
   "license": "MIT",
+  "repository": "szhsin/react-autocomplete",
+  "homepage": "https://szhsin.github.io/react-autocomplete/",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./types/index.d.ts",
@@ -19,8 +21,10 @@
   "keywords": [
     "react",
     "autocomplete",
-    "headless",
-    "select"
+    "select",
+    "combobox",
+    "dropdown",
+    "headless"
   ],
   "scripts": {
     "start": "run-p watch \"types -- --watch\"",

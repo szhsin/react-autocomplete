@@ -1,0 +1,18 @@
+.tabList {
+  margin-bottom: var(--ifm-leading);
+}
+
+.tabItem {
+  margin-top: 0 !important;
+}
+
+.tabItemLink {
+  padding: 0;
+}
+
+.tabLink {
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

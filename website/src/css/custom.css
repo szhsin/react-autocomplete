@@ -53,3 +53,28 @@ input::-webkit-contacts-auto-fill-button {
 .tabs__item {
   padding: 6px 16px;
 }
+
+[data-footnotes='true'] {
+  border-top: 1px solid var(--ifm-color-gray-300);
+  color: var(--ifm-color-gray-700);
+  padding-top: 12px;
+  margin-top: 32px;
+  font-size: 12px;
+}
+
+[data-theme='dark'] [data-footnotes='true'] {
+  border-top: 1px solid var(--ifm-color-gray-800);
+  color: var(--ifm-color-gray-500);
+}
+
+[data-footnotes='true'] h2 {
+  display: none;
+}
+
+[data-footnotes='true'] ol {
+  padding: 0 0 0 16px;
+}
+
+[data-footnotes='true'] p {
+  margin: 0 !important;
+}

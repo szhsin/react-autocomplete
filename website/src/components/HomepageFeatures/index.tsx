@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
+import BundleLink from '@site/src/components/BundleLink/AutocompleteLite';
 import styles from './styles.module.css';
 
 type FeatureItem = {
@@ -20,7 +21,10 @@ const FeatureList: FeatureItem[] = [
   {
     title: 'Lightweight',
     description: (
-      <>Just 1.4 kB for a fully functional and accessible autocomplete solution in React.</>
+      <>
+        Just <BundleLink /> for a fully functional and accessible autocomplete solution in
+        React.
+      </>
     )
   },
   {

@@ -7,6 +7,7 @@ import { useAutoScroll } from '../../utils/useAutoScroll';
 import FRUITS from '@site/src/data/fruits';
 import styles from '@site/src/css/styles.module.css';
 import customStyles from './styles.module.css';
+import ExternalLink from '@site/static/img/external-link.svg';
 
 type Mode = 'select' | 'free';
 
@@ -103,6 +104,15 @@ const Intro = () => {
           <li className={styles.noResult}>No results</li>
         )}
       </ul>
+
+      <a
+        className={customStyles.sandbox}
+        href="https://codesandbox.io/p/sandbox/autocompletelite-wf757s"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in CodeSandbox <ExternalLink />
+      </a>
     </div>
   );
 };
