@@ -22,13 +22,13 @@
 
 - **Modular**: We carefully design the API with a modular approach, providing a no-frills solution that allows you to bundle only the code you need for your website. _No more and no less!_
 
-- **Lightweight**: At just 1.4 kB[^2], you get a fully functional and accessible autocomplete solution in React. It's almost negligible in size and likely lighter than creating one from scratch, so you can adopt it without hesitation.
+- **Lightweight**: At just [1.4 kB](https://bundlejs.com/?q=%40szhsin%2Freact-autocomplete&bundle&treeshake=%5B%7B+useCombobox%2CautocompleteLite+%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22react%22%5D%7D%7D)[^2], you get a fully functional and accessible autocomplete solution in React. It's almost negligible in size and likely lighter than creating one from scratch, so you can adopt it without hesitation.
 
 - **Customizable**: Thanks to the modular design, you can easily customize existing features or even create your own feature (a plugin-style module) to enhance the solution.
 
 ### Sounds promising! How does it look?
 
-Here’s a live example of the **1.4 kB** accessible React autocomplete: **[open in CodeSandbox](https://codesandbox.io/p/sandbox/autocompletelite-wf757s)**
+Here’s a live example of the [1.4 kB](https://bundlejs.com/?q=%40szhsin%2Freact-autocomplete&bundle&treeshake=%5B%7B+useCombobox%2CautocompleteLite+%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22react%22%5D%7D%7D) accessible React autocomplete: **[open in CodeSandbox](https://codesandbox.io/p/sandbox/autocompletelite-wf757s)**
 
 ## Design Concept
 
