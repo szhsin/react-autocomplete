@@ -1,0 +1,10 @@
+node_modules
+coverage/
+examples/
+website/
+types/
+dist/
+
+.DS_Store
+.env
+*.log
