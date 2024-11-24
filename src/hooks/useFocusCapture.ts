@@ -13,7 +13,11 @@ const useFocusCapture = (focusRef: React.RefObject<HTMLElement>) => {
 
   return [
     () => {
-      if (document.activeElement === focusRef.current) mutable.a = 1;
+      let { activeElement } = document;
+      while (activeElement?.shadowRoot?.activeElement)
+        activeElement = activeElement.shadowRoot.activeElement;
+
+      if (activeElement === focusRef.current) mutable.a = 1;
     },
     () => {
       if (mutable.a) {
