@@ -13,7 +13,7 @@ const useFocusCapture = (focusRef: React.RefObject<HTMLElement>) => {
 
   return [
     () => {
-      if (document.activeElement === focusRef.current) mutable.a = 1;
+      mutable.a = 1;
     },
     () => {
       if (mutable.a) {
