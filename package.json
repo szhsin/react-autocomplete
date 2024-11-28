@@ -1,6 +1,6 @@
 {
   "name": "@szhsin/react-autocomplete",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A modular, lightweight, and headless React autocomplete solution.",
   "author": "Zheng Song",
   "license": "MIT",

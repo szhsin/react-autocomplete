@@ -5,7 +5,7 @@ var useMutableState = require('./useMutableState.js');
 const useFocusCapture = focusRef => {
   const mutable = useMutableState.useMutableState({});
   return [() => {
-    if (document.activeElement === focusRef.current) mutable.a = 1;
+    mutable.a = 1;
   }, () => {
     if (mutable.a) {
       mutable.a = 0;
