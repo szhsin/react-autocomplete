@@ -64,6 +64,7 @@ const AsyncExample = () => {
             background: '#fff',
             overflow: 'auto',
             maxHeight: 300,
+            margin: 0,
             padding: 0
           }}
         >
