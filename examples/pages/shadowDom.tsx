@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { useCombobox, autocomplete } from '@szhsin/react-autocomplete';
-import STATES from '../../data/states';
+import { US_STATES_PLAIN as STATES } from '../data';
+import { createRoot } from 'react-dom/client';
 
-const Autocomplete = () => {
+const ShadowDom = () => {
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<string>();
 
-  // It's up to you how to filter items based on the input value
   const items = value
     ? STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase()))
     : STATES;
 
   const {
+    getFocusCaptureProps,
     getLabelProps,
     getInputProps,
     getClearProps,
@@ -27,17 +28,15 @@ const Autocomplete = () => {
     onChange: setValue,
     selected,
     onSelectChange: setSelected,
-    feature: autocomplete({
-      // The `select` option controls autocomplete in free or select mode
-      // highlight-next-line
-      select: true // or false
-      // Other options: rovingText, deselectOnClear, deselectOnChange, closeOnSelect
-    })
+    feature: autocomplete({ select: true })
   });
 
   return (
     <div>
-      <label {...getLabelProps()}>State</label>
+      <h3>Shadow DOM</h3>
+      <label {...getLabelProps()} {...getFocusCaptureProps()}>
+        State
+      </label>
       <div>
         <input placeholder="Select or type..." {...getInputProps()} />
         {!isInputEmpty && <button {...getClearProps()}>X</button>}
@@ -79,4 +78,21 @@ const Autocomplete = () => {
   );
 };
 
-export default Autocomplete;
+if (typeof document !== 'undefined' && !document.getElementById('shadow-container')) {
+  const domElement = document.getElementById('__next');
+  const container = document.createElement('div');
+  container.id = 'shadow-container';
+  domElement?.appendChild(container);
+  const shadow = container.attachShadow({ mode: 'open' });
+
+  const nestedContainer = document.createElement('div');
+  nestedContainer.id = 'nested-shadow-container';
+  const nestedShadow = nestedContainer.attachShadow({ mode: 'closed' });
+  shadow.appendChild(nestedContainer);
+
+  createRoot(nestedShadow).render(<ShadowDom />);
+}
+
+export default function Example() {
+  return null;
+}

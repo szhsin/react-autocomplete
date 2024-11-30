@@ -76,6 +76,7 @@ const MultiSelectDropdown = () => {
               listStyle: 'none',
               overflow: 'auto',
               maxHeight: 300,
+              margin: 0,
               padding: 0
             }}
           >
