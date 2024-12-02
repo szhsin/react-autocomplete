@@ -14,7 +14,7 @@
 
 .multiInputRootFocused {
   box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
-  border-color: var(--ifm-color-primary-light);
+  border: 1px solid var(--ifm-color-primary-light);
 }
 
 .multiInputWrap {
