@@ -1,13 +1,14 @@
 {
   "name": "@szhsin/react-autocomplete",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A modular, lightweight, and headless React autocomplete solution.",
   "author": "Zheng Song",
   "license": "MIT",
   "repository": "szhsin/react-autocomplete",
   "homepage": "https://szhsin.github.io/react-autocomplete/",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "type": "module",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.mjs",
   "types": "./types/index.d.ts",
   "sideEffects": false,
   "publishConfig": {
@@ -45,18 +46,18 @@
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.js"
+      "require": "./dist/cjs/index.cjs",
+      "default": "./dist/esm/index.mjs"
     },
     "./features/atom": {
       "types": "./types/features/atom/index.d.ts",
-      "require": "./dist/cjs/features/atom/index.js",
-      "default": "./dist/esm/features/atom/index.js"
+      "require": "./dist/cjs/features/atom/index.cjs",
+      "default": "./dist/esm/features/atom/index.mjs"
     },
     "./features/molecule": {
       "types": "./types/features/molecule/index.d.ts",
-      "require": "./dist/cjs/features/molecule/index.js",
-      "default": "./dist/esm/features/molecule/index.js"
+      "require": "./dist/cjs/features/molecule/index.cjs",
+      "default": "./dist/esm/features/molecule/index.mjs"
     }
   },
   "peerDependencies": {
