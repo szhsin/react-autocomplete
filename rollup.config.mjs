@@ -20,11 +20,13 @@ const config = {
       dir: 'dist/cjs',
       format: 'cjs',
       interop: 'default',
+      entryFileNames: '[name].cjs',
       preserveModules: true
     },
     {
       dir: 'dist/esm',
       format: 'es',
+      entryFileNames: '[name].mjs',
       preserveModules: true
     }
   ]

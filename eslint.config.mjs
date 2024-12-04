@@ -18,7 +18,7 @@ export default tseslint.config(
   reactHooksAddons.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    files: ['**/*.js', '**/*.mjs'],
+    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
     ...tseslint.configs.disableTypeChecked
   },
   {
@@ -39,7 +39,7 @@ export default tseslint.config(
       sourceType: 'module',
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.js', '*.mjs']
+          allowDefaultProject: ['*.js', '*.cjs', '*.mjs']
         },
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
