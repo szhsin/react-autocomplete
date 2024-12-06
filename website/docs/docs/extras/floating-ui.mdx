@@ -1,0 +1,38 @@
+---
+sidebar_position: 8
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import codeAutocomplete from '!!raw-loader!@site/src/components/FloatingUI/CodeAutocomplete';
+import codeDropdown from '!!raw-loader!@site/src/components/FloatingUI/CodeDropdown';
+import data from '!!raw-loader!@site/src/data/states';
+import { FloatingUI } from '@site/src/components/FloatingUI';
+
+# Floating UI
+
+The API lets you easily integrate with a positioning library like [Floating UI](https://floating-ui.com/docs/useFloating), so you can fine-tune the position of the autocomplete list.
+
+Below are two examples of integration: one for **autocomplete** and one for a **dropdown**.
+
+:::info
+
+These examples are set up to make the list take up as much available height as possible within the viewport. Try opening the list and scrolling the page up and down to observe how the list always perfectly fits within the page.
+
+:::
+
+<FloatingUI />
+
+<Tabs>
+  <TabItem value="ts1" label="Autocomplete.tsx">
+    <CodeBlock language="tsx">{codeAutocomplete}</CodeBlock>
+  </TabItem>
+  <TabItem value="ts2" label="Dropdown.tsx">
+    <CodeBlock language="tsx">{codeDropdown}</CodeBlock>
+  </TabItem>
+  <TabItem value="data" label="data/states.ts">
+    <CodeBlock language="ts">{data}</CodeBlock>
+  </TabItem>
+</Tabs>

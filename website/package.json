@@ -17,6 +17,7 @@
   "dependencies": {
     "@docusaurus/core": "3.6.2",
     "@docusaurus/preset-classic": "3.6.2",
+    "@floating-ui/react-dom": "^2.1.2",
     "@mdx-js/react": "^3.0.1",
     "@szhsin/react-autocomplete": "file:..",
     "@tanstack/react-virtual": "^3.10.9",
