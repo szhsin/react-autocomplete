@@ -56,7 +56,7 @@ One advantage of this architecture is you can easily combine any number of atoms
 - Multiple selection in dropdown
 - Select-only Combobox
 
-**[Visit the site for examples and docs](https://szhsin.github.io/react-autocomplete/)**
+**[Visit the site for examples and docs](https://szhsin.github.io/react-autocomplete/docs/features/autocomplete/)**
 
 [^1]: Referring to traditional solutions such as [react-select](https://bundlephobia.com/package/react-select) and [downshift](https://bundlephobia.com/package/downshift).
 
