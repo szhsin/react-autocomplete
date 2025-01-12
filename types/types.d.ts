@@ -15,7 +15,7 @@ export interface ContextualOrReturn<T> {
     isItemSelected: (item: T) => boolean;
 }
 export interface AutocompleteReturn<T> extends ContextualOrReturn<T> {
-    inputRef: React.RefObject<HTMLInputElement>;
+    inputRef: React.RefObject<HTMLInputElement | null>;
     focusIndex: number;
     setFocusIndex: (index: number) => void;
     open: boolean;
@@ -29,18 +29,18 @@ export interface PassthroughProps<T> {
     isItemAction?: (item: T) => boolean;
     onAction?: (item: T) => void;
     value: string | undefined;
-    onChange: (value?: string | undefined) => void;
+    onChange: (value?: string) => void;
     items: T[];
 }
 export interface AdapterProps<T> extends ContextualOrReturn<T> {
     selected: T[] | T | undefined;
-    onSelectChange: (item?: T | undefined) => void;
-    removeSelect?: (item?: T | undefined) => void;
+    onSelectChange: (item?: T) => void;
+    removeSelect?: (item?: T) => void;
 }
 export interface Contextual<T> extends PassthroughProps<T>, AdapterProps<T>, Equality<T>, AutocompleteReturn<T> {
     id?: string;
     tmpValue?: string;
-    setTmpValue: (value?: string | undefined) => void;
+    setTmpValue: (value?: string) => void;
     getItemValue: (item: T | undefined | null) => string;
 }
 export interface FeatureState {
@@ -52,7 +52,7 @@ export interface FeatureProps<T> {
     deselectOnClear?: boolean;
     deselectOnChange?: boolean;
     closeOnSelect?: boolean;
-    toggleRef?: React.RefObject<HTMLButtonElement>;
+    toggleRef?: React.RefObject<HTMLButtonElement | null>;
     onRequestItem: (event: {
         value: string;
     }, res: (data: {
@@ -66,7 +66,7 @@ export type MergedFeatureYield<T, Features> = Features extends readonly [Feature
 export type MergedFeature<T, Features> = Feature<T, MergedFeatureYield<T, Features>>;
 export type BaseProps<T, FeatureYield extends object> = PassthroughProps<T> & {
     feature: Feature<T, FeatureYield>;
-    inputRef?: React.RefObject<HTMLInputElement>;
+    inputRef?: React.RefObject<HTMLInputElement | null>;
 };
 export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, FeatureYield> & AdapterProps<T> & Partial<GetItemValue<T>> & Equality<T>;
 export type GetItemValue<T> = {
@@ -78,7 +78,7 @@ export type Flippable = {
 };
 export type ComboboxProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & MaybeGetItemValue<T> & Partial<Equality<T>> & Flippable & {
     selected?: T | undefined;
-    onSelectChange?: ((item?: T | undefined) => void) | undefined;
+    onSelectChange?: ((item?: T) => void) | undefined;
 };
 export type MultiSelectProps<T, FeatureYield extends object = object> = BaseProps<T, FeatureYield> & MaybeGetItemValue<T> & Partial<Equality<T>> & Flippable & {
     selected: T[];

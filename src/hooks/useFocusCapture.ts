@@ -8,7 +8,7 @@ interface MutableState {
   a?: boolean | 0 | 1;
 }
 
-const useFocusCapture = (focusRef: React.RefObject<HTMLElement>) => {
+const useFocusCapture = (focusRef: React.RefObject<HTMLElement | null>) => {
   const mutable = useMutableState<MutableState>({});
 
   return [

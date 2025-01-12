@@ -55,6 +55,7 @@ export default tseslint.config(
     plugins: {
       jest,
       react,
+      // @ts-ignore
       'react-hooks': reactHooks
     },
     settings: {
