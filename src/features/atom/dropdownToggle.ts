@@ -20,7 +20,7 @@ const dropdownToggle =
     const inputValue = tmpValue || value || '';
 
     useEffect(() => {
-      if (open) inputRef.current?.focus();
+      if (open) inputRef.current?.focus({ preventScroll: true });
     }, [open, inputRef]);
 
     // We don't want to flow through onBlur handler in `autocompleteLite`,
