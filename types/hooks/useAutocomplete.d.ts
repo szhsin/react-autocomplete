@@ -1,6 +1,6 @@
 import type { AutocompleteProps } from '../types';
 declare const useAutocomplete: <T, FeatureYield extends object>({ onChange, feature: useFeature, isItemSelected, inputRef: externalInputRef, getItemValue, ...passthrough }: AutocompleteProps<T, FeatureYield>) => {
-    inputRef: React.RefObject<HTMLInputElement>;
+    inputRef: React.RefObject<HTMLInputElement | null>;
     focusIndex: number;
     setFocusIndex: (index: number) => void;
     open: boolean;

@@ -1,6 +1,6 @@
 import type { ComboboxProps } from '../types';
 declare const useCombobox: <T, FeatureYield extends object>({ isEqual, selected, onSelectChange, flipOnSelect, ...passthrough }: ComboboxProps<T, FeatureYield>) => {
-    inputRef: React.RefObject<HTMLInputElement>;
+    inputRef: React.RefObject<HTMLInputElement | null>;
     focusIndex: number;
     setFocusIndex: (index: number) => void;
     open: boolean;

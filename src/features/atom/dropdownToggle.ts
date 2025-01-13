@@ -5,7 +5,7 @@ import { useToggle } from '../../hooks/useToggle';
 type DropdownToggleFeature<T> = Feature<
   T,
   Pick<GetProps<T>, 'getToggleProps' | 'getInputProps'> &
-    FeatureState & { toggleRef: React.RefObject<HTMLButtonElement> }
+    FeatureState & { toggleRef: React.RefObject<HTMLButtonElement | null> }
 >;
 
 const dropdownToggle =
