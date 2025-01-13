@@ -19,7 +19,9 @@ const dropdownToggle = ({
   const toggleRef = externalToggleRef || internalToggleRef;
   const inputValue = tmpValue || value || '';
   React.useEffect(() => {
-    if (open) inputRef.current?.focus();
+    if (open) inputRef.current?.focus({
+      preventScroll: true
+    });
   }, [open, inputRef]);
   const focusToggle = () => setTimeout(() => toggleRef.current?.focus(), 0);
   return {
