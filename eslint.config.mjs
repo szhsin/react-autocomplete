@@ -15,6 +15,7 @@ export default tseslint.config(
   jest.configs['flat/recommended'],
   jest.configs['flat/style'],
   react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
   reactHooksAddons.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
@@ -80,12 +81,6 @@ export default tseslint.config(
           checksVoidReturn: false
         }
       ]
-    }
-  },
-  {
-    files: ['src/__tests__/**/*', 'website/**/*'],
-    rules: {
-      'react/react-in-jsx-scope': 0
     }
   }
 );
