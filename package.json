@@ -4,7 +4,10 @@
   "description": "A modular, lightweight, and headless React autocomplete solution.",
   "author": "Zheng Song",
   "license": "MIT",
-  "repository": "szhsin/react-autocomplete",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szhsin/react-autocomplete.git"
+  },
   "homepage": "https://szhsin.github.io/react-autocomplete/",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
