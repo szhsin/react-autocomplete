@@ -1,4 +1,4 @@
-import { buttonProps, defaultFocusIndex, getId } from '../../common.mjs';
+import { getId, buttonProps, defaultFocusIndex } from '../../common.mjs';
 import { useFocusCapture } from '../../hooks/useFocusCapture.mjs';
 
 const scrollIntoView = element => element?.scrollIntoView({
