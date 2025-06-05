@@ -19,8 +19,10 @@ const MultiSelect = () => {
     getToggleProps,
     getListProps,
     getItemProps,
-    isItemSelected,
     removeSelect,
+    isItemSelected,
+    isInputActive,
+    isTagActive,
     focused,
     open,
     focusIndex,
@@ -58,13 +60,22 @@ const MultiSelect = () => {
           padding: 6
         }}
       >
-        {selected.map((item) => (
-          <button key={item} onClick={() => removeSelect(item)}>
-            {item}
+        {selected.map((tag) => (
+          <button
+            key={tag}
+            onClick={() => removeSelect(tag)}
+            // Highlight the active tag that can be removed with the Backspace key
+            style={{ color: isTagActive(tag) ? 'red' : 'initial' }}
+          >
+            {tag}
           </button>
         ))}
         <div>
-          <input placeholder="Type..." {...getInputProps()} />
+          <input
+            placeholder="Type..."
+            {...getInputProps()}
+            style={{ caretColor: isInputActive ? 'auto' : 'transparent' }}
+          />
           {!isInputEmpty && <button {...getClearProps()}>X</button>}
         </div>
         <button {...getToggleProps()}>{open ? '↑' : '↓'}</button>

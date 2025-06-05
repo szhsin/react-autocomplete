@@ -159,7 +159,6 @@ const autocompleteLite = ({
               onChange('');
               if (deselectOnClear) onSelectChange();
             }
-            break;
         }
       },
       onMouseDown: e => e.stopPropagation(),

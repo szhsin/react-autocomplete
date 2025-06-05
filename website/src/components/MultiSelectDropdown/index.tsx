@@ -26,8 +26,10 @@ const MultiSelectDropdown = () => {
     getToggleProps,
     getListProps,
     getItemProps,
-    isItemSelected,
     removeSelect,
+    isItemSelected,
+    isInputActive,
+    isTagActive,
     open,
     focusIndex,
     isInputEmpty
@@ -60,17 +62,23 @@ const MultiSelectDropdown = () => {
           {...getListProps()}
         >
           <div className={customStyles.multiInputWrap}>
-            {selected.map((item) => (
-              <div className={styles.selectedItem} key={item}>
-                {item}
-                <span className={styles.removeItem} onClick={() => removeSelect(item)}>
+            {selected.map((tag) => (
+              <div className={styles.tag} key={tag}>
+                {tag}
+                <span
+                  className={clsx(
+                    styles.removeTag,
+                    isTagActive(tag) && styles.removeTagActive
+                  )}
+                  onClick={() => removeSelect(tag)}
+                >
                   <ClearIcon />
                 </span>
               </div>
             ))}
             <div className={styles.multiInputWrap}>
               <input
-                className={styles.multiInput}
+                className={clsx(styles.multiInput, !isInputActive && styles.inputInactive)}
                 placeholder="Type..."
                 {...getInputProps()}
               />

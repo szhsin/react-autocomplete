@@ -168,6 +168,7 @@ const autocompleteLite =
           switch (e.key) {
             case 'ArrowUp':
             case 'ArrowDown':
+              // Prevent the caret (cursor) from moving within the text
               e.preventDefault();
               if (open) {
                 traverse(e.key != 'ArrowUp');
@@ -193,7 +194,8 @@ const autocompleteLite =
                 onChange('');
                 if (deselectOnClear) onSelectChange();
               }
-              break;
+            // intentionally removed break in the last case to save bytes
+            // break;
           }
         },
 

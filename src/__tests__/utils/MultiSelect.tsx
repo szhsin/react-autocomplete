@@ -28,6 +28,8 @@ export const MultiSelect = (
     getFocusCaptureProps,
     removeSelect,
     isItemSelected,
+    isInputActive,
+    isTagActive,
     open,
     focusIndex,
     isInputEmpty,
@@ -57,14 +59,22 @@ export const MultiSelect = (
       <div
         {...getFocusCaptureProps()}
         data-testid="input-wrapper"
-        style={{ border: '1px solid', borderColor: focused ? 'red' : 'white' }}
+        style={{ border: '1px solid', borderColor: focused ? 'blue' : 'white' }}
       >
-        {selected.map((item) => (
-          <button data-testid="selected" key={item.abbr} onClick={() => removeSelect(item)}>
-            {item.name}
+        {selected.map((tag) => (
+          <button
+            data-testid="selected"
+            key={tag.abbr}
+            onClick={() => removeSelect(tag)}
+            style={{ color: isTagActive(tag) ? 'green' : 'gray' }}
+          >
+            {tag.name}
           </button>
         ))}
-        <input {...getInputProps()} />
+        <input
+          {...getInputProps()}
+          style={{ caretColor: isInputActive ? 'auto' : 'transparent' }}
+        />
         {!isInputEmpty && <button {...getClearProps()}>Clear</button>}
         <button {...getToggleProps()}>{open ? 'Close' : 'Open'}</button>
       </div>

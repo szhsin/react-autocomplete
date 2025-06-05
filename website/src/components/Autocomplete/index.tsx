@@ -17,7 +17,7 @@ const filterItems = (value?: string) =>
   value ? STATES.filter((item) => item.toLowerCase().startsWith(value.toLowerCase())) : STATES;
 
 const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
-  const [mode, setMode] = useState<Mode>('free');
+  const [mode, setMode] = useState<Mode>(isSupercomplete ? 'free' : 'select');
   const [rovingText, setRovingText] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
   const [deselectOnChange, setDeselectOnChange] = useState(true);

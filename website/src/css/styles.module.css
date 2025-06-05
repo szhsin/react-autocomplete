@@ -109,7 +109,11 @@
   height: 24px;
 }
 
-.selectedItem {
+.inputInactive {
+  caret-color: transparent;
+}
+
+.tag {
   display: flex;
   align-items: center;
   background-color: var(--ifm-color-emphasis-200);
@@ -119,13 +123,18 @@
   padding-left: 6px;
 }
 
-.removeItem {
+.removeTag {
   composes: iconBtn;
   border-radius: 2px;
   margin-left: 4px;
 }
 
-.removeItem:hover {
+.removeTagActive {
+  background-color: #f16e6c;
+  color: #000;
+}
+
+.removeTag:hover {
   background-color: var(--ifm-color-emphasis-400);
   color: #000;
 }
