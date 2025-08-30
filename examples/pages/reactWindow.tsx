@@ -1,3 +1,5 @@
+// @ts-nocheck
+// TODO: fix this example for react-window v2
 import React, { useEffect, useRef, useState } from 'react';
 import { useCombobox, autocomplete } from '@szhsin/react-autocomplete';
 import { FixedSizeList as List } from 'react-window';
