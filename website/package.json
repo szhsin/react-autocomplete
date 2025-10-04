@@ -15,8 +15,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.8.1",
-    "@docusaurus/preset-classic": "^3.8.1",
+    "@docusaurus/core": "^3.9.1",
+    "@docusaurus/preset-classic": "^3.9.1",
     "@floating-ui/react-dom": "^2.1.6",
     "@mdx-js/react": "^3.1.1",
     "@szhsin/react-autocomplete": "file:..",
@@ -27,9 +27,9 @@
     "react-dom": "file:../node_modules/react-dom"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.8.1",
-    "@docusaurus/tsconfig": "^3.8.1",
-    "@docusaurus/types": "^3.8.1",
+    "@docusaurus/module-type-aliases": "^3.9.1",
+    "@docusaurus/tsconfig": "^3.9.1",
+    "@docusaurus/types": "^3.9.1",
     "@types/react": "file:../node_modules/@types/react",
     "raw-loader": "^4.0.2",
     "typescript": "file:../node_modules/typescript"
