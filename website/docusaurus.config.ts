@@ -9,7 +9,11 @@ const config: Config = {
   url: 'https://szhsin.github.io',
   baseUrl: '/react-autocomplete/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn'
+    }
+  },
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
