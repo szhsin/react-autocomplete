@@ -36,7 +36,9 @@ Here’s a live example of the 1.4kB accessible React autocomplete: **[open in C
 | **@szhsin/react-autocomplete** | [2.62kB](https://bundlejs.com/?q=%40szhsin%2Freact-autocomplete&treeshake=%5B*%5D&config=%7B"esbuild"%3A%7B"external"%3A%5B"react"%2C"react-dom"%5D%7D%7D) | **1× (base)** |
 | [downshift](https://www.downshift-js.com/) | [12.3kB](https://bundlejs.com/?q=downshift&treeshake=%5B*%5D&config=%7B"esbuild"%3A%7B"external"%3A%5B"react"%2C"react-dom"%5D%7D%7D) | 4.7× larger |
 | [@ariakit/react](https://ariakit.org/components/combobox) | [33.1kB](https://bundlejs.com/?q=%40ariakit%2Freact&treeshake=%5B%7B+Combobox%2CComboboxItem%2CComboboxProvider%2CComboboxPopover+%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22react%22%2C%22react-dom%22%5D%7D%7D) | 12.6× larger |
-| [@base-ui/autocomplete](https://base-ui.com/react/components/autocomplete) | [48.2kB](https://bundlejs.com/?q=%40base-ui%2Freact%2Fautocomplete&treeshake=%5B%7B+Autocomplete+%7D%5D&config=%7B"esbuild"%3A%7B"external"%3A%5B"react"%2C"react-dom"%5D%7D%7D) | 18.4× larger |
+| [@headlessui/react](https://headlessui.com/react/combobox) | [40.3kB](https://bundlejs.com/?q=%40headlessui%2Freact&treeshake=%5B%7B+Combobox%2CComboboxButton%2CComboboxInput%2CComboboxOption%2CComboboxOptions+%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22react%22%2C%22react-dom%22%5D%7D%7D) | 15.4× larger |
+| [@base-ui/react](https://base-ui.com/react/components/autocomplete) | [48.2kB](https://bundlejs.com/?q=%40base-ui%2Freact%2Fautocomplete&treeshake=%5B%7B+Autocomplete+%7D%5D&config=%7B"esbuild"%3A%7B"external"%3A%5B"react"%2C"react-dom"%5D%7D%7D) | 18.4× larger |
+| [react-aria](https://react-aria.adobe.com/ComboBox) | [50.7kB](https://bundlejs.com/?q=react-aria-components&treeshake=%5B%7B+ComboBox+%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22react%22%2C%22react-dom%22%5D%7D%7D) | 19.3× larger |
 
 ## Design Concept
 
