@@ -4,4 +4,5 @@ printWidth: 95
 overrides:
   - files: '*.md'
     options:
+      proseWrap: never
       printWidth: 80
