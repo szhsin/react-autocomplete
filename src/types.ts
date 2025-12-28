@@ -47,10 +47,7 @@ export interface AdapterProps<T> extends ContextualOrReturn<T> {
 }
 
 export interface Contextual<T>
-  extends PassthroughProps<T>,
-    AdapterProps<T>,
-    Equality<T>,
-    AutocompleteReturn<T> {
+  extends PassthroughProps<T>, AdapterProps<T>, Equality<T>, AutocompleteReturn<T> {
   id?: string;
   tmpValue?: string;
   setTmpValue: (value?: string) => void;
