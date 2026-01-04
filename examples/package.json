@@ -11,7 +11,7 @@
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.6",
     "@szhsin/react-autocomplete": "file:..",
-    "@tanstack/react-virtual": "^3.13.13",
+    "@tanstack/react-virtual": "^3.13.16",
     "next": "^16.1.1",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
