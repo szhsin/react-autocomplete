@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
     "emitDeclarationOnly": true,
     "declaration": true,
     "declarationDir": "./types",
@@ -8,7 +9,11 @@
     "strict": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "types": ["node", "@testing-library/jest-dom"]
   },
   "include": ["./src/"]
 }
