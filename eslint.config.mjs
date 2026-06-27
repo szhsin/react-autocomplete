@@ -4,7 +4,7 @@ import eslint from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
-import jest from 'eslint-plugin-jest';
+import vitest from '@vitest/eslint-plugin';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksAddons from 'eslint-plugin-react-hooks-addons';
 
@@ -12,8 +12,7 @@ export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   prettier,
-  jest.configs['flat/recommended'],
-  jest.configs['flat/style'],
+  vitest.configs.recommended,
   reactHooksAddons.configs.recommended,
   {
     files: ['**/*.?(c|m)js'],
@@ -47,17 +46,15 @@ export default defineConfig(
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest
+        ...globals.vitest
       }
     },
     plugins: {
-      jest,
       // @ts-ignore
       'react-hooks': reactHooks
     },
     rules: {
       'no-console': ['error', { allow: ['warn', 'error'] }],
-      'jest/expect-expect': 0,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks-addons/no-unused-deps': 'error',

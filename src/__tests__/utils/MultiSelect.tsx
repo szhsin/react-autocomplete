@@ -73,7 +73,7 @@ export const MultiSelect = (
         ))}
         <input
           {...getInputProps()}
-          style={{ caretColor: isInputActive ? 'auto' : 'transparent' }}
+          style={{ caretColor: isInputActive ? 'black' : 'transparent' }}
         />
         {!isInputEmpty && <button {...getClearProps()}>Clear</button>}
         <button {...getToggleProps()}>{open ? 'Close' : 'Open'}</button>

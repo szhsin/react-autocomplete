@@ -130,7 +130,7 @@ describe('multiSelect', () => {
     expect(screen.getByRole('button', { name: 'Colorado' })).toHaveStyle({
       color: 'gray'
     });
-    expect(combobox).toHaveStyle({ caretColor: 'auto' });
+    expect(combobox).toHaveStyle({ caretColor: 'black' });
 
     await user.keyboard('{ArrowDown}');
     expect(screen.getByRole('option', { name: 'Alabama' })).toHaveStyle({
@@ -200,12 +200,12 @@ describe('multiSelect', () => {
     expect(selected[0]).toHaveStyle({ color: 'gray' });
     expect(selected[1]).toHaveTextContent(/^Colorado$/);
     expect(selected[1]).toHaveStyle({ color: 'gray' });
-    expect(combobox).toHaveStyle({ caretColor: 'auto' });
+    expect(combobox).toHaveStyle({ caretColor: 'black' });
     await user.keyboard('{Backspace}');
     selected = screen.queryAllByTestId('selected');
     expect(selected).toHaveLength(1);
     expect(selected[0]).toHaveTextContent(/^Alabama$/);
-    expect(combobox).toHaveStyle({ caretColor: 'auto' });
+    expect(combobox).toHaveStyle({ caretColor: 'black' });
     await user.keyboard('{ArrowLeft}');
     expect(screen.getByRole('button', { name: 'Alabama' })).toHaveStyle({
       color: 'green'

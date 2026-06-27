@@ -371,7 +371,7 @@ describe('autocomplete', () => {
 
   test('action items', async () => {
     const user = userEvent.setup();
-    const onAction = jest.fn();
+    const onAction = vi.fn();
     const { rerender } = render(
       <Autocomplete isItemAction={(item) => item.name === 'California'} onAction={onAction} />
     );
