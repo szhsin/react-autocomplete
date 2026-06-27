@@ -1,5 +1,5 @@
 // @ts-check
-
+import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -8,15 +8,15 @@ import jest from 'eslint-plugin-jest';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksAddons from 'eslint-plugin-react-hooks-addons';
 
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
+  tseslint.configs.recommendedTypeChecked,
   prettier,
   jest.configs['flat/recommended'],
   jest.configs['flat/style'],
   reactHooksAddons.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
   {
-    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+    files: ['**/*.?(c|m)js'],
     ...tseslint.configs.disableTypeChecked
   },
   {
@@ -37,7 +37,7 @@ export default tseslint.config(
       sourceType: 'module',
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.js', '*.cjs', '*.mjs']
+          allowDefaultProject: ['*.?(c|m)[jt]s']
         },
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
@@ -52,12 +52,8 @@ export default tseslint.config(
     },
     plugins: {
       jest,
+      // @ts-ignore
       'react-hooks': reactHooks
-    },
-    settings: {
-      react: {
-        version: 'detect'
-      }
     },
     rules: {
       'no-console': ['error', { allow: ['warn', 'error'] }],

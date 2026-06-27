@@ -1,15 +1,12 @@
-'use strict';
-
-var autocomplete = require('./autocomplete.cjs');
-var dropdown = require('./dropdown.cjs');
-var multiSelect = require('./multiSelect.cjs');
-var multiSelectDropdown = require('./multiSelectDropdown.cjs');
-var supercomplete = require('./supercomplete.cjs');
-
-
-
-exports.autocomplete = autocomplete.autocomplete;
-exports.dropdown = dropdown.dropdown;
-exports.multiSelect = multiSelect.multiSelect;
-exports.multiSelectDropdown = multiSelectDropdown.multiSelectDropdown;
-exports.supercomplete = supercomplete.supercomplete;
+"use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const require_autocomplete = require("./autocomplete.cjs");
+const require_dropdown = require("./dropdown.cjs");
+const require_multiSelect = require("./multiSelect.cjs");
+const require_multiSelectDropdown = require("./multiSelectDropdown.cjs");
+const require_supercomplete = require("./supercomplete.cjs");
+exports.autocomplete = require_autocomplete.autocomplete;
+exports.dropdown = require_dropdown.dropdown;
+exports.multiSelect = require_multiSelect.multiSelect;
+exports.multiSelectDropdown = require_multiSelectDropdown.multiSelectDropdown;
+exports.supercomplete = require_supercomplete.supercomplete;
