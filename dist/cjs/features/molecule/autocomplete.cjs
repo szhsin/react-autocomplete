@@ -1,10 +1,9 @@
-'use strict';
-
-var mergeModules = require('../../utils/mergeModules.cjs');
-var autocompleteLite = require('../atom/autocompleteLite.cjs');
-var inputToggle = require('../atom/inputToggle.cjs');
-var label = require('../atom/label.cjs');
-
-const autocomplete = props => mergeModules.mergeModules(autocompleteLite.autocompleteLite(props), inputToggle.inputToggle(), label.label());
-
+"use strict";
+const require_autocompleteLite = require("../atom/autocompleteLite.cjs");
+const require_mergeModules = require("../../utils/mergeModules.cjs");
+const require_inputToggle = require("../atom/inputToggle.cjs");
+const require_label = require("../atom/label.cjs");
+//#region src/features/molecule/autocomplete.ts
+const autocomplete = (props) => require_mergeModules.mergeModules(require_autocompleteLite.autocompleteLite(props), require_inputToggle.inputToggle(), require_label.label());
+//#endregion
 exports.autocomplete = autocomplete;

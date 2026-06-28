@@ -1,23 +1,20 @@
-'use strict';
-
-var autocompleteLite = require('./autocompleteLite.cjs');
-var autoFocus = require('./autoFocus.cjs');
-var autoInline = require('./autoInline.cjs');
-var dropdownToggle = require('./dropdownToggle.cjs');
-var inputFocus = require('./inputFocus.cjs');
-var inputToggle = require('./inputToggle.cjs');
-var label = require('./label.cjs');
-var multiInput = require('./multiInput.cjs');
-var nonblurToggle = require('./nonblurToggle.cjs');
-
-
-
-exports.autocompleteLite = autocompleteLite.autocompleteLite;
-exports.autoFocus = autoFocus.autoFocus;
-exports.autoInline = autoInline.autoInline;
-exports.dropdownToggle = dropdownToggle.dropdownToggle;
-exports.inputFocus = inputFocus.inputFocus;
-exports.inputToggle = inputToggle.inputToggle;
-exports.label = label.label;
-exports.multiInput = multiInput.multiInput;
-exports.nonblurToggle = nonblurToggle.nonblurToggle;
+"use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const require_autocompleteLite = require("./autocompleteLite.cjs");
+const require_inputToggle = require("./inputToggle.cjs");
+const require_label = require("./label.cjs");
+const require_dropdownToggle = require("./dropdownToggle.cjs");
+const require_nonblurToggle = require("./nonblurToggle.cjs");
+const require_inputFocus = require("./inputFocus.cjs");
+const require_multiInput = require("./multiInput.cjs");
+const require_autoInline = require("./autoInline.cjs");
+const require_autoFocus = require("./autoFocus.cjs");
+exports.autoFocus = require_autoFocus.autoFocus;
+exports.autoInline = require_autoInline.autoInline;
+exports.autocompleteLite = require_autocompleteLite.autocompleteLite;
+exports.dropdownToggle = require_dropdownToggle.dropdownToggle;
+exports.inputFocus = require_inputFocus.inputFocus;
+exports.inputToggle = require_inputToggle.inputToggle;
+exports.label = require_label.label;
+exports.multiInput = require_multiInput.multiInput;
+exports.nonblurToggle = require_nonblurToggle.nonblurToggle;
