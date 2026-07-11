@@ -15,21 +15,21 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.10.1",
-    "@docusaurus/preset-classic": "^3.10.1",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
     "@floating-ui/react-dom": "^2.1.8",
     "@mdx-js/react": "^3.1.1",
     "@szhsin/react-autocomplete": "file:..",
-    "@tanstack/react-virtual": "^3.14.4",
+    "@tanstack/react-virtual": "^3.14.5",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.10.1",
-    "@docusaurus/tsconfig": "^3.10.1",
-    "@docusaurus/types": "^3.10.1",
+    "@docusaurus/module-type-aliases": "^3.10.2",
+    "@docusaurus/tsconfig": "^3.10.2",
+    "@docusaurus/types": "^3.10.2",
     "@types/react": "file:../node_modules/@types/react",
     "raw-loader": "^4.0.2",
     "typescript": "file:../node_modules/typescript"
