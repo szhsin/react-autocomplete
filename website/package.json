@@ -17,10 +17,10 @@
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
     "@docusaurus/preset-classic": "^3.10.2",
-    "@floating-ui/react-dom": "^2.1.8",
+    "@floating-ui/react-dom": "^2.1.9",
     "@mdx-js/react": "^3.1.1",
     "@szhsin/react-autocomplete": "file:..",
-    "@tanstack/react-virtual": "^3.14.5",
+    "@tanstack/react-virtual": "^3.14.8",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
     "react": "file:../node_modules/react",

@@ -9,19 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@floating-ui/react-dom": "^2.1.8",
+    "@floating-ui/react-dom": "^2.1.9",
     "@szhsin/react-autocomplete": "file:..",
-    "@tanstack/react-virtual": "^3.14.5",
-    "next": "^16.2.10",
+    "@tanstack/react-virtual": "^3.14.8",
+    "next": "^16.2.11",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
-    "react-window": "^2.2.7"
+    "react-window": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "eslint-config-next": "^16.2.10",
+    "eslint-config-next": "^16.2.11",
     "typescript": "file:../node_modules/typescript"
   }
 }
