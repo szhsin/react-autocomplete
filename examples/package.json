@@ -11,17 +11,17 @@
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.9",
     "@szhsin/react-autocomplete": "file:..",
-    "@tanstack/react-virtual": "^3.14.8",
-    "next": "^16.2.11",
+    "@tanstack/react-virtual": "^3.14.9",
+    "next": "^16.3.0",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "react-window": "^2.3.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "eslint-config-next": "^16.2.11",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint-config-next": "^16.3.0",
     "typescript": "file:../node_modules/typescript"
   }
 }
