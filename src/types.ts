@@ -100,7 +100,7 @@ export type GetItemValue<T> = {
   getItemValue: (item: T) => string;
 };
 
-export type MaybeGetItemValue<T> = T extends string
+export type MaybeGetItemValue<T> = [T] extends [string]
   ? Partial<GetItemValue<T>>
   : GetItemValue<T>;
 

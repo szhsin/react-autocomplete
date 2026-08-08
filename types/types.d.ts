@@ -72,7 +72,7 @@ export type AutocompleteProps<T, FeatureYield extends object> = BaseProps<T, Fea
 export type GetItemValue<T> = {
     getItemValue: (item: T) => string;
 };
-export type MaybeGetItemValue<T> = T extends string ? Partial<GetItemValue<T>> : GetItemValue<T>;
+export type MaybeGetItemValue<T> = [T] extends [string] ? Partial<GetItemValue<T>> : GetItemValue<T>;
 export type Flippable = {
     flipOnSelect?: boolean;
 };
