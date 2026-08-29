@@ -14,7 +14,7 @@ const useAutoScroll = <E extends Element = HTMLUListElement>(
       }
       elt.scrollTop = 0;
     }
-  }, [open, items.length]);
+  }, [open, /* effect dep */ items.length]);
 
   return ref;
 };
