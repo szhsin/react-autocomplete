@@ -1,23 +1,21 @@
-import React, { cloneElement, type ReactElement, type JSX } from 'react';
+// Swizzled from Docusaurus 3.10.2 to support external links via attributes.link.
+import React, { type JSX } from 'react';
 import clsx from 'clsx';
+import { ThemeClassNames } from '@docusaurus/theme-common';
 import {
   useScrollPositionBlocker,
+  useTabsContextValue,
   useTabs,
   sanitizeTabsChildren,
-  type TabItemProps
+  TabsProvider
 } from '@docusaurus/theme-common/internal';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import type { Props } from '@theme/Tabs';
 import ExternalLink from '@site/static/img/external-link.svg';
 import styles from './styles.module.css';
 
-function TabList({
-  className,
-  block,
-  selectedValue,
-  selectValue,
-  tabValues
-}: Props & ReturnType<typeof useTabs>) {
+function TabList({ className }: { className?: string }) {
+  const { block, selectedValue, selectValue, tabValues } = useTabs();
   const tabRefs: (HTMLLIElement | null)[] = [];
   const { blockElementScrollPositionUntilNextRender } = useScrollPositionBlocker();
 
@@ -32,9 +30,9 @@ function TabList({
 
     const { value: newTabValue, attributes } = tabValues[newTabIndex];
 
-    if (newTabValue !== selectedValue) {
+    if (!attributes?.link && newTabValue !== selectedValue) {
       blockElementScrollPositionUntilNextRender(newTab);
-      !attributes?.link && selectValue(newTabValue);
+      selectValue(newTabValue);
     }
   };
 
@@ -60,7 +58,7 @@ function TabList({
         break;
     }
 
-    focusElement?.focus();
+    (focusElement?.querySelector('a') ?? focusElement)?.focus();
   };
 
   return (
@@ -75,36 +73,37 @@ function TabList({
         className
       )}
     >
-      {tabValues.map(({ value, label, attributes }) => {
+      {tabValues.map(({ value, label, attributes }, index) => {
         const tab = label ?? value;
-        const link = attributes?.link as string | undefined;
+        const { link, ...tabAttributes } = attributes ?? {};
+        const href = link as string | undefined;
         return (
           <li
             // TODO extract TabListItem
-            role="tab"
-            tabIndex={selectedValue === value ? 0 : -1}
-            aria-selected={selectedValue === value}
+            role={href ? 'presentation' : 'tab'}
+            tabIndex={href ? undefined : selectedValue === value ? 0 : -1}
+            aria-selected={href ? undefined : selectedValue === value}
             key={value}
             ref={(tabControl) => {
-              tabRefs.push(tabControl);
+              tabRefs[index] = tabControl;
             }}
             onKeyDown={handleKeydown}
             onClick={handleTabChange}
-            {...attributes}
+            {...tabAttributes}
             className={clsx(
               'tabs__item',
               styles.tabItem,
-              link && styles.tabItemLink,
+              href && styles.tabItemLink,
               attributes?.className as string,
               {
                 'tabs__item--active': selectedValue === value
               }
             )}
           >
-            {link ? (
+            {href ? (
               <a
                 className={styles.tabLink}
-                href={link}
+                href={href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -120,52 +119,27 @@ function TabList({
   );
 }
 
-function TabContent({ lazy, children, selectedValue }: Props & ReturnType<typeof useTabs>) {
-  const childTabs = (Array.isArray(children) ? children : [children]).filter(
-    Boolean
-  ) as ReactElement<TabItemProps>[];
-  if (lazy) {
-    const selectedTabItem = childTabs.find((tabItem) => tabItem.props.value === selectedValue);
-    if (!selectedTabItem) {
-      // fail-safe or fail-fast? not sure what's best here
-      return null;
-    }
-    return cloneElement(selectedTabItem, {
-      className: clsx('margin-top--md', selectedTabItem.props.className)
-    });
-  }
+function TabsContainer({ className, children }: Props): JSX.Element {
   return (
-    <div className="margin-top--md">
-      {childTabs.map((tabItem, i) =>
-        cloneElement(tabItem, {
-          key: i,
-          hidden: tabItem.props.value !== selectedValue
-        })
-      )}
-    </div>
-  );
-}
-
-function TabsComponent(props: Props): JSX.Element {
-  const tabs = useTabs(props);
-  return (
-    <div className={clsx('tabs-container', styles.tabList)}>
-      <TabList {...tabs} {...props} />
-      <TabContent {...tabs} {...props} />
+    <div className={clsx(ThemeClassNames.tabs.container, 'tabs-container', styles.tabList)}>
+      <TabList className={className} />
+      <div className="margin-top--md">{children}</div>
     </div>
   );
 }
 
 export default function Tabs(props: Props): JSX.Element {
   const isBrowser = useIsBrowser();
+  const children = sanitizeTabsChildren(props.children);
+  const value = useTabsContextValue({ ...props, children });
   return (
-    <TabsComponent
+    <TabsProvider
+      value={value}
       // Remount tabs after hydration
       // Temporary fix for https://github.com/facebook/docusaurus/issues/5653
       key={String(isBrowser)}
-      {...props}
     >
-      {sanitizeTabsChildren(props.children)}
-    </TabsComponent>
+      <TabsContainer className={props.className}>{children}</TabsContainer>
+    </TabsProvider>
   );
 }
