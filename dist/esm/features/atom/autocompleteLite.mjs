@@ -2,7 +2,7 @@ import { buttonProps, getId } from "../../common.mjs";
 import { useFocusCapture } from "../../hooks/useFocusCapture.mjs";
 //#region src/features/atom/autocompleteLite.ts
 const scrollIntoView = (element) => element?.scrollIntoView({ block: "nearest" });
-const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true, deselectOnChange = true, closeOnSelect = true } = {}) => ({ getItemValue, onSelectChange, isItemSelected, isItemDisabled, isItemAction, onAction, selected, value, onChange, tmpValue, setTmpValue, focusIndex, setFocusIndex, open, setOpen, inputRef, items, id }) => {
+const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true, deselectOnChange = true, closeOnSelect = true } = {}) => ({ getItemValue, onSelectChange, isItemSelected, isItemDisabled, isItemAction, onAction, selected, value, onChange, tmpValue, setTmpValue, focusIndex, setFocusIndex, open, setOpen, inputRef, items, id, disabled }) => {
 	const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 	const inputValue = (tmpValue || value) ?? (Array.isArray(selected) ? "" : getItemValue(selected));
 	const focusItem = items[focusIndex];
@@ -51,6 +51,7 @@ const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true
 		getClearProps: () => ({
 			...buttonProps,
 			...focusCaptureProps,
+			disabled,
 			onClick: () => {
 				setTmpValue();
 				setFocusIndex(-1);
@@ -81,6 +82,7 @@ const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true
 			"aria-activedescendant": focusIndex >= 0 ? getId(id, focusIndex) : void 0,
 			ref: inputRef,
 			value: inputValue,
+			disabled,
 			onChange: (e) => {
 				setOpen(true);
 				setFocusIndex(-1);

@@ -20,6 +20,7 @@ const filterGroupedItems = (value: string = '') =>
   })).filter((group) => !!group.states.length);
 
 export default function Dropdown() {
+  const [disabled, setDisabled] = useState(false);
   const [rovingText, setRovingText] = useState(false);
   const [closeOnSelect, setCloseOnSelect] = useState(false);
   const [value, setValue] = useState<string | undefined>('');
@@ -38,6 +39,7 @@ export default function Dropdown() {
     focusIndex,
     removeSelect
   } = useMultiSelect({
+    disabled,
     flipOnSelect: true,
     getItemValue,
     isItemDisabled,
@@ -62,6 +64,17 @@ export default function Dropdown() {
       <div>Current value: {value}</div>
       <div>focusIndex: {focusIndex}</div>
       <input placeholder="test" />
+
+      <div>
+        <label>
+          disabled
+          <input
+            type="checkbox"
+            checked={disabled}
+            onChange={(e) => setDisabled(e.target.checked)}
+          />
+        </label>
+      </div>
 
       <div>
         <label>

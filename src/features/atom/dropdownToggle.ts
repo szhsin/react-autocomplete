@@ -13,7 +13,7 @@ const dropdownToggle =
     closeOnSelect = true,
     toggleRef: externalToggleRef
   }: Pick<FeatureProps<T>, 'closeOnSelect' | 'toggleRef'> = {}): DropdownToggleFeature<T> =>
-  ({ inputRef, open, setOpen, focusIndex, value, tmpValue }) => {
+  ({ inputRef, open, setOpen, focusIndex, value, tmpValue, disabled }) => {
     const [startToggle, stopToggle] = useToggle(open, setOpen);
     const internalToggleRef = useRef<HTMLButtonElement>(null);
     const toggleRef = externalToggleRef || internalToggleRef;
@@ -36,6 +36,7 @@ const dropdownToggle =
         'aria-haspopup': true,
         'aria-expanded': open,
         ref: toggleRef,
+        disabled,
 
         onMouseDown: startToggle,
 

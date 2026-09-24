@@ -31,6 +31,7 @@ export interface PassthroughProps<T> {
     value: string | undefined;
     onChange: (value?: string) => void;
     items: T[];
+    disabled?: boolean;
 }
 export interface AdapterProps<T> extends ContextualOrReturn<T> {
     selected: T[] | T | undefined;

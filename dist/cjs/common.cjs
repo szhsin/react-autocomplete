@@ -6,8 +6,9 @@ const buttonProps = {
 	tabIndex: -1,
 	type: "button"
 };
-const getInputToggleProps = (id, open) => ({
+const getInputToggleProps = (id, open, disabled) => ({
 	...buttonProps,
+	disabled,
 	"aria-expanded": open,
 	"aria-controls": getId(id, "l")
 });

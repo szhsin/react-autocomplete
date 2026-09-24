@@ -23,7 +23,8 @@ const filterGroupedItems = (value: string) =>
 
 export default function Home() {
   const [selectedFeature, setSelectedFeature] = useState('supercomplete');
-  const [select, setselect] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [select, setSelect] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [deselectOnClear, setDeselectOnClear] = useState(true);
   const [deselectOnChange, setDeselectOnChange] = useState(true);
@@ -46,6 +47,7 @@ export default function Home() {
   const groupedItems = filterGroupedItems(value || '');
 
   const {
+    getFocusCaptureProps,
     getLabelProps,
     getInputProps,
     getListProps,
@@ -57,6 +59,7 @@ export default function Home() {
     isInputEmpty,
     isItemSelected
   } = useCombobox({
+    disabled,
     getItemValue,
     isItemDisabled,
     value,
@@ -118,11 +121,22 @@ export default function Home() {
 
       <div>
         <label>
+          disabled
+          <input
+            type="checkbox"
+            checked={disabled}
+            onChange={(e) => setDisabled(e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
           select
           <input
             type="checkbox"
             checked={select}
-            onChange={(e) => setselect(e.target.checked)}
+            onChange={(e) => setSelect(e.target.checked)}
           />
         </label>
       </div>
@@ -185,7 +199,9 @@ export default function Home() {
         </button>
       </div>
       <div>
-        <label {...getLabelProps()}>States</label>
+        <label {...getLabelProps()} {...getFocusCaptureProps()}>
+          States
+        </label>
       </div>
       <input className={styles.input} {...getInputProps()} />
       {!isInputEmpty && (

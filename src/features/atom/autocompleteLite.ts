@@ -44,7 +44,8 @@ const autocompleteLite =
     setOpen,
     inputRef,
     items,
-    id
+    id,
+    disabled
   }) => {
     const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
 
@@ -111,6 +112,7 @@ const autocompleteLite =
       getClearProps: () => ({
         ...buttonProps,
         ...focusCaptureProps,
+        disabled,
 
         onClick: () => {
           setTmpValue();
@@ -145,6 +147,7 @@ const autocompleteLite =
         'aria-activedescendant': focusIndex >= 0 ? getId(id, focusIndex) : undefined,
         ref: inputRef,
         value: inputValue,
+        disabled,
 
         onChange: (e) => {
           setOpen(true);

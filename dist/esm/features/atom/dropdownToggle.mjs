@@ -1,7 +1,7 @@
 import { useToggle } from "../../hooks/useToggle.mjs";
 import { useEffect, useRef } from "react";
 //#region src/features/atom/dropdownToggle.ts
-const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } = {}) => ({ inputRef, open, setOpen, focusIndex, value, tmpValue }) => {
+const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } = {}) => ({ inputRef, open, setOpen, focusIndex, value, tmpValue, disabled }) => {
 	const [startToggle, stopToggle] = useToggle(open, setOpen);
 	const internalToggleRef = useRef(null);
 	const toggleRef = externalToggleRef || internalToggleRef;
@@ -18,6 +18,7 @@ const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } =
 			"aria-haspopup": true,
 			"aria-expanded": open,
 			ref: toggleRef,
+			disabled,
 			onMouseDown: startToggle,
 			onClick: stopToggle,
 			onKeyDown: (e) => {
