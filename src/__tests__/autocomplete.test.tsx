@@ -5,6 +5,57 @@ import { TOTAL_DATA_COUNT } from './utils/data';
 import { Autocomplete } from './utils/Autocomplete';
 
 describe('autocomplete', () => {
+  test('blur closes the list after disabling a focused input', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<Autocomplete />);
+    const combobox = screen.getByRole('combobox');
+
+    await user.click(combobox);
+    expect(combobox).toHaveFocus();
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    rerender(<Autocomplete disabled />);
+    expect(combobox).toBeDisabled();
+    fireEvent.blur(combobox);
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
+  test('disabled controls block interaction and work again when enabled', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<Autocomplete disabled />);
+    const combobox = screen.getByRole('combobox');
+    const toggle = screen.getByRole('button', { name: 'Open' });
+
+    expect(combobox).toBeDisabled();
+    expect(toggle).toBeDisabled();
+    await user.click(combobox);
+    await user.type(combobox, 'c');
+    await user.click(toggle);
+    expect(combobox).toHaveValue('');
+    expect(screen.queryByRole('listbox')).toBeNull();
+
+    rerender(<Autocomplete disabled={false} />);
+    expect(combobox).toBeEnabled();
+    expect(toggle).toBeEnabled();
+    await user.type(combobox, 'c');
+    expect(combobox).toHaveValue('c');
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    rerender(<Autocomplete disabled />);
+    const clear = screen.getByRole('button', { name: 'Clear' });
+    expect(combobox).toBeDisabled();
+    expect(clear).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Close' })).toBeDisabled();
+    await user.click(clear);
+    expect(combobox).toHaveValue('c');
+    expect(screen.getByTestId('value')).toHaveTextContent(/^c$/);
+
+    rerender(<Autocomplete disabled={false} />);
+    await user.click(clear);
+    expect(combobox).toHaveValue('');
+    expect(screen.getByTestId('value')).toBeEmptyDOMElement();
+  });
+
   test('select mode', async () => {
     const user = userEvent.setup();
     const { rerender } = render(<Autocomplete select />);
