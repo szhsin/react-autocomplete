@@ -22,6 +22,7 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
   const [deselectOnClear, setDeselectOnClear] = useState(true);
   const [deselectOnChange, setDeselectOnChange] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(true);
+  const [disabled, setDisabled] = useState(false);
   const isSelectMode = mode === 'select';
 
   const [value, setValue] = useState<string>();
@@ -48,6 +49,7 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
     isInputEmpty,
     inputRef
   } = useCombobox({
+    disabled,
     items,
     value,
     onChange: setValue,
@@ -122,6 +124,7 @@ const Autocomplete = ({ isSupercomplete }: { isSupercomplete: boolean }) => {
           />
         )}
         <Checkbox label="closeOnSelect" checked={closeOnSelect} onChange={setCloseOnSelect} />
+        <Checkbox label="disabled" checked={disabled} onChange={setDisabled} />
       </div>
       <label className={styles.label} {...getLabelProps()} {...getFocusCaptureProps()}>
         State

@@ -11,6 +11,7 @@ const Dropdown = () => {
   const [rovingText, setRovingText] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(true);
   const [flipOnSelect, setFlipOnSelect] = useState(true);
+  const [disabled, setDisabled] = useState(false);
 
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<string>();
@@ -28,6 +29,7 @@ const Dropdown = () => {
     focusIndex,
     isInputEmpty
   } = useCombobox({
+    disabled,
     items,
     value,
     onChange: setValue,
@@ -48,6 +50,7 @@ const Dropdown = () => {
         <Checkbox label="flipOnSelect" checked={flipOnSelect} onChange={setFlipOnSelect} />
         <Checkbox label="rovingText" checked={rovingText} onChange={setRovingText} />
         <Checkbox label="closeOnSelect" checked={closeOnSelect} onChange={setCloseOnSelect} />
+        <Checkbox label="disabled" checked={disabled} onChange={setDisabled} />
       </div>
 
       <button className={styles.button} {...getToggleProps()}>

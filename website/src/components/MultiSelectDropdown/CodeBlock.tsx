@@ -65,6 +65,8 @@ const MultiSelectDropdown = () => {
             {selected.map((tag) => (
               <button
                 key={tag}
+                type="button"
+                tabIndex={-1}
                 onClick={() => removeSelect(tag)}
                 // Highlight the active tag that can be removed with the Backspace key
                 style={{ color: isTagActive(tag) ? 'red' : 'initial' }}
