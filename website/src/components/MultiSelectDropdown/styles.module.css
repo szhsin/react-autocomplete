@@ -5,3 +5,7 @@
   gap: 6px;
   padding: 8px 6px 8px 10px;
 }
+
+.multiInputWrapDisabled {
+  background-color: var(--demo-disabled-bg);
+}

@@ -3,7 +3,7 @@ const require_common = require("../../common.cjs");
 const require_useFocusCapture = require("../../hooks/useFocusCapture.cjs");
 //#region src/features/atom/autocompleteLite.ts
 const scrollIntoView = (element) => element?.scrollIntoView({ block: "nearest" });
-const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true, deselectOnChange = true, closeOnSelect = true } = {}) => ({ getItemValue, onSelectChange, isItemSelected, isItemDisabled, isItemAction, onAction, selected, value, onChange, tmpValue, setTmpValue, focusIndex, setFocusIndex, open, setOpen, inputRef, items, id }) => {
+const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true, deselectOnChange = true, closeOnSelect = true } = {}) => ({ getItemValue, onSelectChange, isItemSelected, isItemDisabled, isItemAction, onAction, selected, value, onChange, tmpValue, setTmpValue, focusIndex, setFocusIndex, open, setOpen, inputRef, items, id, disabled }) => {
 	const [startCapture, inCapture, stopCapture] = require_useFocusCapture.useFocusCapture(inputRef);
 	const inputValue = (tmpValue || value) ?? (Array.isArray(selected) ? "" : getItemValue(selected));
 	const focusItem = items[focusIndex];
@@ -52,6 +52,7 @@ const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true
 		getClearProps: () => ({
 			...require_common.buttonProps,
 			...focusCaptureProps,
+			disabled,
 			onClick: () => {
 				setTmpValue();
 				setFocusIndex(-1);
@@ -82,6 +83,7 @@ const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true
 			"aria-activedescendant": focusIndex >= 0 ? require_common.getId(id, focusIndex) : void 0,
 			ref: inputRef,
 			value: inputValue,
+			disabled,
 			onChange: (e) => {
 				setOpen(true);
 				setFocusIndex(-1);

@@ -2,7 +2,7 @@
 const require_useToggle = require("../../hooks/useToggle.cjs");
 let react = require("react");
 //#region src/features/atom/dropdownToggle.ts
-const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } = {}) => ({ inputRef, open, setOpen, focusIndex, value, tmpValue }) => {
+const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } = {}) => ({ inputRef, open, setOpen, focusIndex, value, tmpValue, disabled }) => {
 	const [startToggle, stopToggle] = require_useToggle.useToggle(open, setOpen);
 	const internalToggleRef = (0, react.useRef)(null);
 	const toggleRef = externalToggleRef || internalToggleRef;
@@ -19,6 +19,7 @@ const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } =
 			"aria-haspopup": true,
 			"aria-expanded": open,
 			ref: toggleRef,
+			disabled,
 			onMouseDown: startToggle,
 			onClick: stopToggle,
 			onKeyDown: (e) => {

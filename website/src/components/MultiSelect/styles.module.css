@@ -8,13 +8,19 @@
   background-color: var(--ifm-background-surface-color);
 }
 
-.multiInputRoot:hover {
+.multiInputRoot:hover:not(.multiInputRootDisabled) {
   border-color: var(--ifm-color-primary-light);
 }
 
 .multiInputRootFocused {
   box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
   border: 1px solid var(--ifm-color-primary-light);
+}
+
+.multiInputRootDisabled {
+  color: var(--demo-disabled-text);
+  background-color: var(--demo-disabled-bg);
+  border-color: var(--demo-disabled-border);
 }
 
 .multiInputWrap {

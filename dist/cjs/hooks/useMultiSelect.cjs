@@ -5,6 +5,7 @@ const require_useAutocomplete = require("./useAutocomplete.cjs");
 const useMultiSelect = ({ isEqual = require_common.defaultEqual, selected, onSelectChange, flipOnSelect, ...passthrough }) => {
 	const removeItem = (itemToRemove) => onSelectChange?.(selected.filter((item) => !isEqual(itemToRemove, item)));
 	const removeSelect = (item) => {
+		if (passthrough.disabled) return;
 		if (item) removeItem(item);
 		else selected.length && onSelectChange?.(selected.slice(0, selected.length - 1));
 	};

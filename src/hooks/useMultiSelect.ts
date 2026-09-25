@@ -13,6 +13,8 @@ const useMultiSelect = <T, FeatureYield extends object>({
     onSelectChange?.(selected.filter((item) => !isEqual(itemToRemove, item)));
 
   const removeSelect: AdapterProps<T>['removeSelect'] = (item) => {
+    if (passthrough.disabled) return;
+
     if (item) {
       removeItem(item);
     } else {

@@ -15,6 +15,7 @@ const MultiSelect = () => {
   const [rovingText, setRovingText] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(true);
   const [flipOnSelect, setFlipOnSelect] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState<string[]>(['Alaska', 'Florida']);
@@ -39,6 +40,7 @@ const MultiSelect = () => {
     focused,
     isInputEmpty
   } = useMultiSelect({
+    disabled,
     items,
     value,
     onChange: setValue,
@@ -56,6 +58,7 @@ const MultiSelect = () => {
         <Checkbox label="rovingText" checked={rovingText} onChange={setRovingText} />
         <Checkbox label="closeOnSelect" checked={closeOnSelect} onChange={setCloseOnSelect} />
         <Checkbox label="flipOnSelect" checked={flipOnSelect} onChange={setFlipOnSelect} />
+        <Checkbox label="disabled" checked={disabled} onChange={setDisabled} />
       </div>
       <label className={styles.label} {...getLabelProps()} {...getFocusCaptureProps()}>
         State
@@ -63,20 +66,28 @@ const MultiSelect = () => {
       <div
         className={clsx(
           customStyles.multiInputRoot,
-          focused && customStyles.multiInputRootFocused
+          !disabled && focused && customStyles.multiInputRootFocused,
+          disabled && customStyles.multiInputRootDisabled
         )}
         {...getFocusCaptureProps()}
       >
         <div className={customStyles.multiInputWrap}>
           {selected.map((tag) => (
-            <div className={styles.tag} key={tag}>
+            <div className={clsx(styles.tag, disabled && styles.tagDisabled)} key={tag}>
               {tag}
-              <span
-                className={clsx(styles.removeTag, isTagActive(tag) && styles.removeTagActive)}
+              <button
+                type="button"
+                tabIndex={-1}
+                disabled={disabled}
+                aria-label={`Remove ${tag}`}
+                className={clsx(
+                  styles.removeTag,
+                  !disabled && isTagActive(tag) && styles.removeTagActive
+                )}
                 onClick={() => removeSelect(tag)}
               >
                 <ClearIcon />
-              </span>
+              </button>
             </div>
           ))}
           <div className={styles.multiInputWrap}>

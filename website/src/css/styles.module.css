@@ -25,8 +25,14 @@
   height: 16px;
 }
 
-.iconBtn:hover {
+.iconBtn:hover:not(:disabled) {
   background-color: var(--ifm-color-emphasis-200);
+}
+
+.iconBtn:disabled {
+  cursor: not-allowed;
+  color: var(--demo-disabled-text);
+  background-color: transparent;
 }
 
 .clear {
@@ -64,15 +70,27 @@
   grid-row: 1;
 }
 
-.input:hover {
+.input:hover:not(:disabled) {
   border-color: var(--ifm-color-primary-light);
 }
 
-.input:focus-visible,
-.input:focus {
+.input:focus-visible:not(:disabled),
+.input:focus:not(:disabled) {
   outline: none;
   box-shadow: 0 0 0 1px var(--ifm-color-primary-light);
   border-color: var(--ifm-color-primary-light);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  color: var(--demo-disabled-text);
+  background-color: var(--demo-disabled-bg);
+  border-color: var(--demo-disabled-border);
+}
+
+.input:disabled::placeholder {
+  color: var(--demo-disabled-text);
+  opacity: 1;
 }
 
 .inputBorderless {
@@ -81,8 +99,8 @@
   padding: 10px;
 }
 
-.inputBorderless:focus-visible,
-.inputBorderless:focus {
+.inputBorderless:focus-visible:not(:disabled),
+.inputBorderless:focus:not(:disabled) {
   box-shadow: none;
 }
 
@@ -100,6 +118,17 @@
 .multiInput:focus-visible,
 .multiInput:focus {
   outline: none;
+}
+
+.multiInput:disabled {
+  cursor: not-allowed;
+  color: var(--demo-disabled-text);
+  background-color: var(--demo-disabled-bg);
+}
+
+.multiInput:disabled::placeholder {
+  color: var(--demo-disabled-text);
+  opacity: 1;
 }
 
 .multiInputWrap {
@@ -123,6 +152,11 @@
   padding-left: 6px;
 }
 
+.tagDisabled {
+  color: var(--demo-disabled-text);
+  background-color: var(--demo-disabled-bg);
+}
+
 .removeTag {
   composes: iconBtn;
   border-radius: 2px;
@@ -134,7 +168,7 @@
   color: #000;
 }
 
-.removeTag:hover {
+.removeTag:hover:not(:disabled) {
   background-color: var(--ifm-color-emphasis-400);
   color: #000;
 }
@@ -262,15 +296,21 @@
   background-color: var(--ifm-color-primary);
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
   opacity: 0.92;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  color: var(--demo-disabled-text);
+  background-color: var(--demo-disabled-bg);
 }
 
 .button:focus {
   outline: none;
 }
 
-.button:focus-visible {
+.button:focus-visible:not(:disabled) {
   outline: 2px solid var(--ifm-color-primary) !important;
   outline-offset: 2px;
 }

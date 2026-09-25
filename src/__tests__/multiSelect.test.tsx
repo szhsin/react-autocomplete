@@ -1,9 +1,67 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render, renderHook } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { multiSelect, useMultiSelect } from '..';
 import './utils/scrollIntoView';
 import { MultiSelect } from './utils/MultiSelect';
 
 describe('multiSelect', () => {
+  test('disabled controls preserve selected tags', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<MultiSelect disabled />);
+    const combobox = screen.getByRole('combobox');
+    const toggle = screen.getByRole('button', { name: 'Open' });
+
+    expect(combobox).toBeDisabled();
+    expect(toggle).toBeDisabled();
+    await user.click(toggle);
+    expect(screen.queryByRole('listbox')).toBeNull();
+
+    rerender(<MultiSelect disabled={false} />);
+    await user.click(combobox);
+    await user.click(screen.getByRole('option', { name: 'Alabama' }));
+    expect(screen.getByRole('button', { name: 'Alabama' })).toBeInTheDocument();
+
+    rerender(<MultiSelect disabled />);
+    expect(combobox).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Open' })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'Alabama' }));
+    expect(screen.getAllByTestId('selected')).toHaveLength(1);
+
+    rerender(<MultiSelect disabled={false} />);
+    await user.click(screen.getByRole('button', { name: 'Alabama' }));
+    expect(screen.queryAllByTestId('selected')).toHaveLength(0);
+  });
+
+  test('removeSelect ignores both arguments while disabled', () => {
+    const selectedItem = { name: 'Alabama', abbr: 'AL' };
+    const onSelectChange = vi.fn();
+    const { result, rerender } = renderHook(
+      ({ disabled }) =>
+        useMultiSelect({
+          disabled,
+          value: undefined,
+          onChange: vi.fn(),
+          selected: [selectedItem],
+          onSelectChange,
+          items: [selectedItem],
+          getItemValue: (item: typeof selectedItem) => item.name,
+          feature: multiSelect<typeof selectedItem>()
+        }),
+      { initialProps: { disabled: true } }
+    );
+
+    result.current.removeSelect(selectedItem);
+    result.current.removeSelect();
+    expect(onSelectChange).not.toHaveBeenCalled();
+
+    rerender({ disabled: false });
+    result.current.removeSelect(selectedItem);
+    result.current.removeSelect();
+    expect(onSelectChange).toHaveBeenCalledTimes(2);
+    expect(onSelectChange).toHaveBeenNthCalledWith(1, []);
+    expect(onSelectChange).toHaveBeenNthCalledWith(2, []);
+  });
+
   test('continuous interactions', async () => {
     const user = userEvent.setup();
     const { rerender } = render(<MultiSelect />);

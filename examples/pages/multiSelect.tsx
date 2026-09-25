@@ -16,6 +16,7 @@ const filterGroupedItems = (value: string) =>
   })).filter((group) => !!group.states.length);
 
 export default function Home() {
+  const [disabled, setDisabled] = useState(false);
   const [rovingText, setRovingText] = useState(true);
   const [closeOnSelect, setCloseOnSelect] = useState(false);
 
@@ -40,6 +41,7 @@ export default function Home() {
     removeSelect,
     focused
   } = useMultiSelect({
+    disabled,
     getItemValue,
     isItemDisabled,
     flipOnSelect: true,
@@ -67,6 +69,17 @@ export default function Home() {
     <div className={styles.wrapper}>
       <div>value: {value}</div>
       <div>focusIndex: {focusIndex}</div>
+
+      <div>
+        <label>
+          disabled
+          <input
+            type="checkbox"
+            checked={disabled}
+            onChange={(e) => setDisabled(e.target.checked)}
+          />
+        </label>
+      </div>
 
       <div>
         <label>
