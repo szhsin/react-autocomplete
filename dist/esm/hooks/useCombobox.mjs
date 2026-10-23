@@ -1,6 +1,6 @@
 import { defaultEqual } from "../common.mjs";
 import { useAutocomplete } from "./useAutocomplete.mjs";
-//#region src/hooks/useCombobox.ts
+// src/hooks/useCombobox.ts
 const useCombobox = ({ isEqual = defaultEqual, selected, onSelectChange, flipOnSelect, ...passthrough }) => useAutocomplete({
 	...passthrough,
 	selected,
@@ -11,5 +11,4 @@ const useCombobox = ({ isEqual = defaultEqual, selected, onSelectChange, flipOnS
 		else if (flipOnSelect) onSelectChange?.();
 	}
 });
-//#endregion
 export { useCombobox };

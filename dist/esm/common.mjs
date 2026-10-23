@@ -1,4 +1,4 @@
-//#region src/common.ts
+// src/common.ts
 const defaultEqual = (itemA, itemB) => itemA === itemB;
 const getId = (prefix, suffix) => prefix && prefix + suffix;
 const buttonProps = {
@@ -11,5 +11,4 @@ const getInputToggleProps = (id, open, disabled) => ({
 	"aria-expanded": open,
 	"aria-controls": getId(id, "l")
 });
-//#endregion
 export { buttonProps, defaultEqual, getId, getInputToggleProps };

@@ -1,6 +1,6 @@
 "use strict";
 const require_useMutableState = require("./useMutableState.cjs");
-//#region src/hooks/useToggle.ts
+// src/hooks/useToggle.ts
 const useToggle = (open, setOpen) => {
 	const mutable = require_useMutableState.useMutableState({});
 	return [() => mutable.a = open, () => {
@@ -8,5 +8,4 @@ const useToggle = (open, setOpen) => {
 		else setOpen(true);
 	}];
 };
-//#endregion
 exports.useToggle = useToggle;

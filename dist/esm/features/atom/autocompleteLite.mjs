@@ -1,6 +1,6 @@
 import { buttonProps, getId } from "../../common.mjs";
 import { useFocusCapture } from "../../hooks/useFocusCapture.mjs";
-//#region src/features/atom/autocompleteLite.ts
+// src/features/atom/autocompleteLite.ts
 const scrollIntoView = (element) => element?.scrollIntoView({ block: "nearest" });
 const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true, deselectOnChange = true, closeOnSelect = true } = {}) => ({ getItemValue, onSelectChange, isItemSelected, isItemDisabled, isItemAction, onAction, selected, value, onChange, tmpValue, setTmpValue, focusIndex, setFocusIndex, open, setOpen, inputRef, items, id, disabled }) => {
 	const [startCapture, inCapture, stopCapture] = useFocusCapture(inputRef);
@@ -124,5 +124,4 @@ const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true
 		})
 	};
 };
-//#endregion
 export { autocompleteLite };

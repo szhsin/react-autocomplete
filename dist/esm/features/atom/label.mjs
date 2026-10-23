@@ -1,5 +1,5 @@
 import { getId } from "../../common.mjs";
-//#region src/features/atom/label.ts
+// src/features/atom/label.ts
 const label = () => ({ id }) => {
 	const inputId = getId(id, "i");
 	const labelId = getId(id, "a");
@@ -12,5 +12,4 @@ const label = () => ({ id }) => {
 		getListProps: () => ({ "aria-labelledby": labelId })
 	};
 };
-//#endregion
 export { label };

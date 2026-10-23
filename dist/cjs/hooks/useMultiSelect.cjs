@@ -1,7 +1,7 @@
 "use strict";
 const require_common = require("../common.cjs");
 const require_useAutocomplete = require("./useAutocomplete.cjs");
-//#region src/hooks/useMultiSelect.ts
+// src/hooks/useMultiSelect.ts
 const useMultiSelect = ({ isEqual = require_common.defaultEqual, selected, onSelectChange, flipOnSelect, ...passthrough }) => {
 	const removeItem = (itemToRemove) => onSelectChange?.(selected.filter((item) => !isEqual(itemToRemove, item)));
 	const removeSelect = (item) => {
@@ -26,5 +26,4 @@ const useMultiSelect = ({ isEqual = require_common.defaultEqual, selected, onSel
 		removeSelect
 	};
 };
-//#endregion
 exports.useMultiSelect = useMultiSelect;

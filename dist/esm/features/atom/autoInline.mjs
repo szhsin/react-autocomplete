@@ -1,4 +1,4 @@
-//#region src/features/atom/autoInline.ts
+// src/features/atom/autoInline.ts
 const autoInline = ({ onRequestItem }) => ({ getItemValue, setTmpValue, setFocusIndex }) => ({ getInputProps: () => ({
 	"aria-autocomplete": "both",
 	onChange: ({ target, nativeEvent }) => {
@@ -14,5 +14,4 @@ const autoInline = ({ onRequestItem }) => ({ getItemValue, setTmpValue, setFocus
 		});
 	}
 }) });
-//#endregion
 export { autoInline };

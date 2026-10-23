@@ -1,5 +1,5 @@
 import { useMutableState } from "./useMutableState.mjs";
-//#region src/hooks/useFocusCapture.ts
+// src/hooks/useFocusCapture.ts
 const useFocusCapture = (focusRef) => {
 	const mutable = useMutableState({});
 	return [
@@ -19,5 +19,4 @@ const useFocusCapture = (focusRef) => {
 		}
 	];
 };
-//#endregion
 export { useFocusCapture };

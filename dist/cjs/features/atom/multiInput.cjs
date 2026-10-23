@@ -1,6 +1,6 @@
 "use strict";
 let react = require("react");
-//#region src/features/atom/multiInput.ts
+// src/features/atom/multiInput.ts
 const multiInput = () => ({ selected: _selected, setFocusIndex, removeSelect, isEqual }) => {
 	if (process.env.NODE_ENV !== "production") {
 		if (!removeSelect) throw new Error("@szhsin/react-autocomplete: Multi-selection feature must be used with the useMultiSelect hook.");
@@ -41,5 +41,4 @@ const multiInput = () => ({ selected: _selected, setFocusIndex, removeSelect, is
 		})
 	};
 };
-//#endregion
 exports.multiInput = multiInput;
