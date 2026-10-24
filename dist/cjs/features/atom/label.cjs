@@ -1,6 +1,6 @@
 "use strict";
 const require_common = require("../../common.cjs");
-//#region src/features/atom/label.ts
+// src/features/atom/label.ts
 const label = () => ({ id }) => {
 	const inputId = require_common.getId(id, "i");
 	const labelId = require_common.getId(id, "a");
@@ -13,5 +13,4 @@ const label = () => ({ id }) => {
 		getListProps: () => ({ "aria-labelledby": labelId })
 	};
 };
-//#endregion
 exports.label = label;

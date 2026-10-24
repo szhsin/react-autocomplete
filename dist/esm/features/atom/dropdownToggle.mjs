@@ -1,6 +1,6 @@
 import { useToggle } from "../../hooks/useToggle.mjs";
 import { useEffect, useRef } from "react";
-//#region src/features/atom/dropdownToggle.ts
+// src/features/atom/dropdownToggle.ts
 const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } = {}) => ({ inputRef, open, setOpen, focusIndex, value, tmpValue, disabled }) => {
 	const [startToggle, stopToggle] = useToggle(open, setOpen);
 	const internalToggleRef = useRef(null);
@@ -38,5 +38,4 @@ const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } =
 		})
 	};
 };
-//#endregion
 export { dropdownToggle };

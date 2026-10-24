@@ -1,5 +1,5 @@
 import { useMutableState } from "./useMutableState.mjs";
-//#region src/hooks/useToggle.ts
+// src/hooks/useToggle.ts
 const useToggle = (open, setOpen) => {
 	const mutable = useMutableState({});
 	return [() => mutable.a = open, () => {
@@ -7,5 +7,4 @@ const useToggle = (open, setOpen) => {
 		else setOpen(true);
 	}];
 };
-//#endregion
 export { useToggle };

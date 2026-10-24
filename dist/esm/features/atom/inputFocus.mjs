@@ -1,5 +1,5 @@
 import { useState } from "react";
-//#region src/features/atom/inputFocus.ts
+// src/features/atom/inputFocus.ts
 const inputFocus = () => () => {
 	const [focused, setFocused] = useState(false);
 	return {
@@ -10,5 +10,4 @@ const inputFocus = () => () => {
 		})
 	};
 };
-//#endregion
 export { inputFocus };

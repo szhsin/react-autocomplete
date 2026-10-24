@@ -1,4 +1,4 @@
-//#region src/utils/mergeObjects.ts
+// src/utils/mergeObjects.ts
 const mergeObjects = (obj1, obj2) => {
 	const merged = { ...obj1 };
 	Object.entries(obj2).forEach(([key, prop2]) => {
@@ -13,5 +13,4 @@ const mergeObjects = (obj1, obj2) => {
 	});
 	return merged;
 };
-//#endregion
 export { mergeObjects };

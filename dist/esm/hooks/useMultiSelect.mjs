@@ -1,6 +1,6 @@
 import { defaultEqual } from "../common.mjs";
 import { useAutocomplete } from "./useAutocomplete.mjs";
-//#region src/hooks/useMultiSelect.ts
+// src/hooks/useMultiSelect.ts
 const useMultiSelect = ({ isEqual = defaultEqual, selected, onSelectChange, flipOnSelect, ...passthrough }) => {
 	const removeItem = (itemToRemove) => onSelectChange?.(selected.filter((item) => !isEqual(itemToRemove, item)));
 	const removeSelect = (item) => {
@@ -25,5 +25,4 @@ const useMultiSelect = ({ isEqual = defaultEqual, selected, onSelectChange, flip
 		removeSelect
 	};
 };
-//#endregion
 export { useMultiSelect };

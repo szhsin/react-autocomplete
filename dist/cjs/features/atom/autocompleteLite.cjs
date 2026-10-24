@@ -1,7 +1,7 @@
 "use strict";
 const require_common = require("../../common.cjs");
 const require_useFocusCapture = require("../../hooks/useFocusCapture.cjs");
-//#region src/features/atom/autocompleteLite.ts
+// src/features/atom/autocompleteLite.ts
 const scrollIntoView = (element) => element?.scrollIntoView({ block: "nearest" });
 const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true, deselectOnChange = true, closeOnSelect = true } = {}) => ({ getItemValue, onSelectChange, isItemSelected, isItemDisabled, isItemAction, onAction, selected, value, onChange, tmpValue, setTmpValue, focusIndex, setFocusIndex, open, setOpen, inputRef, items, id, disabled }) => {
 	const [startCapture, inCapture, stopCapture] = require_useFocusCapture.useFocusCapture(inputRef);
@@ -125,5 +125,4 @@ const autocompleteLite = ({ select, rovingText = !select, deselectOnClear = true
 		})
 	};
 };
-//#endregion
 exports.autocompleteLite = autocompleteLite;

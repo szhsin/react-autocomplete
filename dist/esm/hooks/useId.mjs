@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-//#region src/hooks/useId.ts
+// src/hooks/useId.ts
 let current = 0;
 const useIdShim = () => {
 	const [id, setId] = useState();
@@ -7,5 +7,4 @@ const useIdShim = () => {
 	return id && `szh-ac${id}-`;
 };
 const useId = React.useId || useIdShim;
-//#endregion
 export { useId };

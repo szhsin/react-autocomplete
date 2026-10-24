@@ -1,7 +1,7 @@
 "use strict";
 const require_useId = require("./useId.cjs");
 let react = require("react");
-//#region src/hooks/useAutocomplete.ts
+// src/hooks/useAutocomplete.ts
 const useAutocomplete = ({ onChange, feature: useFeature, isItemSelected, inputRef: externalInputRef, getItemValue, ...passthrough }) => {
 	const internalInputRef = (0, react.useRef)(null);
 	const [tmpValue, setTmpValue] = (0, react.useState)();
@@ -29,5 +29,4 @@ const useAutocomplete = ({ onChange, feature: useFeature, isItemSelected, inputR
 		...featureYield
 	};
 };
-//#endregion
 exports.useAutocomplete = useAutocomplete;

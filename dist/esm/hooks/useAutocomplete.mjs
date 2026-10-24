@@ -1,6 +1,6 @@
 import { useId } from "./useId.mjs";
 import { useRef, useState } from "react";
-//#region src/hooks/useAutocomplete.ts
+// src/hooks/useAutocomplete.ts
 const useAutocomplete = ({ onChange, feature: useFeature, isItemSelected, inputRef: externalInputRef, getItemValue, ...passthrough }) => {
 	const internalInputRef = useRef(null);
 	const [tmpValue, setTmpValue] = useState();
@@ -28,5 +28,4 @@ const useAutocomplete = ({ onChange, feature: useFeature, isItemSelected, inputR
 		...featureYield
 	};
 };
-//#endregion
 export { useAutocomplete };
