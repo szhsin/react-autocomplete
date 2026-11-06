@@ -1,7 +1,7 @@
-import { autocompleteLite } from "../atom/autocompleteLite.mjs";
 import { mergeModules } from "../../utils/mergeModules.mjs";
-import { label } from "../atom/label.mjs";
+import { autocompleteLite } from "../atom/autocompleteLite.mjs";
 import { nonblurToggle } from "../atom/nonblurToggle.mjs";
+import { label } from "../atom/label.mjs";
 import { inputFocus } from "../atom/inputFocus.mjs";
 import { multiInput } from "../atom/multiInput.mjs";
 // src/features/molecule/multiSelect.ts

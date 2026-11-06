@@ -1,6 +1,6 @@
 "use strict";
-const require_autocompleteLite = require("../atom/autocompleteLite.cjs");
 const require_mergeModules = require("../../utils/mergeModules.cjs");
+const require_autocompleteLite = require("../atom/autocompleteLite.cjs");
 const require_dropdownToggle = require("../atom/dropdownToggle.cjs");
 // src/features/molecule/dropdown.ts
 const dropdown = (props) => require_mergeModules.mergeModules(require_autocompleteLite.autocompleteLite({
