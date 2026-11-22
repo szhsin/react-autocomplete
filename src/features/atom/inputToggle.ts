@@ -1,7 +1,7 @@
-import type { Feature, GetProps } from '../../types';
-import { getInputToggleProps } from '../../common';
-import { useToggle } from '../../hooks/useToggle';
-import { useFocusCapture } from '../../hooks/useFocusCapture';
+import type { Feature, GetProps } from '../../types.js';
+import { getInputToggleProps } from '../../common.js';
+import { useToggle } from '../../hooks/useToggle.js';
+import { useFocusCapture } from '../../hooks/useFocusCapture.js';
 
 type InputToggleFeature<T> = Feature<T, Pick<GetProps<T>, 'getToggleProps' | 'getInputProps'>>;
 

@@ -6,8 +6,8 @@ import {
   mergeGroupedItems
 } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { LIST_GROUP } from '../data';
-import { autocompleteFocus } from '../features/autocompleteFocus';
+import { LIST_GROUP } from '../data.js';
+import { autocompleteFocus } from '../features/autocompleteFocus.js';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;

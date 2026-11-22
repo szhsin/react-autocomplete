@@ -1,23 +1,26 @@
-export { useCombobox } from './hooks/useCombobox';
-export { useMultiSelect } from './hooks/useMultiSelect';
+export { useCombobox } from './hooks/useCombobox.js';
+export { useMultiSelect } from './hooks/useMultiSelect.js';
 export {
   type AutocompleteLiteFeature,
   autocompleteLite
-} from './features/atom/autocompleteLite';
-export { type AutocompleteFeature, autocomplete } from './features/molecule/autocomplete';
-export { type DropdownFeature, dropdown } from './features/molecule/dropdown';
-export { type MultiSelectFeature, multiSelect } from './features/molecule/multiSelect';
+} from './features/atom/autocompleteLite.js';
+export { type AutocompleteFeature, autocomplete } from './features/molecule/autocomplete.js';
+export { type DropdownFeature, dropdown } from './features/molecule/dropdown.js';
+export { type MultiSelectFeature, multiSelect } from './features/molecule/multiSelect.js';
 export {
   type MultiSelectDropdownFeature,
   multiSelectDropdown
-} from './features/molecule/multiSelectDropdown';
-export { type SupercompleteFeature, supercomplete } from './features/molecule/supercomplete';
-export { mergeGroupedItems } from './utils/mergeGroupedItems';
-export { mergeModules } from './utils/mergeModules';
+} from './features/molecule/multiSelectDropdown.js';
+export {
+  type SupercompleteFeature,
+  supercomplete
+} from './features/molecule/supercomplete.js';
+export { mergeGroupedItems } from './utils/mergeGroupedItems.js';
+export { mergeModules } from './utils/mergeModules.js';
 export type {
   ComboboxProps,
   MultiSelectProps,
   Feature,
   MergedFeature,
   FeatureProps
-} from './types';
+} from './types.js';

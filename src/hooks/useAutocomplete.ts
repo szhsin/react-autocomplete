@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
-import { useId } from './useId';
-import { defaultFocusIndex } from '../common';
-import type { AutocompleteProps, AutocompleteReturn } from '../types';
+import { useId } from './useId.js';
+import { defaultFocusIndex } from '../common.js';
+import type { AutocompleteProps, AutocompleteReturn } from '../types.js';
 
 const useAutocomplete = <T, FeatureYield extends object>({
   onChange,

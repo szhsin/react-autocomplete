@@ -1,7 +1,7 @@
-import type { MergedFeature, FeatureProps } from '../../types';
-import { mergeModules } from '../../utils/mergeModules';
-import { type AutocompleteFeature, autocomplete } from './autocomplete';
-import { type AutoInlineFeature, autoInline } from '../atom/autoInline';
+import type { MergedFeature, FeatureProps } from '../../types.js';
+import { mergeModules } from '../../utils/mergeModules.js';
+import { type AutocompleteFeature, autocomplete } from './autocomplete.js';
+import { type AutoInlineFeature, autoInline } from '../atom/autoInline.js';
 
 type SupercompleteFeature<T> = MergedFeature<
   T,

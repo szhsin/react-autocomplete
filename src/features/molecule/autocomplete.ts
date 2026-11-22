@@ -1,8 +1,8 @@
-import type { MergedFeature, AutocompleteFeatureProps } from '../../types';
-import { mergeModules } from '../../utils/mergeModules';
-import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite';
-import { type InputToggleFeature, inputToggle } from '../atom/inputToggle';
-import { type LabelFeature, label } from '../atom/label';
+import type { MergedFeature, AutocompleteFeatureProps } from '../../types.js';
+import { mergeModules } from '../../utils/mergeModules.js';
+import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite.js';
+import { type InputToggleFeature, inputToggle } from '../atom/inputToggle.js';
+import { type LabelFeature, label } from '../atom/label.js';
 
 type AutocompleteFeature<T> = MergedFeature<
   T,

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useMultiSelect, multiSelect, mergeGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { LIST_GROUP } from '../data';
+import { LIST_GROUP } from '../data.js';
 
 type Item = { name: string; abbr: string };
 const isEqual = (itemA?: Item, itemB?: Item) =>

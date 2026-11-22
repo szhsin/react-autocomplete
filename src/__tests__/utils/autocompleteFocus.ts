@@ -4,8 +4,8 @@ import {
   AutocompleteFeature,
   mergeModules,
   autocomplete
-} from '../..';
-import { AutoFocusFeature, autoFocus } from '../../features/atom';
+} from '../../index.js';
+import { AutoFocusFeature, autoFocus } from '../../features/atom/index.js';
 
 type AutocompleteFocusFeature<T> = MergedFeature<
   T,

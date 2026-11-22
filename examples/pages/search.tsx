@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCombobox, supercomplete } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { US_STATES } from '../data';
+import { US_STATES } from '../data.js';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;

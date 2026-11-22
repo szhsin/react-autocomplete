@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCombobox, dropdown, mergeGroupedItems } from '@szhsin/react-autocomplete';
 import styles from '@/styles/Home.module.css';
-import { LIST_GROUP } from '../data';
+import { LIST_GROUP } from '../data.js';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;

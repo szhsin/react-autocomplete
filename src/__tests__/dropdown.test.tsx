@@ -1,7 +1,7 @@
 import { screen, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import './utils/scrollIntoView';
-import { Dropdown } from './utils/Dropdown';
+import { userEvent } from '@testing-library/user-event';
+import './utils/scrollIntoView.js';
+import { Dropdown } from './utils/Dropdown.js';
 
 describe('dropdown', () => {
   test('disabled toggle and popup controls block interaction', async () => {

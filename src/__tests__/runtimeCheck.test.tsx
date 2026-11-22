@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { useCombobox, useMultiSelect, multiSelect } from '../';
+import { useCombobox, useMultiSelect, multiSelect } from '../index.js';
 
 describe('Runtime check', () => {
   test('multiSelect', () => {

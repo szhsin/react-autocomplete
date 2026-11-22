@@ -1,6 +1,11 @@
-import type { Feature, GetProps, AutocompleteFeatureProps, FeatureState } from '../../types';
-import { getId, buttonProps, defaultFocusIndex } from '../../common';
-import { useFocusCapture } from '../../hooks/useFocusCapture';
+import type {
+  Feature,
+  GetProps,
+  AutocompleteFeatureProps,
+  FeatureState
+} from '../../types.js';
+import { getId, buttonProps, defaultFocusIndex } from '../../common.js';
+import { useFocusCapture } from '../../hooks/useFocusCapture.js';
 
 type AutocompleteLiteFeature<T> = Feature<
   T,

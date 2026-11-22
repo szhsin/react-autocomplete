@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Feature, GetProps } from '../../types';
+import type { Feature, GetProps } from '../../types.js';
 
 type InputFocusFeature<T> = Feature<
   T,

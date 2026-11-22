@@ -1,8 +1,8 @@
 import { screen, render, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { scrollIntoView } from './utils/scrollIntoView';
-import { TOTAL_DATA_COUNT } from './utils/data';
-import { Autocomplete } from './utils/Autocomplete';
+import { userEvent } from '@testing-library/user-event';
+import { scrollIntoView } from './utils/scrollIntoView.js';
+import { TOTAL_DATA_COUNT } from './utils/data.js';
+import { Autocomplete } from './utils/Autocomplete.js';
 
 describe('autocomplete', () => {
   test('blur closes the list after disabling a focused input', async () => {

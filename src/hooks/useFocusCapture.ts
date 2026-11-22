@@ -1,4 +1,4 @@
-import { useMutableState } from './useMutableState';
+import { useMutableState } from './useMutableState.js';
 
 interface MutableState {
   /**

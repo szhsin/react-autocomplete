@@ -1,4 +1,4 @@
-import type { Feature, GetProps, FeatureProps } from '../../types';
+import type { Feature, GetProps, FeatureProps } from '../../types.js';
 
 type AutoFocusFeature<T> = Feature<T, Pick<GetProps<T>, 'getInputProps'>>;
 

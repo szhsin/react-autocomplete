@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { type ComboboxProps, useCombobox, autocomplete, supercomplete } from '../..';
-import type { AutocompleteFeatureProps } from '../../types';
-import { autocompleteFocus } from './autocompleteFocus';
-import { US_STATES } from './data';
+import { type ComboboxProps, useCombobox, autocomplete, supercomplete } from '../../index.js';
+import type { AutocompleteFeatureProps } from '../../types.js';
+import { autocompleteFocus } from './autocompleteFocus.js';
+import { US_STATES } from './data.js';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;

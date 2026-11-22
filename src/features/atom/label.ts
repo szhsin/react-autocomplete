@@ -1,5 +1,5 @@
-import type { Feature, GetProps } from '../../types';
-import { getId } from '../../common';
+import type { Feature, GetProps } from '../../types.js';
+import { getId } from '../../common.js';
 
 type LabelFeature<T> = Feature<
   T,

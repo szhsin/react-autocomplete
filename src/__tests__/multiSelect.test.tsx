@@ -1,8 +1,8 @@
 import { screen, render, renderHook } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { multiSelect, useMultiSelect } from '..';
-import './utils/scrollIntoView';
-import { MultiSelect } from './utils/MultiSelect';
+import { userEvent } from '@testing-library/user-event';
+import { multiSelect, useMultiSelect } from '../index.js';
+import './utils/scrollIntoView.js';
+import { MultiSelect } from './utils/MultiSelect.js';
 
 describe('multiSelect', () => {
   test('disabled controls preserve selected tags', async () => {
