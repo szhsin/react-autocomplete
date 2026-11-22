@@ -1,7 +1,7 @@
-import type { MergedFeature, FeatureProps } from '../../types';
-import { mergeModules } from '../../utils/mergeModules';
-import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite';
-import { type DropdownToggleFeature, dropdownToggle } from '../atom/dropdownToggle';
+import type { MergedFeature, FeatureProps } from '../../types.js';
+import { mergeModules } from '../../utils/mergeModules.js';
+import { type AutocompleteLiteFeature, autocompleteLite } from '../atom/autocompleteLite.js';
+import { type DropdownToggleFeature, dropdownToggle } from '../atom/dropdownToggle.js';
 
 type DropdownFeature<T> = MergedFeature<
   T,

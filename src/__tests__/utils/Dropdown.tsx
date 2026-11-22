@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useCombobox, dropdown } from '../..';
-import type { ComboboxProps } from '../../types';
-import { US_STATES_STRING } from './data';
+import { useCombobox, dropdown } from '../../index.js';
+import type { ComboboxProps } from '../../types.js';
+import { US_STATES_STRING } from './data.js';
 
 const filterItems = (value?: string) =>
   value

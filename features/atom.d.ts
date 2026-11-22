@@ -1,1 +1,1 @@
-export * from '../types/features/atom';
+export * from '../types/esm/features/atom/index.js';

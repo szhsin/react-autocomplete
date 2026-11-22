@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useMultiSelect, multiSelect } from '../..';
-import type { MultiSelectProps } from '../../types';
-import { US_STATES } from './data';
+import { useMultiSelect, multiSelect } from '../../index.js';
+import type { MultiSelectProps } from '../../types.js';
+import { US_STATES } from './data.js';
 
 type Item = { name: string; abbr: string };
 const getItemValue = (item: Item) => item.name;

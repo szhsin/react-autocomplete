@@ -1,7 +1,7 @@
 import { screen, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Autocomplete } from './utils/Autocomplete';
-import './utils/scrollIntoView';
+import { userEvent } from '@testing-library/user-event';
+import { Autocomplete } from './utils/Autocomplete.js';
+import './utils/scrollIntoView.js';
 
 describe('autocompleteFocus', () => {
   test('continuous interactions', async () => {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCombobox, autocomplete } from '@szhsin/react-autocomplete';
-import { US_STATES_PLAIN as STATES } from '../data';
+import { US_STATES_PLAIN as STATES } from '../data.js';
 import { createRoot } from 'react-dom/client';
 
 const ShadowDom = () => {

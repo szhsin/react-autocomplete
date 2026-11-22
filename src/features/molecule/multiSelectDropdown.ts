@@ -1,7 +1,7 @@
-import type { MergedFeature, FeatureProps } from '../../types';
-import { mergeModules } from '../../utils/mergeModules';
-import { type MultiInputFeature, multiInput } from '../atom/multiInput';
-import { type DropdownFeature, dropdown } from './dropdown';
+import type { MergedFeature, FeatureProps } from '../../types.js';
+import { mergeModules } from '../../utils/mergeModules.js';
+import { type MultiInputFeature, multiInput } from '../atom/multiInput.js';
+import { type DropdownFeature, dropdown } from './dropdown.js';
 
 type MultiSelectDropdownFeature<T> = MergedFeature<
   T,

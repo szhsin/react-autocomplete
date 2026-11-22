@@ -1,5 +1,5 @@
-import type { Feature, GetProps } from '../../types';
-import { getInputToggleProps } from '../../common';
+import type { Feature, GetProps } from '../../types.js';
+import { getInputToggleProps } from '../../common.js';
 
 type NonblurToggleFeature<T> = Feature<T, Pick<GetProps<T>, 'getToggleProps'>>;
 

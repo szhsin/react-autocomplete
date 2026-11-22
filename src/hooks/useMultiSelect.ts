@@ -1,6 +1,6 @@
-import type { MultiSelectProps, AdapterProps } from '../types';
-import { defaultEqual } from '../common';
-import { useAutocomplete } from './useAutocomplete';
+import type { MultiSelectProps, AdapterProps } from '../types.js';
+import { defaultEqual } from '../common.js';
+import { useAutocomplete } from './useAutocomplete.js';
 
 const useMultiSelect = <T, FeatureYield extends object>({
   isEqual = defaultEqual,

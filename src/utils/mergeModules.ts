@@ -1,7 +1,7 @@
 // @ts-nocheck
 /* eslint-disable */
 
-import { mergeObjects } from './mergeObjects';
+import { mergeObjects } from './mergeObjects.js';
 
 const mergeModules =
   (...modules) =>

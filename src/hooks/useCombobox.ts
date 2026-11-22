@@ -1,6 +1,6 @@
-import type { ComboboxProps } from '../types';
-import { defaultEqual } from '../common';
-import { useAutocomplete } from './useAutocomplete';
+import type { ComboboxProps } from '../types.js';
+import { defaultEqual } from '../common.js';
+import { useAutocomplete } from './useAutocomplete.js';
 
 const useCombobox = <T, FeatureYield extends object>({
   isEqual = defaultEqual,

@@ -1,4 +1,4 @@
-import { mergeGroupedItems } from '..';
+import { mergeGroupedItems } from '../index.js';
 
 describe('mergeGroupedItems', () => {
   test('keyed groups', () => {

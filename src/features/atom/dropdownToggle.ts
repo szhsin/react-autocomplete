@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import type { Feature, FeatureProps, GetProps, FeatureState } from '../../types';
-import { useToggle } from '../../hooks/useToggle';
+import type { Feature, FeatureProps, GetProps, FeatureState } from '../../types.js';
+import { useToggle } from '../../hooks/useToggle.js';
 
 type DropdownToggleFeature<T> = Feature<
   T,

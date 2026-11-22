@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useCombobox, autocomplete, dropdown } from '@szhsin/react-autocomplete';
 import { useFloating, autoUpdate, size, flip } from '@floating-ui/react-dom';
 import styles from '@/styles/Home.module.css';
-import { US_STATES_PLAIN } from '../data';
+import { US_STATES_PLAIN } from '../data.js';
 
 function Combobox() {
   const [value, setValue] = useState<string | undefined>();
