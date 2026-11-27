@@ -1,6 +1,6 @@
 "use strict";
-const require_useId = require("./useId.cjs");
 let react = require("react");
+const require_useId = require("./useId.cjs");
 // src/hooks/useAutocomplete.ts
 const useAutocomplete = ({ onChange, feature: useFeature, isItemSelected, inputRef: externalInputRef, getItemValue, ...passthrough }) => {
 	const internalInputRef = (0, react.useRef)(null);
