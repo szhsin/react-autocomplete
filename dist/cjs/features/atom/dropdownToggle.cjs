@@ -1,6 +1,6 @@
 "use strict";
-const require_useToggle = require("../../hooks/useToggle.cjs");
 let react = require("react");
+const require_useToggle = require("../../hooks/useToggle.cjs");
 // src/features/atom/dropdownToggle.ts
 const dropdownToggle = ({ closeOnSelect = true, toggleRef: externalToggleRef } = {}) => ({ inputRef, open, setOpen, focusIndex, value, tmpValue, disabled }) => {
 	const [startToggle, stopToggle] = require_useToggle.useToggle(open, setOpen);

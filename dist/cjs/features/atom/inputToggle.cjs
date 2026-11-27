@@ -1,7 +1,7 @@
 "use strict";
 const require_common = require("../../common.cjs");
-const require_useFocusCapture = require("../../hooks/useFocusCapture.cjs");
 const require_useToggle = require("../../hooks/useToggle.cjs");
+const require_useFocusCapture = require("../../hooks/useFocusCapture.cjs");
 // src/features/atom/inputToggle.ts
 const inputToggle = () => ({ id, inputRef, open, setOpen, disabled }) => {
 	const [startToggle, stopToggle] = require_useToggle.useToggle(open, setOpen);

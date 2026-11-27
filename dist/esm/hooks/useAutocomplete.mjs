@@ -1,5 +1,5 @@
-import { useId } from "./useId.mjs";
 import { useRef, useState } from "react";
+import { useId } from "./useId.mjs";
 // src/hooks/useAutocomplete.ts
 const useAutocomplete = ({ onChange, feature: useFeature, isItemSelected, inputRef: externalInputRef, getItemValue, ...passthrough }) => {
 	const internalInputRef = useRef(null);
